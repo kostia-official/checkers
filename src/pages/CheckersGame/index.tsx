@@ -6,8 +6,10 @@ import { BoardState, Color, Coordinates, GameState, GameStateHistory } from '../
 import { ICheckersStrategy } from '../../strategies/checkers-strategy.interface';
 import { DEBUG } from '../../common/constants';
 import { capitalize } from '../../common/utils';
-import { Button } from '../common/Button';
+import { Button } from '../../components/Button';
 import { Link } from 'react-router-dom';
+import { EditMode } from './components/EditMode';
+import { useEditMode } from './components/EditMode/hook';
 
 export interface CheckersGameProps {
   strategy: ICheckersStrategy;
@@ -82,12 +84,19 @@ export const CheckersGame: React.FC<CheckersGameProps> = ({ strategy }) => {
     return Color.Black;
   };
 
+  const editModeState = useEditMode({ gameState: getGameState(), updateGameState });
+
   useEffect(() => {
+    if (editModeState.isEditMode) {
+      setWinner(null);
+      return;
+    }
+
     const winner = strategy.getWinner(getGameState());
     if (winner) {
       setWinner(winner);
     }
-  }, [getGameState, strategy]);
+  }, [getGameState, strategy, editModeState.isEditMode]);
 
   const isValidJumpDestination = (i: number, j: number): boolean => {
     if (!selectedPiece) {
@@ -109,8 +118,12 @@ export const CheckersGame: React.FC<CheckersGameProps> = ({ strategy }) => {
                 className={getSquareColor(i, j)}
                 key={j}
                 onClick={() => {
-                  handleSquareClick(i, j);
-                  handlePieceClick(i, j);
+                  if (editModeState.isEditMode) {
+                    editModeState.handleSquareEdit(i, j);
+                  } else {
+                    handleSquareClick(i, j);
+                    handlePieceClick(i, j);
+                  }
                 }}
                 $isValidJumpDestination={isValidJumpDestination(i, j)}
               >
@@ -134,6 +147,9 @@ export const CheckersGame: React.FC<CheckersGameProps> = ({ strategy }) => {
         <Button onClick={handleUndoMove} disabled={gameStateHistory.length === 1}>
           Undo Move
         </Button>
+
+        {DEBUG && <EditMode {...editModeState} />}
+
         {winner ? <div className="winner">{capitalize(winner)} wins!</div> : null}
       </Controls>
     </CheckersGameWrapper>

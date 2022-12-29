@@ -1,4 +1,4 @@
-import { BoardState, Color } from '../../common/types';
+import { BoardState, Color } from '../types';
 
 export function createBoard(board: number[][]) {
   const boardState: BoardState = [];
@@ -23,7 +23,7 @@ export function createBoard(board: number[][]) {
 
       boardState[i][j] = {
         piece,
-        isKing
+        isKing,
       };
     }
   }

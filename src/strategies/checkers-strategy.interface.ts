@@ -10,8 +10,8 @@ export interface ICheckersStrategy {
   isValidPieceCapture(fromI: number, fromJ: number, toI: number, toJ: number, gameState: GameState): boolean;
   getValidMoves(i: number, j: number, gameState: GameState): Coordinates[];
   getValidCaptures(i: number, j: number, gameState: GameState): Coordinates[];
-  hasValidCaptureByOtherPiece(selectedI: number, selectedJ: number, gameState: GameState): boolean;
-  canBecomeKing(i: number, gameState: GameState): boolean;
+  getValidCapturesByOtherPieces(selectedI: number, selectedJ: number, gameState: GameState): Coordinates[];
+  canBecomeKing(i: number, j: number, gameState: GameState): boolean;
 
   movePiece(fromI: number, fromJ: number, toI: number, toJ: number, gameState: GameState): GameState;
   capturePieceByKing(fromI: number, fromJ: number, toI: number, toJ: number, gameState: GameState): BoardState | undefined;
@@ -20,5 +20,5 @@ export interface ICheckersStrategy {
   handlePieceClick(i: number, j: number, gameState: GameState): Coordinates | undefined;
   handleSquareClick(i: number, j: number, gameState: GameState): GameState | undefined;
 
-  getWinner(gameState: GameState): Color | null;
+  getWinner(gameState: GameState): Color | undefined;
 }

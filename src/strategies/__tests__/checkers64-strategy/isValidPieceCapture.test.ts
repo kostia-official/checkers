@@ -1,5 +1,5 @@
 import { Checkers64Strategy } from '../../checkers64-strategy';
-import { createBoard } from '../../../tests/helpers/board';
+import { createBoard } from '../../../common/test-utils/board';
 import { Color, GameState } from '../../../common/types';
 
 describe('isValidPieceCapture', () => {
@@ -16,7 +16,7 @@ describe('isValidPieceCapture', () => {
       const board = [
         [0, 0, 0],
         [0, 2, 0],
-        [1, 0, 0]
+        [1, 0, 0],
       ];
       const boardState = createBoard(board);
 
@@ -29,7 +29,7 @@ describe('isValidPieceCapture', () => {
         boardState,
         currentPlayer: Color.White,
         hasMadeCapture: false,
-        selectedPiece: [fromI, fromJ]
+        selectedPiece: [fromI, fromJ],
       };
 
       expect(strategy.isValidPieceCapture(fromI, fromJ, toI, toJ, gameState)).toBe(true);
@@ -41,7 +41,7 @@ describe('isValidPieceCapture', () => {
       const board = [
         [0, 0, 1],
         [0, 2, 0],
-        [0, 0, 0]
+        [0, 0, 0],
       ];
       const boardState = createBoard(board);
 
@@ -54,7 +54,7 @@ describe('isValidPieceCapture', () => {
         boardState,
         currentPlayer: Color.White,
         hasMadeCapture: false,
-        selectedPiece: [fromI, fromJ]
+        selectedPiece: [fromI, fromJ],
       };
 
       expect(strategy.isValidPieceCapture(fromI, fromJ, toI, toJ, gameState)).toBe(true);
@@ -66,7 +66,7 @@ describe('isValidPieceCapture', () => {
       const board = [
         [0, 2, 0],
         [0, 1, 2],
-        [0, 0, 0]
+        [0, 0, 0],
       ];
       const boardState = createBoard(board);
 
@@ -79,7 +79,7 @@ describe('isValidPieceCapture', () => {
         boardState,
         currentPlayer: Color.White,
         hasMadeCapture: false,
-        selectedPiece: [fromI, fromJ]
+        selectedPiece: [fromI, fromJ],
       };
 
       expect(strategy.isValidPieceCapture(fromI, fromJ, toI, toJ, gameState)).toBe(false);
@@ -91,7 +91,7 @@ describe('isValidPieceCapture', () => {
       const board = [
         [0, 0, 2],
         [0, 2, 0],
-        [1, 0, 0]
+        [1, 0, 0],
       ];
       const boardState = createBoard(board);
 
@@ -104,7 +104,7 @@ describe('isValidPieceCapture', () => {
         boardState,
         currentPlayer: Color.White,
         hasMadeCapture: false,
-        selectedPiece: [fromI, fromJ]
+        selectedPiece: [fromI, fromJ],
       };
 
       expect(strategy.isValidPieceCapture(fromI, fromJ, toI, toJ, gameState)).toBe(false);
@@ -116,7 +116,7 @@ describe('isValidPieceCapture', () => {
       const board = [
         [0, 0, 0],
         [0, 1, 0],
-        [0, 0, 2]
+        [0, 0, 2],
       ];
       const boardState = createBoard(board);
 
@@ -129,7 +129,7 @@ describe('isValidPieceCapture', () => {
         boardState,
         currentPlayer: Color.White,
         hasMadeCapture: false,
-        selectedPiece: [fromI, fromJ]
+        selectedPiece: [fromI, fromJ],
       };
 
       expect(strategy.isValidPieceCapture(fromI, fromJ, toI, toJ, gameState)).toBe(false);
@@ -141,7 +141,7 @@ describe('isValidPieceCapture', () => {
       const board = [
         [0, 0, 0],
         [0, 1, 0],
-        [0, 0, 1]
+        [0, 0, 1],
       ];
       const boardState = createBoard(board);
 
@@ -154,7 +154,7 @@ describe('isValidPieceCapture', () => {
         boardState,
         currentPlayer: Color.White,
         hasMadeCapture: false,
-        selectedPiece: [fromI, fromJ]
+        selectedPiece: [fromI, fromJ],
       };
 
       expect(strategy.isValidPieceCapture(fromI, fromJ, toI, toJ, gameState)).toBe(false);
@@ -166,7 +166,7 @@ describe('isValidPieceCapture', () => {
       const board = [
         [0, 0, 0],
         [0, 2, 0],
-        [0, 0, 1]
+        [0, 0, 1],
       ];
       const boardState = createBoard(board);
 
@@ -179,7 +179,7 @@ describe('isValidPieceCapture', () => {
         boardState,
         currentPlayer: Color.Black,
         hasMadeCapture: false,
-        selectedPiece: [fromI, fromJ]
+        selectedPiece: [fromI, fromJ],
       };
 
       expect(strategy.isValidPieceCapture(fromI, fromJ, toI, toJ, gameState)).toBe(false);
@@ -191,7 +191,7 @@ describe('isValidPieceCapture', () => {
       const board = [
         [0, 0, 0],
         [0, 2, 0],
-        [0, 0, 0]
+        [0, 0, 0],
       ];
       const boardState = createBoard(board);
 
@@ -204,7 +204,7 @@ describe('isValidPieceCapture', () => {
         boardState,
         currentPlayer: Color.White,
         hasMadeCapture: false,
-        selectedPiece: [fromI, fromJ]
+        selectedPiece: [fromI, fromJ],
       };
 
       expect(strategy.isValidPieceCapture(fromI, fromJ, toI, toJ, gameState)).toBe(false);
@@ -216,7 +216,7 @@ describe('isValidPieceCapture', () => {
       const board = [
         [0, 0, 0],
         [0, 2, 0],
-        [0, 0, 1]
+        [0, 0, 1],
       ];
       const boardState = createBoard(board);
 
@@ -230,14 +230,14 @@ describe('isValidPieceCapture', () => {
         [1, 2],
         [2, 0],
         [2, 1],
-        [2, 2]
+        [2, 2],
       ];
 
       const gameState: GameState = {
         boardState,
         currentPlayer: Color.White,
         hasMadeCapture: false,
-        selectedPiece: [fromI, fromJ]
+        selectedPiece: [fromI, fromJ],
       };
 
       wrongDestinations.forEach(([toI, toJ]) => {
@@ -252,7 +252,7 @@ describe('isValidPieceCapture', () => {
         [0, 0, 0, 0],
         [0, 2, 0, 0],
         [0, 0, 0, 0],
-        [0, 0, 0, 1]
+        [0, 0, 0, 1],
       ];
       const boardState = createBoard(board);
 
@@ -265,7 +265,7 @@ describe('isValidPieceCapture', () => {
         boardState,
         currentPlayer: Color.White,
         hasMadeCapture: false,
-        selectedPiece: [fromI, fromJ]
+        selectedPiece: [fromI, fromJ],
       };
 
       expect(strategy.isValidPieceCapture(fromI, fromJ, toI, toJ, gameState)).toBe(false);
@@ -277,7 +277,7 @@ describe('isValidPieceCapture', () => {
       const board = [
         [0, 0, 0],
         [0, 0, 0],
-        [0, 0, 2]
+        [0, 0, 2],
       ];
       const boardState = createBoard(board);
 
@@ -290,7 +290,7 @@ describe('isValidPieceCapture', () => {
         boardState,
         currentPlayer: Color.White,
         hasMadeCapture: false,
-        selectedPiece: [fromI, fromJ]
+        selectedPiece: [fromI, fromJ],
       };
 
       expect(strategy.isValidPieceCapture(fromI, fromJ, toI, toJ, gameState)).toBe(false);
@@ -305,7 +305,7 @@ describe('isValidPieceCapture', () => {
         [0, 0, 0, 0],
         [0, 0, 0, 0],
         [0, 2, 0, 0],
-        [3, 0, 0, 0]
+        [3, 0, 0, 0],
       ];
       const boardState = createBoard(board);
 
@@ -318,7 +318,7 @@ describe('isValidPieceCapture', () => {
         boardState,
         currentPlayer: Color.White,
         hasMadeCapture: false,
-        selectedPiece: [fromI, fromJ]
+        selectedPiece: [fromI, fromJ],
       };
 
       expect(strategy.isValidPieceCapture(fromI, fromJ, toI, toJ, gameState)).toBe(true);
@@ -330,7 +330,7 @@ describe('isValidPieceCapture', () => {
       const board = [
         [0, 0, 0],
         [0, 2, 0],
-        [3, 0, 0]
+        [3, 0, 0],
       ];
       const boardState = createBoard(board);
 
@@ -343,7 +343,7 @@ describe('isValidPieceCapture', () => {
         boardState,
         currentPlayer: Color.White,
         hasMadeCapture: false,
-        selectedPiece: [fromI, fromJ]
+        selectedPiece: [fromI, fromJ],
       };
 
       expect(strategy.isValidPieceCapture(fromI, fromJ, toI, toJ, gameState)).toBe(true);
@@ -356,7 +356,7 @@ describe('isValidPieceCapture', () => {
         [0, 0, 0, 3],
         [0, 0, 0, 0],
         [0, 2, 0, 0],
-        [0, 0, 0, 0]
+        [0, 0, 0, 0],
       ];
       const boardState = createBoard(board);
 
@@ -369,7 +369,7 @@ describe('isValidPieceCapture', () => {
         boardState,
         currentPlayer: Color.White,
         hasMadeCapture: false,
-        selectedPiece: [fromI, fromJ]
+        selectedPiece: [fromI, fromJ],
       };
 
       expect(strategy.isValidPieceCapture(fromI, fromJ, toI, toJ, gameState)).toBe(true);
@@ -381,7 +381,7 @@ describe('isValidPieceCapture', () => {
       const board = [
         [0, 2, 0],
         [0, 3, 2],
-        [0, 0, 0]
+        [0, 0, 0],
       ];
       const boardState = createBoard(board);
 
@@ -394,7 +394,7 @@ describe('isValidPieceCapture', () => {
         boardState,
         currentPlayer: Color.White,
         hasMadeCapture: false,
-        selectedPiece: [fromI, fromJ]
+        selectedPiece: [fromI, fromJ],
       };
 
       expect(strategy.isValidPieceCapture(fromI, fromJ, toI, toJ, gameState)).toBe(false);
@@ -407,7 +407,7 @@ describe('isValidPieceCapture', () => {
         [0, 0, 0, 2],
         [0, 0, 0, 0],
         [0, 2, 0, 0],
-        [3, 0, 0, 0]
+        [3, 0, 0, 0],
       ];
       const boardState = createBoard(board);
 
@@ -420,7 +420,7 @@ describe('isValidPieceCapture', () => {
         boardState,
         currentPlayer: Color.White,
         hasMadeCapture: false,
-        selectedPiece: [fromI, fromJ]
+        selectedPiece: [fromI, fromJ],
       };
 
       expect(strategy.isValidPieceCapture(fromI, fromJ, toI, toJ, gameState)).toBe(false);
@@ -432,7 +432,7 @@ describe('isValidPieceCapture', () => {
       const board = [
         [0, 0, 0],
         [0, 3, 0],
-        [0, 0, 2]
+        [0, 0, 2],
       ];
       const boardState = createBoard(board);
 
@@ -445,7 +445,7 @@ describe('isValidPieceCapture', () => {
         boardState,
         currentPlayer: Color.White,
         hasMadeCapture: false,
-        selectedPiece: [fromI, fromJ]
+        selectedPiece: [fromI, fromJ],
       };
 
       expect(strategy.isValidPieceCapture(fromI, fromJ, toI, toJ, gameState)).toBe(false);
@@ -458,7 +458,7 @@ describe('isValidPieceCapture', () => {
         [0, 0, 0, 0],
         [0, 0, 0, 0],
         [0, 1, 0, 0],
-        [3, 0, 0, 0]
+        [3, 0, 0, 0],
       ];
       const boardState = createBoard(board);
 
@@ -471,7 +471,7 @@ describe('isValidPieceCapture', () => {
         boardState,
         currentPlayer: Color.White,
         hasMadeCapture: false,
-        selectedPiece: [fromI, fromJ]
+        selectedPiece: [fromI, fromJ],
       };
 
       expect(strategy.isValidPieceCapture(fromI, fromJ, toI, toJ, gameState)).toBe(false);
@@ -485,7 +485,7 @@ describe('isValidPieceCapture', () => {
         [0, 0, 0, 2, 0],
         [0, 0, 0, 0, 0],
         [0, 2, 0, 0, 0],
-        [3, 0, 0, 0, 0]
+        [3, 0, 0, 0, 0],
       ];
       const boardState = createBoard(board);
 
@@ -498,7 +498,7 @@ describe('isValidPieceCapture', () => {
         boardState,
         currentPlayer: Color.White,
         hasMadeCapture: false,
-        selectedPiece: [fromI, fromJ]
+        selectedPiece: [fromI, fromJ],
       };
 
       expect(strategy.isValidPieceCapture(fromI, fromJ, toI, toJ, gameState)).toBe(false);
@@ -512,7 +512,7 @@ describe('isValidPieceCapture', () => {
         [0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0],
-        [3, 0, 0, 0, 0]
+        [3, 0, 0, 0, 0],
       ];
       const boardState = createBoard(board);
 
@@ -525,7 +525,7 @@ describe('isValidPieceCapture', () => {
         boardState,
         currentPlayer: Color.White,
         hasMadeCapture: false,
-        selectedPiece: [fromI, fromJ]
+        selectedPiece: [fromI, fromJ],
       };
 
       expect(strategy.isValidPieceCapture(fromI, fromJ, toI, toJ, gameState)).toBe(false);
@@ -539,7 +539,7 @@ describe('isValidPieceCapture', () => {
         [0, 0, 0, 0, 0],
         [0, 0, 2, 0, 0],
         [0, 2, 0, 0, 0],
-        [3, 0, 0, 0, 0]
+        [3, 0, 0, 0, 0],
       ];
       const boardState = createBoard(board);
 
@@ -552,7 +552,7 @@ describe('isValidPieceCapture', () => {
         boardState,
         currentPlayer: Color.White,
         hasMadeCapture: false,
-        selectedPiece: [fromI, fromJ]
+        selectedPiece: [fromI, fromJ],
       };
 
       expect(strategy.isValidPieceCapture(fromI, fromJ, toI, toJ, gameState)).toBe(false);
@@ -565,7 +565,7 @@ describe('isValidPieceCapture', () => {
         [0, 0, 0, 0],
         [0, 0, 0, 0],
         [0, 2, 0, 0],
-        [3, 0, 0, 0]
+        [3, 0, 0, 0],
       ];
       const boardState = createBoard(board);
 
@@ -578,7 +578,7 @@ describe('isValidPieceCapture', () => {
         boardState,
         currentPlayer: Color.Black,
         hasMadeCapture: false,
-        selectedPiece: [fromI, fromJ]
+        selectedPiece: [fromI, fromJ],
       };
 
       expect(strategy.isValidPieceCapture(fromI, fromJ, toI, toJ, gameState)).toBe(false);
@@ -591,7 +591,7 @@ describe('isValidPieceCapture', () => {
         [0, 0, 0, 0],
         [0, 0, 0, 0],
         [0, 2, 0, 0],
-        [3, 0, 0, 0]
+        [3, 0, 0, 0],
       ];
       const boardState = createBoard(board);
 
@@ -612,14 +612,14 @@ describe('isValidPieceCapture', () => {
         [3, 3],
         [3, 1],
         [3, 2],
-        [3, 3]
+        [3, 3],
       ];
 
       const gameState: GameState = {
         boardState,
         currentPlayer: Color.White,
         hasMadeCapture: false,
-        selectedPiece: [fromI, fromJ]
+        selectedPiece: [fromI, fromJ],
       };
 
       wrongDestinations.forEach(([toI, toJ]) => {

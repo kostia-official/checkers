@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Button } from '../common/Button';
+import { Button } from '../../components/Button';
 import { MainMenuWrapper, MainMenuTitle, MainMenuButtonWrapper } from './styled';
 
 export const MainMenu: React.FC = () => {

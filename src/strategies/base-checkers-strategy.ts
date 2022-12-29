@@ -20,10 +20,12 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
         const isPieceSquare = (i + j) % 2 !== 0;
 
         let piece = null;
-        if (i < 3 && isPieceSquare) {
+        const halfSquares = Math.floor(this.squares / 2);
+
+        if (i < halfSquares - 1 && isPieceSquare) {
           piece = Color.Black;
         }
-        if (i > 4 && isPieceSquare) {
+        if (i > halfSquares && isPieceSquare) {
           piece = Color.White;
         }
         row.push({ piece, isKing: false });
@@ -39,6 +41,7 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
 
     // Check if there are any valid captures for the selected piece
     // can't move if can capture
+    // TODO: Optimise this
     const validCaptures = this.getValidCaptures(fromI, fromJ, gameState);
     if (validCaptures.length > 0) {
       return false;
@@ -105,7 +108,7 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
     const hasOwnCaptures = validCaptures.length > 0;
 
     // Capture is required over a move
-    if (!hasOwnCaptures && this.hasValidCaptureByOtherPiece(i, j, gameState)) {
+    if (!hasOwnCaptures && this.getValidCapturesByOtherPieces(i, j, gameState).length > 0) {
       return;
     }
 
@@ -138,7 +141,7 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
       }
       newGameState = {
         ...newGameState,
-        ...this.movePiece(fromI, fromJ, i, j, newGameState)
+        ...this.movePiece(fromI, fromJ, i, j, newGameState),
       };
     }
 
@@ -203,7 +206,7 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
     }
 
     // Check if the piece can become a king and update its isKing status
-    if (this.canBecomeKing(toI, newGameState)) {
+    if (this.canBecomeKing(toI, toJ, newGameState)) {
       newGameState.boardState[toI][toJ].isKing = true;
     }
 
@@ -226,7 +229,7 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
     newGameState.boardState[fromI][fromJ].piece = null;
 
     // Check if the piece can become a king and update its isKing status
-    if (this.canBecomeKing(toI, gameState)) {
+    if (this.canBecomeKing(toI, toJ, gameState)) {
       newGameState.boardState[toI][toJ].isKing = true;
     }
 
@@ -235,8 +238,9 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
     return newGameState;
   }
 
-  hasValidCaptureByOtherPiece(selectedI: number, selectedJ: number, gameState: GameState): boolean {
+  getValidCapturesByOtherPieces(selectedI: number, selectedJ: number, gameState: GameState): Coordinates[] {
     const { boardState, currentPlayer } = gameState;
+    const piecesThatCanCapture: Coordinates[] = [];
 
     for (let i = 0; i < this.squares; i++) {
       for (let j = 0; j < this.squares; j++) {
@@ -245,15 +249,15 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
         }
         const validCaptures = this.getValidCaptures(i, j, gameState);
         if (validCaptures.length > 0 && boardState[i][j].piece === currentPlayer) {
-          return true;
+          piecesThatCanCapture.push([i, j]);
         }
       }
     }
 
-    return false;
+    return piecesThatCanCapture;
   }
 
-  canBecomeKing(i: number, { currentPlayer }: GameState): boolean {
+  canBecomeKing(i: number, j: number, { currentPlayer }: GameState): boolean {
     // If the piece is white, it can become a king if it reaches the first row
     if (currentPlayer === Color.White && i === 0) {
       return true;
@@ -293,7 +297,7 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
     return validCaptures;
   }
 
-  getWinner(gameState: GameState): Color | null {
+  getWinner(gameState: GameState): Color | undefined {
     const { boardState, currentPlayer } = gameState;
 
     let whitePieces = 0;
@@ -309,10 +313,13 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
       }
     }
 
-    if (whitePieces === 0) {
+    // Can occur in edit mode
+    if (!whitePieces && !blackPieces) return;
+
+    if (!whitePieces) {
       return Color.Black;
     }
-    if (blackPieces === 0) {
+    if (!blackPieces) {
       return Color.White;
     }
 
@@ -322,10 +329,10 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
           continue;
         }
         if (this.getValidCaptures(i, j, gameState).length > 0) {
-          return null;
+          return;
         }
         if (this.getValidMoves(i, j, gameState).length > 0) {
-          return null;
+          return;
         }
       }
     }

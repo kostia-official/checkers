@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const Button = styled.button`
+export const Button = styled.button<{ active?: boolean }>`
   font-size: 16px;
   font-weight: bold;
   padding: 10px 20px;
@@ -19,4 +19,10 @@ export const Button = styled.button`
     color: #999;
     cursor: default;
   }
+
+  ${(props) =>
+    props.active &&
+    `
+    background-color: #ccc;
+  `}
 `;
