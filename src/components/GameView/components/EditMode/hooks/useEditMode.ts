@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Color, GameState } from '../../../../common/types';
+import { Color, GameState } from '../../../../../common/types';
 
 export interface HookArgs {
   gameState: GameState;

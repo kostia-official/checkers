@@ -1,20 +1,20 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Button } from '../../components/Button';
-import { MainMenuWrapper, MainMenuTitle, MainMenuButtonWrapper } from './styled';
+import { Button } from '@mantine/core';
+import { MenuTitle, MenuControlsWrapper, MenuWrapper } from '@components/Menu';
 
 export const MainMenu: React.FC = () => {
   return (
-    <MainMenuWrapper>
-      <MainMenuTitle>Select Game</MainMenuTitle>
-      <MainMenuButtonWrapper>
-        <Link to="/checkers64">
-          <Button>Checkers 64</Button>
-        </Link>
-        <Link to="/checkers100">
-          <Button>Checkers 100</Button>
-        </Link>
-      </MainMenuButtonWrapper>
-    </MainMenuWrapper>
+    <MenuWrapper>
+      <MenuTitle>Select Game</MenuTitle>
+      <MenuControlsWrapper>
+        <Button fullWidth component={Link} to="/game/new?type=draughts64">
+          Draughts 64
+        </Button>
+        <Button fullWidth component={Link} to="/game/new?type=internation">
+          Internation
+        </Button>
+      </MenuControlsWrapper>
+    </MenuWrapper>
   );
 };

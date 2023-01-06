@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const MainMenuWrapper = styled.div`
+export const MenuWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -8,12 +8,12 @@ export const MainMenuWrapper = styled.div`
   height: 100%;
 `;
 
-export const MainMenuTitle = styled.h1`
+export const MenuTitle = styled.h1`
   font-size: 2rem;
   margin-bottom: 1rem;
 `;
 
-export const MainMenuButtonWrapper = styled.div`
+export const MenuControlsWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;

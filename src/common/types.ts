@@ -1,6 +1,8 @@
+export type GameType = 'internation' | 'draughts64';
+
 export enum Color {
   Black = 'black',
-  White = 'white'
+  White = 'white',
 }
 
 export interface Square {
@@ -19,7 +21,7 @@ export interface GameState {
 
 export type GameStateHistory = Array<{
   boardState: BoardState;
-  currentPlayer: Color;
+  currentPlayerColor: Color;
 }>;
 
 export type Coordinates = [number, number];
