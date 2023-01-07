@@ -25,3 +25,10 @@ export type GameStateHistory = Array<{
 }>;
 
 export type Coordinates = [number, number];
+
+export interface Player {
+  id: string;
+  name: string;
+  color: Color;
+  isOnline: boolean;
+}

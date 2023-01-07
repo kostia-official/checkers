@@ -60,6 +60,10 @@ export class UserService {
     const userId = await this.signInAnonymously();
     if (!userId) return;
 
+    return this.get(userId);
+  }
+
+  async get(userId: string) {
     const docRef = doc(this.db, this.collection, userId).withConverter(this.userConverter);
     const docSnap = await getDoc(docRef);
 

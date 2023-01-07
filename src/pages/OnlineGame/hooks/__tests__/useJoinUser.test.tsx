@@ -7,6 +7,7 @@ import { QueryClientProvider } from 'react-query';
 import { queryClient } from '../../../../queryClient';
 import { waitFor } from '@testing-library/react';
 import { noopAsync } from '../../../../common/utils';
+import { timeout } from '@common/test-utils/timeout';
 
 const user: UserModel = { id: '1', name: 'User 1', createdAt: new Date() };
 const game: GameModel = {
@@ -42,6 +43,7 @@ describe('useJoinUser', () => {
   });
 
   it('should join the game as an invitee when invitee place is empty', async () => {
+    joinGameMock.mockImplementation(async () => await timeout(1000));
     const { result } = renderHook(() => useJoinUser({ user, game: { ...game, inviteeId: undefined } }), {
       wrapper,
     });
@@ -55,7 +57,9 @@ describe('useJoinUser', () => {
       });
     });
 
-    expect(joinGameMock).toBeCalledTimes(1);
+    await waitFor(() => {
+      expect(joinGameMock).toBeCalledTimes(1);
+    });
     expect(joinGameMock).toHaveBeenCalledWith({
       id: game.id,
       inviteeId: user.id,

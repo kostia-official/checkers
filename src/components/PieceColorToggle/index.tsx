@@ -1,7 +1,7 @@
 import React from 'react';
-import { Color } from '../../common/types';
+import { Color } from '@common/types';
 import { Center, Box, SegmentedControl } from '@mantine/core';
-import { WhitePiece, BlackPiece } from './styled';
+import { WhitePieceIcon, BlackPieceIcon } from '@components/PieceIcon';
 
 export interface PieceColorToggleProps {
   value: Color;
@@ -19,7 +19,7 @@ export const PieceColorToggle: React.FC<PieceColorToggleProps> = ({ value, onCha
           value: Color.White,
           label: (
             <Center>
-              <WhitePiece />
+              <WhitePieceIcon />
               <Box ml={10}>White</Box>
             </Center>
           ),
@@ -28,7 +28,7 @@ export const PieceColorToggle: React.FC<PieceColorToggleProps> = ({ value, onCha
           value: Color.Black,
           label: (
             <Center>
-              <BlackPiece />
+              <BlackPieceIcon />
               <Box ml={8}>Black</Box>
             </Center>
           ),

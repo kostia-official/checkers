@@ -15,6 +15,7 @@ import { toggleColor } from '@common/utils';
 import { NewUserJoinModal } from '@components/NewUserJoinModal';
 import { useJoinUser } from './hooks/useJoinUser';
 import { useWinner } from './hooks/useWinner';
+import { OnlineGameInfo } from './components/OnlineGameInfo';
 
 export const OnlineGamePreload: React.FC = () => {
   const { gameId } = useParams();
@@ -154,6 +155,7 @@ export const OnlineGame: React.FC<OnlineGameProps> = ({ game, user, gameHistory 
       handlePieceClick={handlePieceClick}
       handleUndoMove={handleUndoMove}
       handleNewGame={handleNewGame}
+      gameInfoContent={<OnlineGameInfo game={game} user={user} isSpectator={isSpectator} />}
     />
   );
 };

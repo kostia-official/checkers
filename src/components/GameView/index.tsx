@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { CheckersGameWrapper, CheckersBoard, CheckersRow, CheckersSquare, Controls, Indexes } from './styled';
+import { CheckersGameWrapper, CheckersBoard, CheckersRow, CheckersSquare, GameExtras, Indexes } from './styled';
 import { CheckerPiece } from './components/CheckersPiece';
 import { ICheckersStrategy } from '../../strategies/checkers-strategy.interface';
 import { DEBUG } from '../../common/constants';
@@ -22,6 +22,7 @@ export interface CheckersGameProps {
   handlePieceClick: (i: number, j: number) => void;
   handleUndoMove: () => void;
   handleNewGame: () => void;
+  gameInfoContent?: React.ReactNode;
 }
 
 export const GameView: React.FC<CheckersGameProps> = ({
@@ -35,6 +36,7 @@ export const GameView: React.FC<CheckersGameProps> = ({
   handleUndoMove,
   handleSquareClick,
   handlePieceClick,
+  gameInfoContent,
 }) => {
   const { boardState, selectedPiece } = gameState;
 
@@ -106,7 +108,7 @@ export const GameView: React.FC<CheckersGameProps> = ({
         })}
       </CheckersBoard>
 
-      <Controls>
+      <GameExtras>
         <Button fullWidth component={Link} to="/">
           Main Menu
         </Button>
@@ -118,7 +120,9 @@ export const GameView: React.FC<CheckersGameProps> = ({
         {DEBUG && <EditMode {...editModeState} />}
 
         {winner ? <div className="winner">{capitalize(winner)} wins!</div> : null}
-      </Controls>
+
+        {gameInfoContent}
+      </GameExtras>
     </CheckersGameWrapper>
   );
 };

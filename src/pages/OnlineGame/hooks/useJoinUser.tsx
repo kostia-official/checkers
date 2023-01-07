@@ -25,13 +25,13 @@ export const useJoinUser = ({ user, game }: HookArgs) => {
       if (isInviter || isInvitee) {
         setIsJoined(true);
       } else if (!game?.inviteeId) {
+        setIsJoined(true);
+        setIsInvitee(true);
         await joinGame({
           id: game.id,
           inviteeId: user.id,
           inviteeColor: toggleColor(game.inviterColor),
         });
-        setIsJoined(true);
-        setIsInvitee(true);
       } else if (!isInviter && !isInvitee && allPlacesFull) {
         setIsSpectator(true);
         setIsJoined(true);

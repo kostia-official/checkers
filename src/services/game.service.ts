@@ -64,12 +64,11 @@ export class GameService {
 
     const strategy = new mapGameTypeToStrategy[game.gameType]();
 
-    const created = await gameHistoryService.add({
+    await gameHistoryService.add({
       gameId: game.id,
       boardState: strategy.makeInitialBoardState(),
       currentPlayerColor: Color.White,
     });
-    console.log('created', created);
 
     return game;
   }

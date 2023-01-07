@@ -29,14 +29,13 @@ export const NewGame: React.FC = () => {
 
       if (!user && userName) {
         const createdUser = await createUser({ name: userName });
-        console.log('createdUser', createdUser);
         userId = createdUser.id;
       }
       if (!userId) return;
 
       const game = await createGame({
         inviterId: userId,
-        inviterColor: Color.White,
+        inviterColor: playerColor,
         gameType: searchParams.get('type') as GameType,
       });
 

@@ -57,7 +57,7 @@ export const CheckersSquare = styled.div<{ $isValidJumpDestination: boolean }>`
   }
 `;
 
-export const Controls = styled.div`
+export const GameExtras = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
