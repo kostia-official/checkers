@@ -4,6 +4,11 @@ export const CheckersGameWrapper = styled.div`
   display: flex;
   gap: 16px;
   align-items: flex-start;
+
+  @media (max-width: ${(p) => p.theme.breakpoints.xs}px) {
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 export const CheckersBoard = styled.div`
@@ -31,15 +36,16 @@ const validJump = css`
   }
 `;
 
-export const CheckersSquare = styled.div<{ $isValidJumpDestination: boolean }>`
+export const CheckersSquare = styled.div<{ isValidJumpDestination: boolean; rowSquaresCount: number }>`
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 80px;
-  height: 80px;
+  width: calc(95vw / ${(p) => p.rowSquaresCount});
+  height: calc(95vw / ${(p) => p.rowSquaresCount});
+  max-width: 80px;
+  max-height: 80px;
   background-color: #fff;
-  //border: 2px solid #333;
 
   &:before {
     content: '';
@@ -53,7 +59,7 @@ export const CheckersSquare = styled.div<{ $isValidJumpDestination: boolean }>`
 
   &.white {
     background-color: rgb(136, 136, 136);
-    ${(p) => p.$isValidJumpDestination && validJump}
+    ${(p) => p.isValidJumpDestination && validJump}
   }
 `;
 
@@ -64,7 +70,7 @@ export const GameExtras = styled.div`
   padding: 8px;
 
   > * {
-    min-width: 200px;
+    min-width: 220px;
   }
 `;
 

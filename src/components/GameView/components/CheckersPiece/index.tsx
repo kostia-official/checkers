@@ -1,7 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
 import { CheckerPieceInner, CheckerPieceWrapper } from './styled';
-import { Square } from '../../../../common/types';
+import { Square } from '@common/types';
 
 export interface CheckerPieceProps {
   square: Square;

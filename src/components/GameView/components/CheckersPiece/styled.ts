@@ -1,9 +1,9 @@
 import styled from 'styled-components';
-import { Color } from '../../../../common/types';
+import { Color } from '@common/types';
 
 export const CheckerPieceWrapper = styled.div`
-  width: 60px;
-  height: 60px;
+  width: 80%;
+  height: 80%;
   border-radius: 50%;
   background-color: #fff;
   border: 2px solid #333;
@@ -22,8 +22,8 @@ export const CheckerPieceWrapper = styled.div`
 `;
 
 export const CheckerPieceInner = styled.div<{ color: Color }>`
-  width: 54px;
-  height: 54px;
+  width: 95%;
+  height: 95%;
   border-radius: 50%;
   border: 2px solid #333;
 

@@ -92,7 +92,8 @@ export const GameView: React.FC<CheckersGameProps> = ({
                         handlePieceClick(playerI, playerJ);
                       }
                     }}
-                    $isValidJumpDestination={isValidJumpDestination(playerI, playerJ)}
+                    rowSquaresCount={rowLength}
+                    isValidJumpDestination={isValidJumpDestination(playerI, playerJ)}
                   >
                     {square.piece ? (
                       <CheckerPiece square={square} isSelected={getIsSelectedPiece(playerI, playerJ)} />

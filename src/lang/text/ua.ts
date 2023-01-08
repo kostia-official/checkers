@@ -23,7 +23,7 @@ export const ua: typeof en = {
       undoMove: 'Відмінити Хід',
     },
     editMode: {
-      title: 'Редагувати',
+      title: 'Редагування',
       kingPiece: 'Дамка',
       clear: 'Очистити',
       done: 'Готово',

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Menu } from '@mantine/core';
-import { Wrapper } from '@components/LangSelect/styled';
+import { Wrapper } from './styled';
 import { MenuSelectItem } from '@components/MenuSelectItem';
 import { IconChevronDown } from '@tabler/icons';
 import { Lang } from '@src/lang/i18n';

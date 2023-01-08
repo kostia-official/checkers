@@ -5,4 +5,10 @@ export const Wrapper = styled.div`
   right: 4px;
   top: 4px;
   z-index: 1000;
+
+  @media (max-width: ${(p) => p.theme.breakpoints.xs}px) {
+    right: 4px;
+    bottom: 4px;
+    top: unset;
+  }
 `;
