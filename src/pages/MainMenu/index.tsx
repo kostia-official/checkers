@@ -2,17 +2,20 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@mantine/core';
 import { MenuTitle, MenuControlsWrapper, MenuWrapper } from '@components/Menu';
+import { useTranslation } from 'react-i18next';
 
 export const MainMenu: React.FC = () => {
+  const { t } = useTranslation();
+
   return (
     <MenuWrapper>
-      <MenuTitle>Select Game</MenuTitle>
+      <MenuTitle>{t('mainMenu.title')}</MenuTitle>
       <MenuControlsWrapper>
         <Button fullWidth component={Link} to="/game/new?type=draughts64">
-          Draughts 64
+          {t('gameTypes.draughts64')}
         </Button>
         <Button fullWidth component={Link} to="/game/new?type=internation">
-          Internation
+          {t('gameTypes.international')}
         </Button>
       </MenuControlsWrapper>
     </MenuWrapper>

@@ -7,6 +7,7 @@ import { userService } from '@services/user.service';
 import { Player, Color } from '@common/types';
 import { PlayerInfo } from '@pages/OnlineGame/components/OnlineGameInfo/components/Player';
 import { toggleColor } from '@common/utils';
+import { useTranslation } from 'react-i18next';
 
 export const Wrapper = styled.div`
   display: flex;
@@ -23,6 +24,8 @@ export interface OnlineGameInfoProps {
 type Players = Record<Color, Player | undefined>;
 
 export const OnlineGameInfo: React.FC<OnlineGameInfoProps> = ({ game, user, isSpectator }) => {
+  const { t } = useTranslation();
+
   const { data: inviter } = useQuery(['user', game.inviterId], () => userService.get(game.inviterId!), {
     enabled: !!game.inviterId,
     initialData: game.inviterId === user.id ? user : undefined,
@@ -59,7 +62,7 @@ export const OnlineGameInfo: React.FC<OnlineGameInfoProps> = ({ game, user, isSp
       <PlayerInfo color={Color.White} player={players.white} />
       <PlayerInfo color={Color.Black} player={players.black} />
 
-      {isSpectator && <Text>You are a spectator</Text>}
+      {isSpectator && <Text>{t('players.spectatorLabel')}</Text>}
     </Wrapper>
   );
 };

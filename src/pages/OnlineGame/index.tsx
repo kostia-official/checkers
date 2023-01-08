@@ -4,7 +4,7 @@ import { gameService } from '@services/game.service';
 import { useParams } from 'react-router-dom';
 import { CenteredLoader } from '@components/CenteredLoader';
 import { mapGameTypeToStrategy } from '@common/mappers';
-import { Coordinates, GameState } from '@common/types';
+import { Coordinates, GameState, Color } from '@common/types';
 import { useEditMode } from '@components/GameView/components/EditMode/hooks/useEditMode';
 import { GameView } from '@components/GameView';
 import { GameModel, UserModel, GameHistoryModel } from '@services/types';
@@ -16,6 +16,7 @@ import { NewUserJoinModal } from '@components/NewUserJoinModal';
 import { useJoinUser } from './hooks/useJoinUser';
 import { useWinner } from './hooks/useWinner';
 import { OnlineGameInfo } from './components/OnlineGameInfo';
+import { useTranslation } from 'react-i18next';
 
 export const OnlineGamePreload: React.FC = () => {
   const { gameId } = useParams();
@@ -68,8 +69,9 @@ export interface OnlineGameProps {
 }
 
 export const OnlineGame: React.FC<OnlineGameProps> = ({ game, user, gameHistory }) => {
-  const { mutateAsync: removeGameHistory } = useMutation((id: string) => gameHistoryService.remove(id));
+  const { t } = useTranslation();
 
+  const { mutateAsync: removeGameHistory } = useMutation((id: string) => gameHistoryService.remove(id));
   const { isSpectator } = useJoinUser({ game, user });
 
   const lastGameState = gameHistory[gameHistory.length - 1];
@@ -141,6 +143,12 @@ export const OnlineGame: React.FC<OnlineGameProps> = ({ game, user, gameHistory 
 
   const handleNewGame = () => {};
 
+  const winnerLabel = useMemo(() => {
+    if (!winnerColor) return;
+
+    return winnerColor === Color.White ? t('winner.white') : t('winner.black');
+  }, [t, winnerColor]);
+
   if (!lastGameState) return <CenteredLoader />;
 
   return (
@@ -149,7 +157,7 @@ export const OnlineGame: React.FC<OnlineGameProps> = ({ game, user, gameHistory 
       gameState={gameState}
       gameStateHistory={gameHistory}
       playerColor={ownColor}
-      winner={winnerColor}
+      winnerLabel={winnerLabel}
       editModeState={editModeState}
       handleSquareClick={handleSquareClick}
       handlePieceClick={handlePieceClick}

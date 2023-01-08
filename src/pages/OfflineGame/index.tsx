@@ -1,15 +1,17 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { BoardState, Color, Coordinates, GameState, GameStateHistory } from '@common/types';
 import { ICheckersStrategy } from '@strategies/checkers-strategy.interface';
 import { useEditMode } from '@components/GameView/components/EditMode/hooks/useEditMode';
 import { GameView } from '@components/GameView';
+import { useTranslation } from 'react-i18next';
 
 export interface CheckersGameProps {
   strategy: ICheckersStrategy;
 }
 
 export const CheckersGame: React.FC<CheckersGameProps> = ({ strategy }) => {
-  // Set up state variables for the game
+  const { t } = useTranslation();
+
   const [boardState, setBoardState] = useState<BoardState>(strategy.makeInitialBoardState());
   const [currentPlayer, setCurrentPlayer] = useState<Color>(Color.White);
   const [gameStateHistory, setGameStateHistory] = useState<GameStateHistory>([
@@ -78,13 +80,19 @@ export const CheckersGame: React.FC<CheckersGameProps> = ({ strategy }) => {
     }
   }, [getGameState, strategy, editModeState.isEditMode]);
 
+  const winnerLabel = useMemo(() => {
+    if (!winner) return;
+
+    return winner === Color.White ? t('winner.white') : t('winner.black');
+  }, [t, winner]);
+
   return (
     <GameView
       strategy={strategy}
       gameState={getGameState()}
       gameStateHistory={gameStateHistory}
       playerColor={Color.White}
-      winner={winner}
+      winnerLabel={winnerLabel}
       editModeState={editModeState}
       handleSquareClick={handleSquareClick}
       handlePieceClick={handlePieceClick}

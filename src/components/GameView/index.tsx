@@ -2,21 +2,21 @@ import React from 'react';
 
 import { CheckersGameWrapper, CheckersBoard, CheckersRow, CheckersSquare, GameExtras, Indexes } from './styled';
 import { CheckerPiece } from './components/CheckersPiece';
-import { ICheckersStrategy } from '../../strategies/checkers-strategy.interface';
-import { DEBUG } from '../../common/constants';
-import { capitalize } from '../../common/utils';
+import { ICheckersStrategy } from '@strategies/checkers-strategy.interface';
+import { DEBUG } from '@common/constants';
 import { Button } from '@mantine/core';
 import { Link } from 'react-router-dom';
 import { EditMode } from './components/EditMode';
-import { GameState, Color, GameStateHistory } from '../../common/types';
+import { GameState, Color, GameStateHistory } from '@common/types';
 import { EditModeState } from './components/EditMode/hooks/useEditMode';
+import { useTranslation } from 'react-i18next';
 
 export interface CheckersGameProps {
   strategy: ICheckersStrategy;
   gameState: GameState;
   gameStateHistory: GameStateHistory;
   playerColor: Color;
-  winner: Color | undefined;
+  winnerLabel: string | undefined;
   editModeState: EditModeState;
   handleSquareClick: (i: number, j: number) => void;
   handlePieceClick: (i: number, j: number) => void;
@@ -30,7 +30,7 @@ export const GameView: React.FC<CheckersGameProps> = ({
   gameState,
   gameStateHistory,
   playerColor,
-  winner,
+  winnerLabel,
   editModeState,
   handleNewGame,
   handleUndoMove,
@@ -38,6 +38,8 @@ export const GameView: React.FC<CheckersGameProps> = ({
   handlePieceClick,
   gameInfoContent,
 }) => {
+  const { t } = useTranslation();
+
   const { boardState, selectedPiece } = gameState;
 
   const getSquareColor = (i: number, j: number) => {
@@ -110,16 +112,20 @@ export const GameView: React.FC<CheckersGameProps> = ({
 
       <GameExtras>
         <Button fullWidth component={Link} to="/">
-          Main Menu
+          {t('gameMenu.mainMenu')}
         </Button>
-        <Button onClick={handleNewGame}>New Game</Button>
+        <Button onClick={handleNewGame}> {t('gameMenu.newGame')}</Button>
         <Button onClick={handleUndoMove} disabled={gameStateHistory.length === 1}>
-          Undo Move
+          {t('gameMenu.undoMove')}
         </Button>
 
         {DEBUG && <EditMode {...editModeState} />}
 
-        {winner ? <div className="winner">{capitalize(winner)} wins!</div> : null}
+        {winnerLabel ? (
+          <div className="winner">
+            {winnerLabel} {t('winner.winsLabel')}
+          </div>
+        ) : null}
 
         {gameInfoContent}
       </GameExtras>

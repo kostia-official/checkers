@@ -2,6 +2,7 @@ import React from 'react';
 import { Color } from '@common/types';
 import { Center, Box, SegmentedControl } from '@mantine/core';
 import { WhitePieceIcon, BlackPieceIcon } from '@components/PieceIcon';
+import { useTranslation } from 'react-i18next';
 
 export interface PieceColorToggleProps {
   value: Color;
@@ -9,6 +10,8 @@ export interface PieceColorToggleProps {
 }
 
 export const PieceColorToggle: React.FC<PieceColorToggleProps> = ({ value, onChange }) => {
+  const { t } = useTranslation();
+
   return (
     <SegmentedControl
       style={{ width: '100%' }}
@@ -20,7 +23,7 @@ export const PieceColorToggle: React.FC<PieceColorToggleProps> = ({ value, onCha
           label: (
             <Center>
               <WhitePieceIcon />
-              <Box ml={10}>White</Box>
+              <Box ml={10}>{t('piecesColors.white')}</Box>
             </Center>
           ),
         },
@@ -29,7 +32,7 @@ export const PieceColorToggle: React.FC<PieceColorToggleProps> = ({ value, onCha
           label: (
             <Center>
               <BlackPieceIcon />
-              <Box ml={8}>Black</Box>
+              <Box ml={8}>{t('piecesColors.black')}</Box>
             </Center>
           ),
         },

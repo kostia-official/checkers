@@ -9,6 +9,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { CreateUserInput, CreateGameInput } from '@services/types';
 import { CenteredLoader } from '@components/CenteredLoader';
 import { PieceColorToggle } from '@components/PieceColorToggle';
+import { useTranslation } from 'react-i18next';
 
 export const NewGame: React.FC = () => {
   const { data: user, isLoading: isUserLoading } = useQuery('currentUser', () => userService.getCurrent());
@@ -18,6 +19,7 @@ export const NewGame: React.FC = () => {
   const [playerColor, setPlayerColor] = useState<Color>(Color.White);
   const [loading, setLoading] = useState(false);
 
+  const { t } = useTranslation();
   const navigate = useNavigate();
   let [searchParams] = useSearchParams();
 
@@ -49,19 +51,26 @@ export const NewGame: React.FC = () => {
 
   return (
     <MenuWrapper>
-      <MenuTitle>New Game Settings</MenuTitle>
+      <MenuTitle>{t('newGame.title')}</MenuTitle>
 
       <MenuControlsWrapper>
         {user ? (
-          <Text>Your name: {user.name}</Text>
+          <Text>
+            {t('userForm.name')}: {user.name}
+          </Text>
         ) : (
-          <TextInput value={userName} required onChange={(e) => setUserName(e.target.value)} placeholder="Your name" />
+          <TextInput
+            value={userName}
+            required
+            onChange={(e) => setUserName(e.target.value)}
+            placeholder={t('userForm.name')}
+          />
         )}
 
         <PieceColorToggle value={playerColor} onChange={setPlayerColor} />
 
         <Button onClick={startGame} loading={loading}>
-          Start Game
+          {t('newGame.startGame')}
         </Button>
       </MenuControlsWrapper>
     </MenuWrapper>

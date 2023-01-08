@@ -4,6 +4,7 @@ import { Text } from '@mantine/core';
 export const EditModeControls = styled.div`
   display: flex;
   justify-content: space-evenly;
+  gap: 8px;
   width: 100%;
 `;
 
