@@ -6,17 +6,20 @@ import { useTranslation } from 'react-i18next';
 
 export interface PlayerInfoProps {
   color: Color;
+  currentPlayerColor: Color;
   player?: Player;
 }
 
-export const PlayerInfo: React.FC<PlayerInfoProps> = ({ player, color }) => {
+export const PlayerInfo: React.FC<PlayerInfoProps> = ({ player, color, currentPlayerColor }) => {
   const { t } = useTranslation();
 
   const PieceIcon = color === Color.White ? WhitePieceIcon : BlackPieceIcon;
+  const isCurrentPlayer = color === currentPlayerColor;
 
   return (
     <Flex gap="xs" align="center">
-      <PieceIcon /> {player?.name ? player.name : <Text color="grey">{t('players.waiting')}</Text>}
+      <PieceIcon highlighted={isCurrentPlayer} />{' '}
+      {player?.name ? player.name : <Text color="grey">{t('players.waiting')}</Text>}
     </Flex>
   );
 };

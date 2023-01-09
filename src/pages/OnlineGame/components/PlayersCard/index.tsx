@@ -13,11 +13,12 @@ export interface PlayersCardProps {
   game: GameModel;
   user: UserModel;
   isSpectator: boolean;
+  currentPlayerColor: Color;
 }
 
 type Players = Record<Color, Player | undefined>;
 
-export const PlayersCard: React.FC<PlayersCardProps> = ({ game, user, isSpectator }) => {
+export const PlayersCard: React.FC<PlayersCardProps> = ({ game, user, isSpectator, currentPlayerColor }) => {
   const { t } = useTranslation();
 
   const { data: inviter } = useQuery(['user', game.inviterId], () => userService.get(game.inviterId!), {
@@ -54,8 +55,8 @@ export const PlayersCard: React.FC<PlayersCardProps> = ({ game, user, isSpectato
   return (
     <Box my="8px">
       <SimpleCard title={t('players.title')}>
-        <PlayerInfo color={Color.White} player={players.white} />
-        <PlayerInfo color={Color.Black} player={players.black} />
+        <PlayerInfo color={Color.White} player={players.white} currentPlayerColor={currentPlayerColor} />
+        <PlayerInfo color={Color.Black} player={players.black} currentPlayerColor={currentPlayerColor} />
 
         {isSpectator && <Text>{t('players.spectatorLabel')}</Text>}
       </SimpleCard>

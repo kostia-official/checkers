@@ -1,10 +1,10 @@
-import { MainMenu } from './pages/MainMenu';
-import { CheckersGame } from './pages/OfflineGame';
+import { MainMenu } from '@pages/MainMenu';
+import { OfflineGame } from '@pages/OfflineGame';
 import { createBrowserRouter } from 'react-router-dom';
-import { Checkers64Strategy } from './strategies/checkers64-strategy';
-import { Checkers100Strategy } from './strategies/checkers100-strategy';
-import { NewGame } from './pages/NewGame';
-import { OnlineGamePreload } from './pages/OnlineGame';
+import { Checkers64Strategy } from '@strategies/checkers64-strategy';
+import { Checkers100Strategy } from '@strategies/checkers100-strategy';
+import { NewGame } from '@pages/NewGame';
+import { OnlineGamePreload } from '@pages/OnlineGame';
 
 export const routes = [
   {
@@ -20,12 +20,12 @@ export const routes = [
     element: <OnlineGamePreload />,
   },
   {
-    path: '/draughts64',
-    element: <CheckersGame strategy={new Checkers64Strategy()} />,
+    path: '/game/offline/draughts64',
+    element: <OfflineGame strategy={new Checkers64Strategy()} />,
   },
   {
-    path: '/internation',
-    element: <CheckersGame strategy={new Checkers100Strategy()} />,
+    path: '/game/offline/internation',
+    element: <OfflineGame strategy={new Checkers100Strategy()} />,
   },
 ];
 

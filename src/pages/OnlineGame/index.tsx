@@ -163,7 +163,9 @@ export const OnlineGame: React.FC<OnlineGameProps> = ({ game, user, gameHistory 
       handlePieceClick={handlePieceClick}
       handleUndoMove={handleUndoMove}
       handleNewGame={handleNewGame}
-      gameInfoContent={<PlayersCard game={game} user={user} isSpectator={isSpectator} />}
+      gameInfoContent={
+        <PlayersCard game={game} user={user} isSpectator={isSpectator} currentPlayerColor={currentPlayerColor} />
+      }
     />
   );
 };

@@ -16,6 +16,7 @@ export const ua: typeof en = {
     newGame: {
       title: 'Налаштування Гри',
       startGame: 'Почати Гру',
+      offline: 'Сам з собою',
     },
     gameMenu: {
       mainMenu: 'Головне Меню',

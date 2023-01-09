@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { Color } from '@common/types';
+import { colors } from '@common/colors';
 
 export const CheckerPieceWrapper = styled.div`
   width: 80%;
@@ -17,7 +18,7 @@ export const CheckerPieceWrapper = styled.div`
   }
 
   &.selected {
-    border-color: #c5b257;
+    border-color: ${colors.gold.pale};
   }
 `;
 

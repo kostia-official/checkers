@@ -9,7 +9,7 @@ export interface CheckersGameProps {
   strategy: ICheckersStrategy;
 }
 
-export const CheckersGame: React.FC<CheckersGameProps> = ({ strategy }) => {
+export const OfflineGame: React.FC<CheckersGameProps> = ({ strategy }) => {
   const { t } = useTranslation();
 
   const [boardState, setBoardState] = useState<BoardState>(strategy.makeInitialBoardState());
@@ -91,7 +91,7 @@ export const CheckersGame: React.FC<CheckersGameProps> = ({ strategy }) => {
       strategy={strategy}
       gameState={getGameState()}
       gameStateHistory={gameStateHistory}
-      playerColor={Color.White}
+      playerColor={currentPlayer}
       winnerLabel={winnerLabel}
       editModeState={editModeState}
       handleSquareClick={handleSquareClick}

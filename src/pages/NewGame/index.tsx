@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, TextInput, Text } from '@mantine/core';
+import { Button, TextInput, Text, Switch } from '@mantine/core';
 import { MenuTitle, MenuControlsWrapper, MenuWrapper } from '@components/Menu';
 import { useQuery, useMutation } from 'react-query';
 import { userService } from '@services/user.service';
@@ -18,10 +18,13 @@ export const NewGame: React.FC = () => {
   const [userName, setUserName] = useState<string | undefined>();
   const [playerColor, setPlayerColor] = useState<Color>(Color.White);
   const [loading, setLoading] = useState(false);
+  const [isOffline, setIsOffline] = useState(false);
 
   const { t } = useTranslation();
   const navigate = useNavigate();
   let [searchParams] = useSearchParams();
+
+  const gameType = searchParams.get('type') as GameType;
 
   const startGame = async () => {
     setLoading(true);
@@ -35,10 +38,15 @@ export const NewGame: React.FC = () => {
       }
       if (!userId) return;
 
+      if (isOffline) {
+        navigate(`/game/offline/${gameType}`);
+        return;
+      }
+
       const game = await createGame({
         inviterId: userId,
         inviterColor: playerColor,
-        gameType: searchParams.get('type') as GameType,
+        gameType,
       });
 
       navigate(`/game/${game.id}`);
@@ -68,6 +76,7 @@ export const NewGame: React.FC = () => {
         )}
 
         <PieceColorToggle value={playerColor} onChange={setPlayerColor} />
+        <Switch label={t('newGame.offline')} checked={isOffline} onChange={(e) => setIsOffline(e.target.checked)} />
 
         <Button onClick={startGame} loading={loading}>
           {t('newGame.startGame')}

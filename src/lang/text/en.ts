@@ -14,6 +14,7 @@ export const en = {
     newGame: {
       title: 'New Game Settings',
       startGame: 'Start Game',
+      offline: 'Offline',
     },
     gameMenu: {
       mainMenu: 'Main Menu',
