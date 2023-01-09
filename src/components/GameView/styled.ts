@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components';
+import { colors } from '@common/colors';
 
 export const CheckersGameWrapper = styled.div`
   display: flex;
@@ -32,7 +33,7 @@ const validJump = css`
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background-color: gold;
+    background-color: ${colors.gold.main};
   }
 `;
 
@@ -45,7 +46,7 @@ export const CheckersSquare = styled.div<{ isValidJumpDestination: boolean; rowS
   height: calc(95vw / ${(p) => p.rowSquaresCount});
   max-width: 80px;
   max-height: 80px;
-  background-color: #fff;
+  background-color: white;
 
   &:before {
     content: '';
@@ -54,11 +55,11 @@ export const CheckersSquare = styled.div<{ isValidJumpDestination: boolean; rowS
     left: 0;
     right: 0;
     bottom: 0;
-    border: 1px solid #333;
+    border: 1px solid ${colors.black.dark};
   }
 
   &.white {
-    background-color: rgb(136, 136, 136);
+    background-color: ${colors.grey.main};
     ${(p) => p.isValidJumpDestination && validJump}
   }
 `;

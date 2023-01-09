@@ -2,6 +2,47 @@
   "name": "checkers",
   "version": "0.1.0",
   "private": true,
+  "scripts": {
+    "start": "PORT=3333 craco start",
+    "build": "craco build",
+    "test": "craco test --forceExit --watchAll=false",
+    "prepare": "husky install"
+  },
+  "lint-staged": {
+    "**/*.ts?(x)": [
+      "npx prettier --write",
+      "eslint --fix --max-warnings=0"
+    ]
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ],
+    "rules": {
+      "no-console": [
+        "warn",
+        {
+          "allow": [
+            "info",
+            "error"
+          ]
+        }
+      ]
+    }
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
   "dependencies": {
     "@emotion/react": "^11.10.5",
     "@firebase/rules-unit-testing": "^2.0.5",
@@ -33,35 +74,14 @@
     "typescript": "^4.4.2",
     "web-vitals": "^2.1.0"
   },
-  "scripts": {
-    "start": "PORT=3333 craco start",
-    "build": "craco build",
-    "test": "craco test --forceExit --watchAll=false"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
   "devDependencies": {
     "@craco/craco": "^7.0.0",
     "@testing-library/react-hooks": "^8.0.1",
     "@types/lodash.clonedeep": "^4.5.7",
     "@types/lodash.isequal": "^4.5.6",
     "@types/styled-components": "^5.1.26",
+    "husky": "^8.0.0",
+    "lint-staged": "^13.1.0",
     "ts-jest": "^29.0.3"
   }
 }

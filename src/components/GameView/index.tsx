@@ -66,7 +66,6 @@ export const GameView: React.FC<CheckersGameProps> = ({
     return validMoves.some(([x, y]) => x === i && y === j) || validCaptures.some(([x, y]) => x === i && y === j);
   };
 
-  console.log('playerColor', playerColor);
   const shouldReverse = playerColor === 'black';
   const playerBoardState = shouldReverse ? [...boardState].reverse() : boardState;
 

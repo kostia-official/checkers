@@ -2,9 +2,9 @@
  * @jest-environment node
  */
 
-import { CreateGameInput, GameModel, UpdateGameInput } from '../types';
+import { CreateGameInput, UpdateGameInput } from '../types';
 import { gameService } from '../game.service';
-import { Color } from '../../common/types';
+import { Color } from '@common/types';
 import 'firebase/firestore';
 import { assertSucceeds } from '@firebase/rules-unit-testing';
 
@@ -21,7 +21,11 @@ describe('Game', () => {
   });
 
   it('should update a game and return it', async () => {
-    const createdGame = await gameService.create({ gameType: 'draughts64', inviterId: '123', inviterColor: Color.White });
+    const createdGame = await gameService.create({
+      gameType: 'draughts64',
+      inviterId: '123',
+      inviterColor: Color.White,
+    });
 
     const input = {
       winnerId: '123',

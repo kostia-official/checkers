@@ -8,8 +8,20 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
   abstract isValidMoveByKing(fromI: number, fromJ: number, toI: number, toJ: number, gameState: GameState): boolean;
   abstract isValidMoveByRegular(fromI: number, fromJ: number, toI: number, toJ: number, gameState: GameState): boolean;
 
-  abstract isValidPieceCaptureByKing(fromI: number, fromJ: number, toI: number, toJ: number, gameState: GameState): boolean;
-  abstract isValidPieceCaptureByRegular(fromI: number, fromJ: number, toI: number, toJ: number, gameState: GameState): boolean;
+  abstract isValidPieceCaptureByKing(
+    fromI: number,
+    fromJ: number,
+    toI: number,
+    toJ: number,
+    gameState: GameState
+  ): boolean;
+  abstract isValidPieceCaptureByRegular(
+    fromI: number,
+    fromJ: number,
+    toI: number,
+    toJ: number,
+    gameState: GameState
+  ): boolean;
 
   makeInitialBoardState() {
     const initialBoardState: BoardState = [];
@@ -39,14 +51,6 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
   isValidMove(fromI: number, fromJ: number, toI: number, toJ: number, gameState: GameState): boolean {
     const { boardState, currentPlayer } = gameState;
 
-    // Check if there are any valid captures for the selected piece
-    // can't move if can capture
-    // TODO: Optimise this
-    const validCaptures = this.getValidCaptures(fromI, fromJ, gameState);
-    if (validCaptures.length > 0) {
-      return false;
-    }
-
     // Check if the piece being moved is the current player's piece
     const piece = boardState[fromI][fromJ].piece;
     if (piece !== currentPlayer) {
@@ -55,6 +59,13 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
 
     // Check if the destination square is empty
     if (boardState[toI]?.[toJ]?.piece !== null) {
+      return false;
+    }
+
+    // Check if there are any valid captures for the selected piece
+    // can't move if can capture
+    const validCaptures = this.getValidCaptures(fromI, fromJ, gameState);
+    if (validCaptures.length > 0) {
       return false;
     }
 
@@ -108,7 +119,7 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
     const hasOwnCaptures = validCaptures.length > 0;
 
     // Capture is required over a move
-    if (!hasOwnCaptures && this.getValidCapturesByOtherPieces(i, j, gameState).length > 0) {
+    if (!hasOwnCaptures && this.getOtherPiecesWithValidCaptures(i, j, gameState).length > 0) {
       return;
     }
 
@@ -238,7 +249,7 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
     return newGameState;
   }
 
-  getValidCapturesByOtherPieces(selectedI: number, selectedJ: number, gameState: GameState): Coordinates[] {
+  getOtherPiecesWithValidCaptures(selectedI: number, selectedJ: number, gameState: GameState): Coordinates[] {
     const { boardState, currentPlayer } = gameState;
     const piecesThatCanCapture: Coordinates[] = [];
 

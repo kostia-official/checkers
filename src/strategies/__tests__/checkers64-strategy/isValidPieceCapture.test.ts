@@ -3,12 +3,6 @@ import { createBoard } from '../../../common/test-utils/board';
 import { Color, GameState } from '../../../common/types';
 
 describe('isValidPieceCapture', () => {
-  let strategy: Checkers64Strategy;
-
-  beforeEach(() => {
-    strategy = new Checkers64Strategy();
-  });
-
   describe('capture by a regular piece', () => {
     it('should return true for a valid piece capture forward', () => {
       const strategy = new Checkers64Strategy();

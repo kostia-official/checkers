@@ -11,9 +11,10 @@ export class Checkers100Strategy extends Checkers64Strategy {
     if (!selectedPiece) return;
 
     // Check if the clicked piece has the most captures
-    const clickedPieceCaptures = this.getAmountCanBeCaptured(i, j, gameState);
-    for (const [otherI, otherJ] of this.getValidCapturesByOtherPieces(i, j, gameState)) {
-      const otherCaptures = this.getAmountCanBeCaptured(otherI, otherJ, gameState);
+    const clickedPieceCaptures = this.getMostAmountCanBeCaptured(i, j, gameState);
+
+    for (const [otherI, otherJ] of this.getOtherPiecesWithValidCaptures(i, j, gameState)) {
+      const otherCaptures = this.getMostAmountCanBeCaptured(otherI, otherJ, gameState);
       if (otherCaptures > clickedPieceCaptures) {
         // The clicked piece does not have the most captures, so it cannot be selected
         return;
@@ -23,7 +24,7 @@ export class Checkers100Strategy extends Checkers64Strategy {
     return selectedPiece;
   }
 
-  getAmountCanBeCaptured(fromI: number, fromJ: number, gameState: GameState): number {
+  getMostAmountCanBeCaptured(fromI: number, fromJ: number, gameState: GameState): number {
     let amount = 0;
 
     // Clone the game state to avoid mutating the original
@@ -37,7 +38,7 @@ export class Checkers100Strategy extends Checkers64Strategy {
       // Check if the capture is valid
       if (this.isValidPieceCaptureByRegular(fromI, fromJ, toI, toJ, clonedGameState)) {
         // Increment the amount of captured pieces
-        amount++;
+        let captures = 1;
 
         // Remove the captured piece from the board
         clonedGameState.boardState[(fromI + toI) / 2][(fromJ + toJ) / 2].piece = null;
@@ -50,7 +51,12 @@ export class Checkers100Strategy extends Checkers64Strategy {
 
         // If there are more valid captures, continue the loop
         if (nextValidCaptures.length > 0) {
-          amount += this.getAmountCanBeCaptured(toI, toJ, clonedGameState);
+          captures += this.getMostAmountCanBeCaptured(toI, toJ, clonedGameState);
+        }
+
+        // Update the amount of pieces captured if the current path captures more pieces than the previous paths
+        if (captures > amount) {
+          amount = captures;
         }
       }
     }

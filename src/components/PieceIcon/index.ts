@@ -9,7 +9,7 @@ export const BlackPieceIcon = styled.div<PieceIconProps>`
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  border: 2px solid ${(p) => (p.highlighted ? colors.gold.pale : 'grey')};
+  border: 2px solid ${(p) => (p.highlighted ? colors.gold.pale : colors.grey.main)};
   background-color: black;
 `;
 
@@ -18,5 +18,5 @@ export const WhitePieceIcon = styled.div<PieceIconProps>`
   height: 20px;
   border-radius: 50%;
   border: 2px solid ${(p) => (p.highlighted ? colors.gold.pale : 'black')};
-  background-color: wheat;
+  background-color: ${colors.beige.main};
 `;
