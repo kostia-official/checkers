@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { CheckersGameWrapper, CheckersBoard, CheckersRow, CheckersSquare, GameExtras, Indexes } from './styled';
+import { CheckersGameWrapper, CheckersBoard, CheckersRow, CheckersSquare, GameExtras, SquareNotation } from './styled';
 import { CheckerPiece } from './components/CheckersPiece';
 import { ICheckersStrategy } from '@strategies/checkers-strategy.interface';
 import { DEBUG } from '@common/constants';
@@ -20,9 +20,11 @@ export interface CheckersGameProps {
   editModeState: EditModeState;
   handleSquareClick: (i: number, j: number) => void;
   handlePieceClick: (i: number, j: number) => void;
-  handleUndoMove: () => void;
+  onUndoMoveClick: () => void;
+  undoMoveLoading?: boolean;
   handleNewGame: () => void;
   gameInfoContent?: React.ReactNode;
+  isOnline?: boolean;
 }
 
 export const GameView: React.FC<CheckersGameProps> = ({
@@ -33,10 +35,12 @@ export const GameView: React.FC<CheckersGameProps> = ({
   winnerLabel,
   editModeState,
   handleNewGame,
-  handleUndoMove,
+  onUndoMoveClick,
+  undoMoveLoading,
   handleSquareClick,
   handlePieceClick,
   gameInfoContent,
+  isOnline,
 }) => {
   const { t } = useTranslation();
 
@@ -76,10 +80,13 @@ export const GameView: React.FC<CheckersGameProps> = ({
           const rowLength = row.length;
           const playerI = shouldReverse ? rowLength - 1 - i : i;
           const playerRow = shouldReverse ? [...row].reverse() : row;
+
           return (
             <CheckersRow key={playerI}>
               {playerRow.map((square, j) => {
                 const playerJ = shouldReverse ? rowLength - 1 - j : j;
+                const squareNotation = strategy.getSquareNotation(playerI, playerJ);
+
                 return (
                   <CheckersSquare
                     className={getSquareColor(playerI, playerJ)}
@@ -98,11 +105,7 @@ export const GameView: React.FC<CheckersGameProps> = ({
                     {square.piece ? (
                       <CheckerPiece square={square} isSelected={getIsSelectedPiece(playerI, playerJ)} />
                     ) : null}
-                    {DEBUG && (
-                      <Indexes>
-                        {playerI}, {playerJ}
-                      </Indexes>
-                    )}
+                    {DEBUG && <SquareNotation>{squareNotation}</SquareNotation>}
                   </CheckersSquare>
                 );
               })}
@@ -115,8 +118,8 @@ export const GameView: React.FC<CheckersGameProps> = ({
         <Button fullWidth component={Link} to="/">
           {t('gameMenu.mainMenu')}
         </Button>
-        <Button onClick={handleNewGame}> {t('gameMenu.newGame')}</Button>
-        <Button onClick={handleUndoMove} disabled={gameStateHistory.length === 1}>
+        {!isOnline && <Button onClick={handleNewGame}> {t('gameMenu.newGame')}</Button>}
+        <Button onClick={onUndoMoveClick} disabled={gameStateHistory.length === 1} loading={undoMoveLoading}>
           {t('gameMenu.undoMove')}
         </Button>
 

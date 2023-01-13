@@ -3,11 +3,18 @@ import { Color } from '@common/types';
 import { colors } from '@common/colors';
 
 export const CheckerPieceWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+
   width: 80%;
   height: 80%;
   border-radius: 50%;
   background-color: white;
   border: 2px solid ${colors.black.dark};
+
+  &.pendingCapture {
+    opacity: 0.3;
+  }
 
   &.white {
     background-color: ${colors.beige.dark};

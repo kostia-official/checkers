@@ -27,8 +27,8 @@ export const NewUserJoinModal: React.FC<NewUserJoinModalProps> = ({ noUser, game
 
     const user = await createUser({ name: userName });
 
-    setIsShowModal(false);
     queryClient.setQueryData('currentUser', user);
+    setIsShowModal(false);
   };
 
   useEffect(() => {

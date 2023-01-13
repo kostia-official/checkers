@@ -57,11 +57,11 @@ export class GameHistoryService {
     const q = query(docsRef, where('gameId', '==', gameId), orderBy('createdAt'));
 
     return onSnapshot(q, (querySnapshot) => {
-      const cities: GameHistoryModel[] = [];
+      const items: GameHistoryModel[] = [];
       querySnapshot.forEach((doc) => {
-        cities.push(doc.data());
+        items.push(doc.data());
       });
-      cb(cities);
+      cb(items);
     });
   }
 

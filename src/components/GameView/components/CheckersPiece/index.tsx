@@ -12,7 +12,9 @@ export const CheckerPiece: React.FC<CheckerPieceProps> = ({ square, isSelected }
   if (!square.piece) return null;
 
   return (
-    <CheckerPieceWrapper className={clsx(square.piece, { selected: isSelected })}>
+    <CheckerPieceWrapper
+      className={clsx(square.piece, { selected: isSelected, pendingCapture: square.pendingCapture })}
+    >
       <CheckerPieceInner className={clsx({ king: square.isKing })} color={square.piece} />
     </CheckerPieceWrapper>
   );

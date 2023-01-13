@@ -40,6 +40,11 @@ export class UserService {
     },
   };
 
+  async getCurrentUserId() {
+    const id = this.auth.currentUser?.uid;
+    return id || (await this.signInAnonymously());
+  }
+
   async signInAnonymously(): Promise<string | undefined> {
     const credential = await signInAnonymously(this.auth);
     return credential.user.uid;

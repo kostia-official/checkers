@@ -1,8 +1,15 @@
-import { Color, GameState } from '../common/types';
+import { Color, GameState } from '@common/types';
 import { BaseCheckersStrategy } from './base-checkers-strategy';
 
 export class Checkers64Strategy extends BaseCheckersStrategy {
   squares = 8;
+
+  private rowsNotation = Array.from({ length: 8 }, (_, i) => (this.squares - i).toString());
+  private columnsNotation = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+
+  getSquareNotation(i: number, j: number) {
+    return `${this.columnsNotation[j]}${this.rowsNotation[i]}`;
+  }
 
   isValidPieceCaptureByKing(fromI: number, fromJ: number, toI: number, toJ: number, gameState: GameState) {
     // Check if the move is diagonal and the distance is 2 or more
@@ -18,11 +25,17 @@ export class Checkers64Strategy extends BaseCheckersStrategy {
     while (i !== toI && j !== toJ) {
       i += fromI < toI ? 1 : -1;
       j += fromJ < toJ ? 1 : -1;
-      if (gameState.boardState[i][j].piece === gameState.currentPlayer) {
+
+      const capturedPieceSquare = gameState.boardState[i][j];
+
+      if (capturedPieceSquare.piece === gameState.currentPlayer) {
+        return false;
+      }
+      if (capturedPieceSquare.pendingCapture) {
         return false;
       }
 
-      if (gameState.boardState[i][j].piece) {
+      if (capturedPieceSquare.piece) {
         piecesCaptured++;
       }
     }
@@ -41,8 +54,10 @@ export class Checkers64Strategy extends BaseCheckersStrategy {
 
     const capturedPieceRow = (fromI + toI) / 2;
     const capturedPieceColumn = (fromJ + toJ) / 2;
-    const capturedPiece = boardState[capturedPieceRow]?.[capturedPieceColumn]?.piece;
-    if (!capturedPiece || capturedPiece === currentPlayer) {
+    const capturedPieceSquare = boardState[capturedPieceRow]?.[capturedPieceColumn];
+    const capturedPiece = capturedPieceSquare?.piece;
+
+    if (capturedPieceSquare?.pendingCapture || !capturedPiece || capturedPiece === currentPlayer) {
       return false;
     }
 

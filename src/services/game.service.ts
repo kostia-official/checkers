@@ -11,6 +11,7 @@ import {
   Timestamp,
   onSnapshot,
   deleteField,
+  runTransaction,
 } from 'firebase/firestore';
 import { CreateGameInput, GameModel, UpdateGameInput } from './types';
 import { firebaseClient } from '@common/firebase';
@@ -18,6 +19,8 @@ import { Color } from '@common/types';
 import { gameHistoryService } from './gameHistory.service';
 import { mapGameTypeToStrategy } from '@common/mappers';
 import { WithFieldValue } from '@common/utilTypes';
+import { gamePlayerService } from '@services/gamePlayer.service';
+import { ServiceError } from '@common/enums';
 
 export interface JoinGameArgs {
   id: string;
@@ -27,7 +30,18 @@ export interface JoinGameArgs {
 
 export interface FinishGameArgs {
   id: string;
-  winnerId: string;
+  winnerId?: string;
+  isDraw?: boolean;
+}
+
+export interface SubmitReadyArgs {
+  id: string;
+  gamePlayerId: string;
+}
+
+export interface CreateNewGameData extends CreateGameInput {
+  inviterColor: Color;
+  inviteeColor?: Color;
 }
 
 export class GameService {
@@ -58,17 +72,40 @@ export class GameService {
   };
 
   async create(input: CreateGameInput): Promise<GameModel> {
-    const gamesRef = await addDoc(collection(this.db, this.collection), { ...input, createdAt: new Date() });
+    const gamesRef = await addDoc(collection(this.db, this.collection), {
+      ...input,
+      createdAt: new Date(),
+    });
     const gameSnap = await getDoc(gamesRef.withConverter(this.gameConverter));
-    const game = gameSnap.data() as GameModel;
+    return gameSnap.data() as GameModel;
+  }
+
+  async createNewGame({ inviterColor, inviteeColor, ...data }: CreateNewGameData): Promise<GameModel> {
+    const game = await this.create(data);
 
     const strategy = new mapGameTypeToStrategy[game.gameType]();
 
-    await gameHistoryService.add({
-      gameId: game.id,
-      boardState: strategy.makeInitialBoardState(),
-      currentPlayerColor: Color.White,
-    });
+    await Promise.all([
+      gameHistoryService.add({
+        gameId: game.id,
+        boardState: strategy.makeInitialBoardState(),
+        currentPlayerColor: Color.White,
+      }),
+      gamePlayerService.create({
+        userId: data.inviterId,
+        gameId: game.id,
+        color: inviterColor,
+        isReady: false,
+      }),
+      data.inviteeId &&
+        inviteeColor &&
+        gamePlayerService.create({
+          userId: data.inviteeId,
+          gameId: game.id,
+          color: inviteeColor,
+          isReady: false,
+        }),
+    ]);
 
     return game;
   }
@@ -77,7 +114,11 @@ export class GameService {
     const docRef = doc(this.db, this.collection, id).withConverter(this.gameConverter);
     const docSnap = await getDoc(docRef);
 
-    return docSnap.exists() ? (docSnap.data() as GameModel) : undefined;
+    if (!docSnap.exists()) {
+      throw new Error(ServiceError.NotFound);
+    }
+
+    return docSnap.data();
   }
 
   async update(id: string, input: WithFieldValue<UpdateGameInput>): Promise<GameModel> {
@@ -94,16 +135,48 @@ export class GameService {
     });
   }
 
-  async joinGame({ id, inviteeColor, inviteeId }: JoinGameArgs): Promise<void> {
-    await this.update(id, { inviteeId, inviteeColor, startedAt: new Date() });
+  async getGamePlayers(id: string) {
+    const game = await this.get(id);
+
+    const [inviter, invitee] = await Promise.all([
+      game?.inviterId ? gamePlayerService.get({ gameId: id, userId: game?.inviterId }) : undefined,
+      game?.inviteeId ? gamePlayerService.get({ gameId: id, userId: game?.inviteeId }) : undefined,
+    ]);
+
+    return { game, inviter, invitee };
   }
 
-  async finishGame({ id, winnerId }: FinishGameArgs): Promise<void> {
-    await this.update(id, { winnerId, endedAt: new Date() });
+  async submitReadyGame({ id, gamePlayerId }: SubmitReadyArgs): Promise<void> {
+    await runTransaction(this.db, async (transaction) => {
+      await gamePlayerService.setReady(gamePlayerId);
+
+      const { inviter, invitee } = await this.getGamePlayers(id);
+      const canStartGame = inviter?.isReady && invitee?.isReady;
+
+      if (!canStartGame) return;
+
+      const gameRef = doc(this.db, this.collection, id);
+
+      transaction.update(gameRef, { startedAt: new Date() });
+    });
+  }
+
+  async joinGame({ id, inviteeColor, inviteeId }: JoinGameArgs): Promise<void> {
+    await gamePlayerService.create({
+      gameId: id,
+      color: inviteeColor,
+      isReady: false,
+      userId: inviteeId,
+    });
+    await this.update(id, { inviteeId });
+  }
+
+  async finishGame({ id, winnerId, isDraw = false }: FinishGameArgs): Promise<void> {
+    await this.update(id, { winnerId: winnerId || deleteField(), endedAt: new Date(), isDraw });
   }
 
   async unfinishGame(id: string): Promise<void> {
-    await this.update(id, { winnerId: deleteField(), endedAt: deleteField() });
+    await this.update(id, { winnerId: deleteField(), endedAt: deleteField(), isDraw: deleteField() });
   }
 }
 

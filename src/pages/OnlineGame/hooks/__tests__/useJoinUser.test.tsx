@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react-hooks';
-import { useJoinUser } from '../useJoinUser';
+import { useGameJoin } from '../useGameJoin';
 import { gameService } from '../../../../services/game.service';
 import { UserModel, GameModel } from '../../../../services/types';
 import { Color } from '../../../../common/types';
@@ -30,7 +30,7 @@ describe('useJoinUser', () => {
   it('should join the game as a inviter', async () => {
     const inviterId = '123';
     const { result } = renderHook(
-      () => useJoinUser({ user: { ...user, id: inviterId }, game: { ...game, inviterId } }),
+      () => useGameJoin({ user: { ...user, id: inviterId }, game: { ...game, inviterId } }),
       { wrapper }
     );
 
@@ -44,7 +44,7 @@ describe('useJoinUser', () => {
 
   it('should join the game as an invitee when invitee place is empty', async () => {
     joinGameMock.mockImplementation(async () => await timeout(1000));
-    const { result } = renderHook(() => useJoinUser({ user, game: { ...game, inviteeId: undefined } }), {
+    const { result } = renderHook(() => useGameJoin({ user, game: { ...game, inviteeId: undefined } }), {
       wrapper,
     });
 
@@ -68,7 +68,7 @@ describe('useJoinUser', () => {
   });
 
   it('should join the game as an invitee when invitee was saved before', async () => {
-    const { result } = renderHook(() => useJoinUser({ user, game: { ...game, inviteeId: user.id } }), {
+    const { result } = renderHook(() => useGameJoin({ user, game: { ...game, inviteeId: user.id } }), {
       wrapper,
     });
 
@@ -85,7 +85,7 @@ describe('useJoinUser', () => {
   });
 
   it('should join the game as a spectator if the user is not the inviter or invitee and all places are full', async () => {
-    const { result } = renderHook(() => useJoinUser({ user, game: { ...game, inviteeId: '123' } }), {
+    const { result } = renderHook(() => useGameJoin({ user, game: { ...game, inviteeId: '123' } }), {
       wrapper,
     });
 

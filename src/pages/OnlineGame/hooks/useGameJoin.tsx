@@ -3,20 +3,27 @@ import { useMutation } from 'react-query';
 import { JoinGameArgs, gameService } from '@services/game.service';
 import { UserModel, GameModel } from '@services/types';
 import { toggleColor } from '@common/utils';
+import { useNavigate } from 'react-router-dom';
+import { GamePlayers } from '@common/types';
 
 export interface HookArgs {
   user: UserModel;
   game: GameModel;
+  gamePlayers: GamePlayers;
 }
 
-export const useJoinUser = ({ user, game }: HookArgs) => {
+export const useGameJoin = ({ user, game, gamePlayers: { inviter } }: HookArgs) => {
   const [isJoined, setIsJoined] = useState(false);
   const [isInvitee, setIsInvitee] = useState(game.inviteeId === user.id);
   const [isSpectator, setIsSpectator] = useState(false);
   const { mutateAsync: joinGame } = useMutation((args: JoinGameArgs) => gameService.joinGame(args));
 
+  const navigate = useNavigate();
+
   const isInviter = game.inviterId === user.id;
-  const allPlacesFull = game.inviteeId && game.inviterId;
+  const isInviterJoined = !!game.inviterId;
+  const isInviteeJoined = !!game.inviteeId;
+  const allPlacesFull = isInviteeJoined && isInviterJoined;
 
   useEffect(() => {
     (async () => {
@@ -30,7 +37,7 @@ export const useJoinUser = ({ user, game }: HookArgs) => {
         await joinGame({
           id: game.id,
           inviteeId: user.id,
-          inviteeColor: toggleColor(game.inviterColor),
+          inviteeColor: toggleColor(inviter.color),
         });
       } else if (!isInviter && !isInvitee && allPlacesFull) {
         setIsSpectator(true);
@@ -40,7 +47,7 @@ export const useJoinUser = ({ user, game }: HookArgs) => {
   }, [
     game.id,
     game?.inviteeId,
-    game.inviterColor,
+    inviter.color,
     game.inviterId,
     joinGame,
     isJoined,
@@ -50,5 +57,11 @@ export const useJoinUser = ({ user, game }: HookArgs) => {
     isInvitee,
   ]);
 
-  return { isJoined, isSpectator, isInviter, isInvitee };
+  useEffect(() => {
+    if (game.endedAt && game.nextGameId) {
+      navigate(`/game/${game.nextGameId}?continue=1`);
+    }
+  }, [game.nextGameId, game.endedAt, navigate]);
+
+  return { isJoined, isSpectator, isInviter, isInvitee, isInviteeJoined };
 };

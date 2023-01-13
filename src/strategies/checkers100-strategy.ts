@@ -1,9 +1,13 @@
-import { GameState, Coordinates, Color } from '../common/types';
+import { GameState, Coordinates, Color } from '@common/types';
 import cloneDeep from 'lodash.clonedeep';
 import { Checkers64Strategy } from './checkers64-strategy';
 
 export class Checkers100Strategy extends Checkers64Strategy {
   squares = 10;
+
+  getSquareNotation(i: number, j: number) {
+    return String(i * 5 + j / 2 + 0.5 + (i % 2) / 2);
+  }
 
   handlePieceClick(i: number, j: number, gameState: GameState): Coordinates | undefined {
     const selectedPiece = super.handlePieceClick(i, j, gameState);
@@ -73,11 +77,12 @@ export class Checkers100Strategy extends Checkers64Strategy {
     newGameState.boardState[toI][toJ].piece = newGameState.boardState[fromI][fromJ].piece;
     newGameState.boardState[toI][toJ].isKing = newGameState.boardState[fromI][fromJ].isKing;
     newGameState.boardState[fromI][fromJ].piece = null;
+    newGameState.boardState[fromI][fromJ].isKing = false;
 
     if (!isKing) {
       const capturedPieceRow = (fromI + toI) / 2;
       const capturedPieceColumn = (fromJ + toJ) / 2;
-      newGameState.boardState[capturedPieceRow][capturedPieceColumn].piece = null;
+      newGameState.boardState[capturedPieceRow][capturedPieceColumn].pendingCapture = true;
     } else {
       const updatedBoardState = this.capturePieceByKing(fromI, fromJ, toI, toJ, newGameState);
       if (updatedBoardState) {
@@ -97,8 +102,10 @@ export class Checkers100Strategy extends Checkers64Strategy {
     if (!hasValidCaptures) {
       // If there are no more valid captures, change the current player
       newGameState.currentPlayer = newGameState.currentPlayer === Color.White ? Color.Black : Color.White;
+
+      newGameState.boardState = this.removePendingCapturePieces(newGameState.boardState);
     }
 
-    return newGameState;
+    return { ...newGameState };
   }
 }
