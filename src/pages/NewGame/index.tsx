@@ -3,18 +3,17 @@ import { Button, TextInput, Text, Switch } from '@mantine/core';
 import { MenuTitle, MenuControlsWrapper, MenuWrapper } from '@components/Menu';
 import { useQuery, useMutation } from 'react-query';
 import { userService } from '@services/user.service';
-import { gameService } from '@services/game.service';
 import { Color, GameType } from '@common/types';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { CreateUserInput, CreateGameInput } from '@services/types';
+import { CreateUserInput } from '@services/types';
 import { CenteredLoader } from '@components/CenteredLoader';
 import { PieceColorToggle } from '@components/PieceColorToggle';
 import { useTranslation } from 'react-i18next';
+import { useNewGame } from '@pages/OnlineGame/hooks/useNewGame';
 
 export const NewGame: React.FC = () => {
   const { data: user, isLoading: isUserLoading } = useQuery('currentUser', () => userService.getCurrent());
   const { mutateAsync: createUser } = useMutation((input: CreateUserInput) => userService.create(input));
-  const { mutateAsync: createGame } = useMutation((input: CreateGameInput) => gameService.create(input));
   const [userName, setUserName] = useState<string | undefined>();
   const [playerColor, setPlayerColor] = useState<Color>(Color.White);
   const [loading, setLoading] = useState(false);
@@ -23,6 +22,7 @@ export const NewGame: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   let [searchParams] = useSearchParams();
+  const { startNewGame } = useNewGame();
 
   const gameType = searchParams.get('type') as GameType;
 
@@ -43,13 +43,11 @@ export const NewGame: React.FC = () => {
         return;
       }
 
-      const game = await createGame({
+      await startNewGame({
         inviterId: userId,
         inviterColor: playerColor,
         gameType,
       });
-
-      navigate(`/game/${game.id}`);
     } finally {
       setLoading(false);
     }

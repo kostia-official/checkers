@@ -10,4 +10,7 @@ export const config = {
     appId: '1:164934301829:web:c39c540bfef552de4491ec',
     measurementId: 'G-NKRRPN176T',
   } as FirebaseOptions,
+  ably: {
+    apiKey: 'uLO6-g.pScVLQ:fdk42Ly6ov39yJYrA7lDGsjO3EhjHOSWqQrVXWA4N_Q',
+  },
 };

@@ -37,7 +37,27 @@ export const en = {
     players: {
       title: 'Players',
       waiting: 'Waiting',
+      ready: 'Ready',
+      start: 'Start',
       spectatorLabel: 'You are a spectator',
+    },
+    onlineMenu: {
+      copyLink: {
+        buttonLabel: 'Copy invite link',
+        copyLinkTooltip: 'Link copied!',
+      },
+      drawButton: 'Draw',
+      resignButton: 'Resign',
+    },
+    requestsModals: {
+      title: 'New request from your opponent',
+      drawContent: 'Do you agree for a draw?',
+      undoContent: 'Do you agree to undo the last move?',
+      drawDeclinedContent: 'Draw was declined',
+      undoDeclinedContent: 'Move undo was declined',
+      defaultDeclinedContent: 'Request denied',
+      acceptLabel: 'Accept',
+      declineLabel: 'Decline',
     },
     winner: {
       winsLabel: 'wins!',

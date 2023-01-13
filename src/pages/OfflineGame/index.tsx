@@ -91,12 +91,12 @@ export const OfflineGame: React.FC<CheckersGameProps> = ({ strategy }) => {
       strategy={strategy}
       gameState={getGameState()}
       gameStateHistory={gameStateHistory}
-      playerColor={currentPlayer}
+      playerColor={Color.White}
       winnerLabel={winnerLabel}
       editModeState={editModeState}
       handleSquareClick={handleSquareClick}
       handlePieceClick={handlePieceClick}
-      handleUndoMove={handleUndoMove}
+      onUndoMoveClick={handleUndoMove}
       handleNewGame={handleNewGame}
     />
   );

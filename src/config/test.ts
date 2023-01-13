@@ -9,4 +9,7 @@ export const config = {
     messagingSenderId: '342770090467',
     appId: '1:342770090467:web:494b17061989bad91020d6',
   } as FirebaseOptions,
+  ably: {
+    apiKey: '',
+  },
 };

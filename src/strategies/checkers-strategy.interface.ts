@@ -22,9 +22,12 @@ export interface ICheckersStrategy {
     gameState: GameState
   ): BoardState | undefined;
   capturePiece(fromI: number, fromJ: number, toI: number, toJ: number, gameState: GameState): GameState;
+  removePendingCapturePieces(boardState: BoardState): BoardState;
 
   handlePieceClick(i: number, j: number, gameState: GameState): Coordinates | undefined;
   handleSquareClick(i: number, j: number, gameState: GameState): GameState | undefined;
 
   getWinner(gameState: GameState): Color | undefined;
+
+  getSquareNotation(i: number, j: number): string;
 }

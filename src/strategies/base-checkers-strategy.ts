@@ -1,5 +1,5 @@
 import { ICheckersStrategy } from './checkers-strategy.interface';
-import { BoardState, Color, GameState, Coordinates } from '../common/types';
+import { BoardState, Color, GameState, Coordinates, Square } from '../common/types';
 import cloneDeep from 'lodash.clonedeep';
 
 export abstract class BaseCheckersStrategy implements ICheckersStrategy {
@@ -7,6 +7,8 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
 
   abstract isValidMoveByKing(fromI: number, fromJ: number, toI: number, toJ: number, gameState: GameState): boolean;
   abstract isValidMoveByRegular(fromI: number, fromJ: number, toI: number, toJ: number, gameState: GameState): boolean;
+
+  abstract getSquareNotation(i: number, j: number): string;
 
   abstract isValidPieceCaptureByKing(
     fromI: number,
@@ -27,7 +29,7 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
     const initialBoardState: BoardState = [];
 
     for (let i = 0; i < this.squares; i++) {
-      const row = [];
+      const row: Square[] = [];
       for (let j = 0; j < this.squares; j++) {
         const isPieceSquare = (i + j) % 2 !== 0;
 
@@ -63,7 +65,7 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
     }
 
     // Check if there are any valid captures for the selected piece
-    // can't move if can capture
+    // can't move when can capture
     const validCaptures = this.getValidCaptures(fromI, fromJ, gameState);
     if (validCaptures.length > 0) {
       return false;
@@ -181,8 +183,7 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
       i += fromI < toI ? 1 : -1;
       j += fromJ < toJ ? 1 : -1;
       if (boardState[i][j].piece) {
-        boardState[i][j].piece = null;
-        boardState[i][j].isKing = false;
+        boardState[i][j].pendingCapture = true;
       }
     }
 
@@ -191,6 +192,9 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
     boardState[fromI][fromJ].isKing = false;
     boardState[toI][toJ].piece = gameState.currentPlayer;
     boardState[toI][toJ].isKing = true;
+
+    // TODO: Update so we don't need to mark as not pendingCapture player's piece
+    boardState[toI][toJ].pendingCapture = false;
 
     return boardState;
   }
@@ -208,7 +212,7 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
     if (!isKing) {
       const capturedPieceRow = (fromI + toI) / 2;
       const capturedPieceColumn = (fromJ + toJ) / 2;
-      newGameState.boardState[capturedPieceRow][capturedPieceColumn].piece = null;
+      newGameState.boardState[capturedPieceRow][capturedPieceColumn].pendingCapture = true;
     } else {
       const updatedBoardState = this.capturePieceByKing(fromI, fromJ, toI, toJ, newGameState);
       if (updatedBoardState) {
@@ -227,9 +231,28 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
     if (validCaptures.length === 0) {
       // If there are no more valid captures, change the current player
       newGameState.currentPlayer = newGameState.currentPlayer === Color.White ? Color.Black : Color.White;
+
+      newGameState.boardState = this.removePendingCapturePieces(newGameState.boardState);
     }
 
     return newGameState;
+  }
+
+  removePendingCapturePieces(boardState: BoardState) {
+    const newBoardState = cloneDeep(boardState);
+
+    for (let i = 0; i < this.squares; i++) {
+      for (let j = 0; j < this.squares; j++) {
+        const square = newBoardState[i]?.[j];
+        if (square?.pendingCapture) {
+          square.pendingCapture = false;
+          square.isKing = false;
+          square.piece = null;
+        }
+      }
+    }
+
+    return newBoardState;
   }
 
   movePiece(fromI: number, fromJ: number, toI: number, toJ: number, gameState: GameState): GameState {

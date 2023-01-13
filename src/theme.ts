@@ -21,4 +21,25 @@ export const theme: MantineThemeOverride = {
   primaryShade: 4,
   defaultRadius: 20,
   loader: 'dots',
+  components: {
+    Notification: {
+      styles: {
+        description: {
+          fontSize: '16px',
+        },
+      },
+    },
+    Button: {
+      styles: (theme) => ({
+        root: {
+          ':disabled': {
+            backgroundColor: theme.colors.dark[3],
+          },
+          '&[data-loading]:before': {
+            backgroundColor: 'rgba(255, 255, 255, .2)',
+          },
+        },
+      }),
+    },
+  },
 };

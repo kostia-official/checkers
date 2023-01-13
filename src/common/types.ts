@@ -1,3 +1,5 @@
+import { GamePlayerModel } from '@services/types';
+
 export type GameType = 'internation' | 'draughts64';
 
 export enum Color {
@@ -8,6 +10,7 @@ export enum Color {
 export interface Square {
   piece: Color | null;
   isKing: boolean;
+  pendingCapture?: boolean;
 }
 
 export type BoardState = Square[][];
@@ -26,9 +29,14 @@ export type GameStateHistory = Array<{
 
 export type Coordinates = [number, number];
 
-export interface Player {
-  id: string;
+export interface GamePlayerExtended extends GamePlayerModel {
   name: string;
-  color: Color;
   isOnline: boolean;
+}
+
+export interface GamePlayers {
+  inviter: GamePlayerModel;
+  invitee?: GamePlayerModel;
+  currentUserPlayer?: GamePlayerModel;
+  opponent?: GamePlayerModel;
 }

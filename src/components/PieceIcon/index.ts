@@ -6,17 +6,17 @@ export interface PieceIconProps {
 }
 
 export const BlackPieceIcon = styled.div<PieceIconProps>`
-  width: 20px;
-  height: 20px;
+  min-width: 20px;
+  min-height: 20px;
   border-radius: 50%;
-  border: 2px solid ${(p) => (p.highlighted ? colors.gold.pale : colors.grey.main)};
   background-color: black;
+  border: 2px solid ${(p) => (p.highlighted ? colors.gold.pale : colors.grey.main)};
 `;
 
 export const WhitePieceIcon = styled.div<PieceIconProps>`
-  width: 20px;
-  height: 20px;
+  min-width: 20px;
+  min-height: 20px;
   border-radius: 50%;
-  border: 2px solid ${(p) => (p.highlighted ? colors.gold.pale : 'black')};
   background-color: ${colors.beige.main};
+  border: 2px solid ${(p) => (p.highlighted ? colors.gold.pale : 'black')};
 `;

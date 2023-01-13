@@ -3,16 +3,20 @@ import { GameModel } from '@services/types';
 import { ICheckersStrategy } from '@strategies/checkers-strategy.interface';
 import { useMutation } from 'react-query';
 import { gameService, FinishGameArgs } from '@services/game.service';
-import { GameState } from '@common/types';
+import { GameState, Color, GamePlayers } from '@common/types';
+import { useTranslation } from 'react-i18next';
 
 export interface HookArgs {
   game: GameModel;
+  gamePlayers: GamePlayers;
   strategy: ICheckersStrategy;
   gameState: GameState;
   isEditMode: boolean;
 }
 
-export const useWinner = ({ game, strategy, isEditMode, gameState }: HookArgs) => {
+export const useGameFinish = ({ game, strategy, isEditMode, gameState, gamePlayers }: HookArgs) => {
+  const { t } = useTranslation();
+
   const { mutateAsync: finishGame } = useMutation((args: FinishGameArgs) => gameService.finishGame(args));
   const { mutateAsync: unfinishGame } = useMutation((id: string) => gameService.unfinishGame(id));
 
@@ -26,11 +30,20 @@ export const useWinner = ({ game, strategy, isEditMode, gameState }: HookArgs) =
     [finishGame, game.id]
   );
 
+  const setIsDraw = useCallback(async () => {
+    await finishGame({
+      id: game.id,
+      isDraw: true,
+    });
+  }, [finishGame, game.id]);
+
   const clearWinner = useCallback(async () => {
     await unfinishGame(game.id);
   }, [game.id, unfinishGame]);
 
-  const { winnerId, inviteeId, inviterId, inviterColor, inviteeColor } = game;
+  const { winnerId, inviteeId, inviterId } = game;
+  const inviterColor = gamePlayers.inviter.color;
+  const inviteeColor = gamePlayers.invitee?.color;
 
   const winnerColor = useMemo(() => {
     if (!winnerId) return;
@@ -55,5 +68,11 @@ export const useWinner = ({ game, strategy, isEditMode, gameState }: HookArgs) =
     })();
   }, [gameState, isEditMode, inviterColor, inviterId, inviteeId, strategy, clearWinner, setWinner]);
 
-  return { winnerColor, setWinner, clearWinner };
+  const winnerLabel = useMemo(() => {
+    if (!winnerColor) return;
+
+    return winnerColor === Color.White ? t('winner.white') : t('winner.black');
+  }, [t, winnerColor]);
+
+  return { winnerColor, setWinner, setIsDraw, clearWinner, winnerLabel };
 };

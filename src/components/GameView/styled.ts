@@ -75,10 +75,10 @@ export const GameExtras = styled.div`
   }
 `;
 
-export const Indexes = styled.div`
+export const SquareNotation = styled.div`
   position: absolute;
   font-size: 12px;
   color: white;
-  left: 0;
+  left: 3px;
   bottom: 0;
 `;
