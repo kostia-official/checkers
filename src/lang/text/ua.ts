@@ -5,6 +5,7 @@ export const ua: typeof en = {
     gameTypes: {
       draughts64: 'Шашки 64',
       international: 'Міжнародні Шашки',
+      frisian: 'Фрізійські Шашки',
     },
     piecesColors: {
       white: 'Білі',

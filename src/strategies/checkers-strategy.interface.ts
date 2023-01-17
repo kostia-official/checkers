@@ -23,6 +23,13 @@ export interface ICheckersStrategy {
   ): BoardState | undefined;
   capturePiece(fromI: number, fromJ: number, toI: number, toJ: number, gameState: GameState): GameState;
   removePendingCapturePieces(boardState: BoardState): BoardState;
+  // iterateBetweenFromTo(
+  //   fromI: number,
+  //   fromJ: number,
+  //   toI: number,
+  //   toJ: number,
+  //   cb: (i: number, j: number) => boolean
+  // ): void;
 
   handlePieceClick(i: number, j: number, gameState: GameState): Coordinates | undefined;
   handleSquareClick(i: number, j: number, gameState: GameState): GameState | undefined;

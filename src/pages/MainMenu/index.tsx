@@ -17,6 +17,9 @@ export const MainMenu: React.FC = () => {
         <Button fullWidth component={Link} to="/game/new?type=internation">
           {t('gameTypes.international')}
         </Button>
+        <Button fullWidth component={Link} to="/game/new?type=frisian">
+          {t('gameTypes.frisian')}
+        </Button>
       </MenuControlsWrapper>
     </MenuWrapper>
   );

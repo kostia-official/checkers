@@ -3,6 +3,7 @@ export const en = {
     gameTypes: {
       draughts64: 'Draughts 64',
       international: 'Internation Draughts',
+      frisian: 'Frisian Draughts',
     },
     piecesColors: {
       white: 'White',

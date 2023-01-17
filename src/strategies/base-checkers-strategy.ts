@@ -177,15 +177,12 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
     let { boardState } = cloneDeep(gameState);
 
     // Capture enemy pieces along the path
-    let i = fromI;
-    let j = fromJ;
-    while (i !== toI && j !== toJ) {
-      i += fromI < toI ? 1 : -1;
-      j += fromJ < toJ ? 1 : -1;
+    this.iterateBetweenFromTo(fromI, fromJ, toI, toJ, (i, j) => {
       if (boardState[i][j].piece) {
         boardState[i][j].pendingCapture = true;
       }
-    }
+      return true;
+    });
 
     // Update the board state and current player
     boardState[fromI][fromJ].piece = null;
@@ -317,6 +314,7 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
     return validMoves;
   }
 
+  // TODO: Optimise to not check every square
   getValidCaptures(i: number, j: number, gameState: GameState): Coordinates[] {
     const validCaptures: Coordinates[] = [];
     // Check all possible captures and add them to the validCaptures array if they are valid
@@ -372,5 +370,21 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
     }
 
     return currentPlayer === Color.White ? Color.Black : Color.White;
+  }
+
+  iterateBetweenFromTo(
+    fromI: number,
+    fromJ: number,
+    toI: number,
+    toJ: number,
+    cb: (i: number, j: number) => boolean
+  ): void {
+    const iStep = Math.sign(toI - fromI);
+    const jStep = Math.sign(toJ - fromJ);
+
+    for (let i = fromI + iStep, j = fromJ + jStep; i !== toI || j !== toJ; i += iStep, j += jStep) {
+      const isProceed = cb(i, j);
+      if (!isProceed) return;
+    }
   }
 }

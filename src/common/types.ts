@@ -1,6 +1,6 @@
 import { GamePlayerModel } from '@services/types';
 
-export type GameType = 'internation' | 'draughts64';
+export type GameType = 'internation' | 'draughts64' | 'frisian';
 
 export enum Color {
   Black = 'black',
