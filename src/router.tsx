@@ -5,6 +5,7 @@ import { Checkers64Strategy } from '@strategies/checkers64-strategy';
 import { Checkers100Strategy } from '@strategies/checkers100-strategy';
 import { NewGame } from '@pages/NewGame';
 import { OnlineGamePreload } from '@pages/OnlineGame';
+import { FrisianDraughtsStrategy } from '@strategies/frisian-draughts-strategy';
 
 export const routes = [
   {
@@ -26,6 +27,10 @@ export const routes = [
   {
     path: '/game/offline/internation',
     element: <OfflineGame strategy={new Checkers100Strategy()} />,
+  },
+  {
+    path: '/game/offline/frisian',
+    element: <OfflineGame strategy={new FrisianDraughtsStrategy()} />,
   },
 ];
 
