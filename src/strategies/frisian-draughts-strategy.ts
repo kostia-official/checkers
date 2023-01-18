@@ -23,14 +23,14 @@ export class FrisianDraughtsStrategy extends Checkers100Strategy {
     return true;
   }
 
-  isValidKingJump(fromI: number, fromJ: number, toI: number, toJ: number) {
+  isValidPath(fromI: number, fromJ: number, toI: number, toJ: number) {
     const xDiff = Math.abs(fromI - toI);
     const yDiff = Math.abs(fromJ - toJ);
-    const isDiagonal = xDiff >= 2 && yDiff >= 2 && xDiff === yDiff;
-    const isVertical = xDiff >= 2 && yDiff === 0;
-    const isHorizontal = xDiff === 0 && yDiff >= 2;
+    const isDiagonalJump = xDiff >= 1 && yDiff >= 1 && xDiff === yDiff;
+    const isVerticalCapture = xDiff >= 2 && yDiff === 0;
+    const isHorizontalCapture = xDiff === 0 && yDiff >= 2;
 
-    return isDiagonal || isVertical || isHorizontal;
+    return isDiagonalJump || isVerticalCapture || isHorizontalCapture;
   }
 
   isValidPieceCaptureByKing(fromI: number, fromJ: number, toI: number, toJ: number, gameState: GameState) {
@@ -50,7 +50,7 @@ export class FrisianDraughtsStrategy extends Checkers100Strategy {
     }
 
     // Check if the move is diagonal, vertical, or horizontal
-    if (!this.isValidKingJump(fromI, fromJ, toI, toJ)) {
+    if (!this.isValidPath(fromI, fromJ, toI, toJ)) {
       return false;
     }
 
@@ -92,7 +92,7 @@ export class FrisianDraughtsStrategy extends Checkers100Strategy {
     toJ: number,
     cb: (i: number, j: number) => boolean
   ): void {
-    if (!this.isValidKingJump(fromI, fromJ, toI, toJ)) {
+    if (!this.isValidPath(fromI, fromJ, toI, toJ)) {
       return;
     }
 
