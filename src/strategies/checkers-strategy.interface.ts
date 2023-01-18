@@ -1,41 +1,32 @@
-import { Coordinates, GameState, BoardState, Color } from '../common/types';
+import { Position, GameState, BoardState, Color } from '../common/types';
 
 export interface ICheckersStrategy {
   squares: number;
 
   makeInitialBoardState(): BoardState;
 
-  isValidMove(fromI: number, fromJ: number, toI: number, toJ: number, gameState: GameState): boolean;
-  isValidPieceCaptureByKing(fromI: number, fromJ: number, toI: number, toJ: number, gameState: GameState): boolean;
-  isValidPieceCapture(fromI: number, fromJ: number, toI: number, toJ: number, gameState: GameState): boolean;
-  getValidMoves(i: number, j: number, gameState: GameState): Coordinates[];
-  getValidCaptures(i: number, j: number, gameState: GameState): Coordinates[];
-  getOtherPiecesWithValidCaptures(selectedI: number, selectedJ: number, gameState: GameState): Coordinates[];
-  canBecomeKing(i: number, j: number, currentPlayer: Color): boolean;
-  isValidJump(fromI: number, fromJ: number, toI: number, toJ: number, gameState: GameState): boolean;
+  isValidMove(from: Position, to: Position, gameState: GameState): boolean;
+  isValidMoveByKing(from: Position, to: Position, gameState: GameState): boolean;
+  isValidMoveByRegular(from: Position, to: Position, gameState: GameState): boolean;
+  isValidPieceCapture(from: Position, to: Position, gameState: GameState): boolean;
+  isValidPieceCaptureByKing(from: Position, to: Position, gameState: GameState): boolean;
+  isValidPieceCaptureByRegular(from: Position, to: Position, gameState: GameState): boolean;
+  getValidMoves(from: Position, gameState: GameState): Position[];
+  getValidCaptures(from: Position, gameState: GameState): Position[];
+  getOtherPiecesWithValidCaptures(selected: Position, gameState: GameState): Position[];
+  canBecomeKing(position: Position, currentPlayer: Color): boolean;
+  isValidJump(from: Position, to: Position, gameState: GameState): boolean;
 
-  movePiece(fromI: number, fromJ: number, toI: number, toJ: number, gameState: GameState): GameState;
-  capturePieceByKing(
-    fromI: number,
-    fromJ: number,
-    toI: number,
-    toJ: number,
-    gameState: GameState
-  ): BoardState | undefined;
-  capturePiece(fromI: number, fromJ: number, toI: number, toJ: number, gameState: GameState): GameState;
+  movePiece(from: Position, to: Position, gameState: GameState): GameState;
+  capturePieceByKing(from: Position, to: Position, gameState: GameState): BoardState | undefined;
+  capturePiece(from: Position, to: Position, gameState: GameState): GameState;
   removePendingCapturePieces(boardState: BoardState): BoardState;
-  // iterateBetweenFromTo(
-  //   fromI: number,
-  //   fromJ: number,
-  //   toI: number,
-  //   toJ: number,
-  //   cb: (i: number, j: number) => boolean
-  // ): void;
 
-  handlePieceClick(i: number, j: number, gameState: GameState): Coordinates | undefined;
-  handleSquareClick(i: number, j: number, gameState: GameState): GameState | undefined;
+  handlePieceClick(position: Position, gameState: GameState): Position | undefined;
+  handleSquareClick(position: Position, gameState: GameState): GameState | undefined;
 
   getWinner(gameState: GameState): Color | undefined;
 
-  getSquareNotation(i: number, j: number): string;
+  getSquareNotation(position: Position): string;
+  iterateBetweenFromTo(from: Position, to: Position, cb: (position: Position) => boolean): void;
 }

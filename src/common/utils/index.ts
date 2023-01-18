@@ -1,4 +1,4 @@
-import { Color } from '../types';
+import { Color, BoardState, Position } from '../types';
 import { QuerySnapshot } from 'firebase/firestore';
 
 export function capitalize(string: string): string {
@@ -7,6 +7,25 @@ export function capitalize(string: string): string {
 
 export const toggleColor = (color: Color) => {
   return color === Color.White ? Color.Black : Color.White;
+};
+
+export const isEqualPosition = (a: Position, b: Position) => {
+  return a[0] === b[0] && a[1] === b[1];
+};
+
+export const hasPosition = (positions: Position[], position: Position) => {
+  return positions.some((p) => isEqualPosition(p, position));
+};
+
+export const getSquare = (boardState: BoardState, [i, j]: Position) => {
+  return boardState[i]?.[j];
+};
+
+export const getSquares = (boardState: BoardState, from: Position, to: Position) => {
+  const fromSquare = getSquare(boardState, from);
+  const toSquare = getSquare(boardState, to);
+
+  return { fromSquare, toSquare };
 };
 
 export const noop = () => {};

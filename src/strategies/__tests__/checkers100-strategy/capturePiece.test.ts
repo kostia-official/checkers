@@ -1,6 +1,7 @@
 import { Checkers100Strategy } from '@strategies/checkers100-strategy';
 import { createBoard } from '@common/test-utils/board';
-import { Color, GameState } from '@common/types';
+import { Color, GameState, Position } from '@common/types';
+import { getSquare } from '@common/utils';
 
 describe('capturePiece', () => {
   it('should capture 2 pieces with marking pending the first one', () => {
@@ -24,15 +25,14 @@ describe('capturePiece', () => {
     };
 
     // should mark as pending capture when second capture can be done
-    let fromI = 5;
-    let fromJ = 2;
-    let toI = 3;
-    let toJ = 4;
 
-    gameState = strategy.capturePiece(fromI, fromJ, toI, toJ, gameState);
+    let from: Position = [5, 2];
+    let to: Position = [3, 4];
 
-    expect(gameState.boardState[toI][toJ].piece).toBe(Color.White);
-    expect(gameState.boardState[toI][toJ].isKing).toBe(false);
+    gameState = strategy.capturePiece(from, to, gameState);
+
+    expect(getSquare(gameState.boardState, to).piece).toBe(Color.White);
+    expect(getSquare(gameState.boardState, to).isKing).toBe(false);
 
     const capturedPieceSquare = gameState.boardState[4][3];
 
@@ -40,12 +40,11 @@ describe('capturePiece', () => {
     expect(capturedPieceSquare.pendingCapture).toBe(true);
 
     // should capture pieces marked as pending when the last capture was done
-    fromI = 3;
-    fromJ = 4;
-    toI = 1;
-    toJ = 2;
 
-    gameState = strategy.capturePiece(fromI, fromJ, toI, toJ, gameState);
+    from = [3, 4];
+    to = [1, 2];
+
+    gameState = strategy.capturePiece(from, to, gameState);
 
     const firstCaptured = gameState.boardState[4][3];
     expect(firstCaptured.piece).toBe(null);
@@ -71,10 +70,8 @@ describe('capturePiece', () => {
     ];
     const boardState = createBoard(board);
 
-    const fromI = 5;
-    const fromJ = 2;
-    const toI = 3;
-    const toJ = 4;
+    const from: Position = [5, 2];
+    const to: Position = [3, 4];
 
     const gameState: GameState = {
       boardState,
@@ -82,11 +79,11 @@ describe('capturePiece', () => {
       hasMadeCapture: false,
       selectedPiece: null,
     };
-    const { boardState: newBoardState, hasMadeCapture } = strategy.capturePiece(fromI, fromJ, toI, toJ, gameState);
+    const { boardState: newBoardState, hasMadeCapture } = strategy.capturePiece(from, to, gameState);
 
     expect(hasMadeCapture).toBe(false);
-    expect(newBoardState[toI][toJ].piece).toBe(Color.White);
-    expect(newBoardState[toI][toJ].isKing).toBe(false);
+    expect(getSquare(newBoardState, to).piece).toBe(Color.White);
+    expect(getSquare(newBoardState, to).isKing).toBe(false);
 
     const capturedPieceSquare = newBoardState[4][4];
     expect(capturedPieceSquare.piece).toBe(null);
@@ -113,14 +110,13 @@ describe('capturePiece', () => {
       selectedPiece: null,
     };
 
-    const toI = 2;
-    const toJ = 1;
+    const to: Position = [2, 1];
 
-    const firstCaptureGameState = strategy.capturePiece(2, 5, 0, 3, gameState);
-    const newGameState = strategy.capturePiece(0, 3, 2, 1, firstCaptureGameState);
+    const firstCaptureGameState = strategy.capturePiece([2, 5], [0, 3], gameState);
+    const newGameState = strategy.capturePiece([0, 3], [2, 1], firstCaptureGameState);
 
-    expect(newGameState.boardState[toI][toJ].piece).toBe(Color.White);
-    expect(newGameState.boardState[toI][toJ].isKing).toBe(false);
+    expect(getSquare(newGameState.boardState, to).piece).toBe(Color.White);
+    expect(getSquare(newGameState.boardState, to).isKing).toBe(false);
     expect(newGameState.currentPlayer).toBe(Color.Black);
 
     const capturedPieces = [newGameState.boardState[1][4], newGameState.boardState[1][2]];
@@ -151,13 +147,12 @@ describe('capturePiece', () => {
       selectedPiece: null,
     };
 
-    const toI = 0;
-    const toJ = 3;
+    const to: Position = [0, 3];
 
-    const newGameState = strategy.capturePiece(2, 5, toI, toJ, gameState);
+    const newGameState = strategy.capturePiece([2, 5], to, gameState);
 
-    expect(newGameState.boardState[toI][toJ].piece).toBe(Color.White);
-    expect(newGameState.boardState[toI][toJ].isKing).toBe(true);
+    expect(getSquare(newGameState.boardState, to).piece).toBe(Color.White);
+    expect(getSquare(newGameState.boardState, to).isKing).toBe(true);
     expect(newGameState.currentPlayer).toBe(Color.Black);
 
     const capturedPiece = newGameState.boardState[1][4];
@@ -187,13 +182,12 @@ describe('capturePiece', () => {
       selectedPiece: null,
     };
 
-    const toI = 0;
-    const toJ = 3;
+    const to: Position = [0, 3];
 
-    const newGameState = strategy.capturePiece(2, 5, toI, toJ, gameState);
+    const newGameState = strategy.capturePiece([2, 5], to, gameState);
 
-    expect(newGameState.boardState[toI][toJ].piece).toBe(Color.White);
-    expect(newGameState.boardState[toI][toJ].isKing).toBe(true);
+    expect(getSquare(newGameState.boardState, to).piece).toBe(Color.White);
+    expect(getSquare(newGameState.boardState, to).isKing).toBe(true);
     expect(newGameState.currentPlayer).toBe(Color.Black);
 
     const capturedPiece = newGameState.boardState[1][4];
@@ -223,14 +217,13 @@ describe('capturePiece', () => {
       selectedPiece: null,
     };
 
-    const toI = 2;
-    const toJ = 1;
+    const to: Position = [2, 1];
 
-    const firstCaptureGameState = strategy.capturePiece(2, 5, 0, 3, gameState);
-    const newGameState = strategy.capturePiece(0, 3, 2, 1, firstCaptureGameState);
+    const firstCaptureGameState = strategy.capturePiece([2, 5], [0, 3], gameState);
+    const newGameState = strategy.capturePiece([0, 3], [2, 1], firstCaptureGameState);
 
-    expect(newGameState.boardState[toI][toJ].piece).toBe(Color.White);
-    expect(newGameState.boardState[toI][toJ].isKing).toBe(true);
+    expect(getSquare(newGameState.boardState, to).piece).toBe(Color.White);
+    expect(getSquare(newGameState.boardState, to).isKing).toBe(true);
     expect(newGameState.currentPlayer).toBe(Color.Black);
 
     const capturedPieces = [newGameState.boardState[1][4], newGameState.boardState[1][2]];

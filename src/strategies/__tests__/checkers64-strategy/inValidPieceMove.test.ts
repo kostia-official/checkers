@@ -1,6 +1,6 @@
 import { Checkers64Strategy } from '../../checkers64-strategy';
 import { createBoard } from '../../../common/test-utils/board';
-import { Color, GameState } from '../../../common/types';
+import { Color, GameState, Position } from '../../../common/types';
 
 describe('isValidPieceCapture', () => {
   describe('a regular piece', () => {
@@ -14,9 +14,8 @@ describe('isValidPieceCapture', () => {
       ];
       const boardState = createBoard(board);
 
-      const fromI = 1;
-      const fromJ = 1;
-      const destinations = [
+      const from: Position = [1, 1];
+      const destinations: Position[] = [
         [0, 0],
         [0, 2],
       ];
@@ -25,11 +24,11 @@ describe('isValidPieceCapture', () => {
         boardState,
         currentPlayer: Color.White,
         hasMadeCapture: false,
-        selectedPiece: [fromI, fromJ],
+        selectedPiece: from,
       };
 
-      destinations.forEach(([toI, toJ]) => {
-        expect(strategy.isValidMove(fromI, fromJ, toI, toJ, gameState)).toBe(true);
+      destinations.forEach((to) => {
+        expect(strategy.isValidMove(from, to, gameState)).toBe(true);
       });
     });
 
@@ -43,9 +42,8 @@ describe('isValidPieceCapture', () => {
       ];
       const boardState = createBoard(board);
 
-      const fromI = 1;
-      const fromJ = 1;
-      const destinations = [
+      const from: Position = [1, 1];
+      const destinations: Position[] = [
         [0, 1],
         [1, 0],
         [1, 2],
@@ -58,11 +56,11 @@ describe('isValidPieceCapture', () => {
         boardState,
         currentPlayer: Color.White,
         hasMadeCapture: false,
-        selectedPiece: [fromI, fromJ],
+        selectedPiece: from,
       };
 
-      destinations.forEach(([toI, toJ]) => {
-        expect(strategy.isValidMove(fromI, fromJ, toI, toJ, gameState)).toBe(false);
+      destinations.forEach((to) => {
+        expect(strategy.isValidMove(from, to, gameState)).toBe(false);
       });
     });
 
@@ -76,9 +74,8 @@ describe('isValidPieceCapture', () => {
       ];
       const boardState = createBoard(board);
 
-      const fromI = 1;
-      const fromJ = 1;
-      const destinations = [
+      const from: Position = [1, 1];
+      const destinations: Position[] = [
         [0, 1],
         [1, 0],
         [1, 2],
@@ -91,11 +88,11 @@ describe('isValidPieceCapture', () => {
         boardState,
         currentPlayer: Color.White,
         hasMadeCapture: false,
-        selectedPiece: [fromI, fromJ],
+        selectedPiece: from,
       };
 
-      destinations.forEach(([toI, toJ]) => {
-        expect(strategy.isValidMove(fromI, fromJ, toI, toJ, gameState)).toBe(false);
+      destinations.forEach((to) => {
+        expect(strategy.isValidMove(from, to, gameState)).toBe(false);
       });
     });
 
@@ -109,19 +106,17 @@ describe('isValidPieceCapture', () => {
       ];
       const boardState = createBoard(board);
 
-      const fromI = 1;
-      const fromJ = 1;
-      const toI = 0;
-      const toJ = 2;
+      const from: Position = [1, 1];
+      const to: Position = [0, 2];
 
       const gameState: GameState = {
         boardState,
         currentPlayer: Color.White,
         hasMadeCapture: false,
-        selectedPiece: [fromI, fromJ],
+        selectedPiece: from,
       };
 
-      expect(strategy.isValidMove(fromI, fromJ, toI, toJ, gameState)).toBe(false);
+      expect(strategy.isValidMove(from, to, gameState)).toBe(false);
     });
 
     it('should return false for a move over the board', () => {
@@ -134,19 +129,17 @@ describe('isValidPieceCapture', () => {
       ];
       const boardState = createBoard(board);
 
-      const fromI = 2;
-      const fromJ = 2;
-      const toI = 1;
-      const toJ = 3;
+      const from: Position = [2, 2];
+      const to: Position = [1, 3];
 
       const gameState: GameState = {
         boardState,
         currentPlayer: Color.White,
         hasMadeCapture: false,
-        selectedPiece: [fromI, fromJ],
+        selectedPiece: from,
       };
 
-      expect(strategy.isValidMove(fromI, fromJ, toI, toJ, gameState)).toBe(false);
+      expect(strategy.isValidMove(from, to, gameState)).toBe(false);
     });
 
     it('should return false for a move by empty square', () => {
@@ -159,19 +152,17 @@ describe('isValidPieceCapture', () => {
       ];
       const boardState = createBoard(board);
 
-      const fromI = 1;
-      const fromJ = 1;
-      const toI = 0;
-      const toJ = 0;
+      const from: Position = [1, 1];
+      const to: Position = [0, 0];
 
       const gameState: GameState = {
         boardState,
         currentPlayer: Color.White,
         hasMadeCapture: false,
-        selectedPiece: [fromI, fromJ],
+        selectedPiece: from,
       };
 
-      expect(strategy.isValidMove(fromI, fromJ, toI, toJ, gameState)).toBe(false);
+      expect(strategy.isValidMove(from, to, gameState)).toBe(false);
     });
 
     it('should return false for a move by a piece of other player', () => {
@@ -184,19 +175,17 @@ describe('isValidPieceCapture', () => {
       ];
       const boardState = createBoard(board);
 
-      const fromI = 1;
-      const fromJ = 1;
-      const toI = 2;
-      const toJ = 2;
+      const from: Position = [1, 1];
+      const to: Position = [2, 2];
 
       const gameState: GameState = {
         boardState,
         currentPlayer: Color.White,
         hasMadeCapture: false,
-        selectedPiece: [fromI, fromJ],
+        selectedPiece: from,
       };
 
-      expect(strategy.isValidMove(fromI, fromJ, toI, toJ, gameState)).toBe(false);
+      expect(strategy.isValidMove(from, to, gameState)).toBe(false);
     });
   });
 });

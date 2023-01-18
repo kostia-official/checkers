@@ -1,6 +1,6 @@
 import { FrisianDraughtsStrategy } from '@strategies/frisian-draughts-strategy';
 import { createBoard } from '@common/test-utils/board';
-import { Color, GameState } from '@common/types';
+import { Color, GameState, Position } from '@common/types';
 
 describe('isValidPieceCaptureByKing', () => {
   it('should return true for a valid piece capture vertically by a king', () => {
@@ -14,19 +14,17 @@ describe('isValidPieceCaptureByKing', () => {
     ];
     const boardState = createBoard(board);
 
-    const fromI = 3;
-    const fromJ = 0;
-    const toI = 0;
-    const toJ = 0;
+    const from: Position = [3, 0];
+    const to: Position = [0, 0];
 
     const gameState: GameState = {
       boardState,
       currentPlayer: Color.White,
       hasMadeCapture: false,
-      selectedPiece: [fromI, fromJ],
+      selectedPiece: from,
     };
 
-    expect(strategy.isValidPieceCaptureByKing(fromI, fromJ, toI, toJ, gameState)).toBe(true);
+    expect(strategy.isValidPieceCaptureByKing(from, to, gameState)).toBe(true);
   });
 
   it('should return true for a valid piece capture horizontally by a king', () => {
@@ -40,19 +38,17 @@ describe('isValidPieceCaptureByKing', () => {
     ];
     const boardState = createBoard(board);
 
-    const fromI = 3;
-    const fromJ = 0;
-    const toI = 3;
-    const toJ = 3;
+    const from: Position = [3, 0];
+    const to: Position = [3, 3];
 
     const gameState: GameState = {
       boardState,
       currentPlayer: Color.White,
       hasMadeCapture: false,
-      selectedPiece: [fromI, fromJ],
+      selectedPiece: from,
     };
 
-    expect(strategy.isValidPieceCaptureByKing(fromI, fromJ, toI, toJ, gameState)).toBe(true);
+    expect(strategy.isValidPieceCaptureByKing(from, to, gameState)).toBe(true);
   });
 
   it('should return true for a valid piece capture diagonally by a king', () => {
@@ -66,19 +62,17 @@ describe('isValidPieceCaptureByKing', () => {
     ];
     const boardState = createBoard(board);
 
-    const fromI = 0;
-    const fromJ = 3;
-    const toI = 3;
-    const toJ = 0;
+    const from: Position = [0, 3];
+    const to: Position = [3, 0];
 
     const gameState: GameState = {
       boardState,
       currentPlayer: Color.White,
       hasMadeCapture: false,
-      selectedPiece: [fromI, fromJ],
+      selectedPiece: from,
     };
 
-    expect(strategy.isValidPieceCaptureByKing(fromI, fromJ, toI, toJ, gameState)).toBe(true);
+    expect(strategy.isValidPieceCaptureByKing(from, to, gameState)).toBe(true);
   });
 
   it('should return false for 2 pieces capture vertically at once', () => {
@@ -92,19 +86,17 @@ describe('isValidPieceCaptureByKing', () => {
     ];
     const boardState = createBoard(board);
 
-    const fromI = 3;
-    const fromJ = 0;
-    const toI = 0;
-    const toJ = 0;
+    const from: Position = [3, 0];
+    const to: Position = [0, 0];
 
     const gameState: GameState = {
       boardState,
       currentPlayer: Color.White,
       hasMadeCapture: false,
-      selectedPiece: [fromI, fromJ],
+      selectedPiece: from,
     };
 
-    expect(strategy.isValidPieceCaptureByKing(fromI, fromJ, toI, toJ, gameState)).toBe(false);
+    expect(strategy.isValidPieceCaptureByKing(from, to, gameState)).toBe(false);
   });
 
   it('should return false for capturing own piece horizontally', () => {
@@ -118,19 +110,17 @@ describe('isValidPieceCaptureByKing', () => {
     ];
     const boardState = createBoard(board);
 
-    const fromI = 3;
-    const fromJ = 0;
-    const toI = 3;
-    const toJ = 3;
+    const from: Position = [3, 0];
+    const to: Position = [3, 3];
 
     const gameState: GameState = {
       boardState,
       currentPlayer: Color.White,
       hasMadeCapture: false,
-      selectedPiece: [fromI, fromJ],
+      selectedPiece: from,
     };
 
-    expect(strategy.isValidPieceCaptureByKing(fromI, fromJ, toI, toJ, gameState)).toBe(false);
+    expect(strategy.isValidPieceCaptureByKing(from, to, gameState)).toBe(false);
   });
 
   it('should return false for capturing 0 pieces horizontally', () => {
@@ -144,19 +134,17 @@ describe('isValidPieceCaptureByKing', () => {
     ];
     const boardState = createBoard(board);
 
-    const fromI = 3;
-    const fromJ = 0;
-    const toI = 3;
-    const toJ = 3;
+    const from: Position = [3, 0];
+    const to: Position = [3, 3];
 
     const gameState: GameState = {
       boardState,
       currentPlayer: Color.White,
       hasMadeCapture: false,
-      selectedPiece: [fromI, fromJ],
+      selectedPiece: from,
     };
 
-    expect(strategy.isValidPieceCaptureByKing(fromI, fromJ, toI, toJ, gameState)).toBe(false);
+    expect(strategy.isValidPieceCaptureByKing(from, to, gameState)).toBe(false);
   });
 
   it('should return false for capturing 0 pieces diagonally', () => {
@@ -170,19 +158,17 @@ describe('isValidPieceCaptureByKing', () => {
     ];
     const boardState = createBoard(board);
 
-    const fromI = 3;
-    const fromJ = 0;
-    const toI = 0;
-    const toJ = 3;
+    const from: Position = [3, 0];
+    const to: Position = [0, 3];
 
     const gameState: GameState = {
       boardState,
       currentPlayer: Color.White,
       hasMadeCapture: false,
-      selectedPiece: [fromI, fromJ],
+      selectedPiece: from,
     };
 
-    expect(strategy.isValidPieceCaptureByKing(fromI, fromJ, toI, toJ, gameState)).toBe(false);
+    expect(strategy.isValidPieceCaptureByKing(from, to, gameState)).toBe(false);
   });
 
   it('should return false for capturing piece with pending capturing', () => {
@@ -196,10 +182,8 @@ describe('isValidPieceCaptureByKing', () => {
     ];
     const boardState = createBoard(board);
 
-    const fromI = 3;
-    const fromJ = 3;
-    const toI = 3;
-    const toJ = 0;
+    const from: Position = [3, 3];
+    const to: Position = [3, 0];
 
     boardState[3][1].pendingCapture = true;
 
@@ -207,10 +191,10 @@ describe('isValidPieceCaptureByKing', () => {
       boardState,
       currentPlayer: Color.White,
       hasMadeCapture: false,
-      selectedPiece: [fromI, fromJ],
+      selectedPiece: from,
     };
 
-    expect(strategy.isValidPieceCaptureByKing(fromI, fromJ, toI, toJ, gameState)).toBe(false);
+    expect(strategy.isValidPieceCaptureByKing(from, to, gameState)).toBe(false);
   });
 
   it('should return false for invalid capture destination', () => {
@@ -224,9 +208,8 @@ describe('isValidPieceCaptureByKing', () => {
     ];
     const boardState = createBoard(board);
 
-    const fromI = 3;
-    const fromJ = 3;
-    const invalidTo = [
+    const from: Position = [3, 3];
+    const invalidTo: Position[] = [
       [0, 1],
       [2, 1],
       [1, 2],
@@ -240,11 +223,11 @@ describe('isValidPieceCaptureByKing', () => {
       boardState,
       currentPlayer: Color.White,
       hasMadeCapture: false,
-      selectedPiece: [fromI, fromJ],
+      selectedPiece: from,
     };
 
-    invalidTo.forEach(([toI, toJ]) => {
-      expect(strategy.isValidPieceCaptureByKing(fromI, fromJ, toI, toJ, gameState)).toBe(false);
+    invalidTo.forEach((to) => {
+      expect(strategy.isValidPieceCaptureByKing(from, to, gameState)).toBe(false);
     });
   });
 });

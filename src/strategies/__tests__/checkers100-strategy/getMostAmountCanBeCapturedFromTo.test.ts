@@ -1,6 +1,6 @@
 import { Checkers100Strategy } from '@strategies/checkers100-strategy';
 import { createBoard } from '@common/test-utils/board';
-import { Color, GameState } from '@common/types';
+import { Color, GameState, Position } from '@common/types';
 
 describe('getMostAmountCanBeCapturedFromTo', () => {
   it('should return 7 as most amount can be captured', () => {
@@ -17,10 +17,8 @@ describe('getMostAmountCanBeCapturedFromTo', () => {
     ];
     const boardState = createBoard(board);
 
-    const fromI = 6;
-    const fromJ = 0;
-    const toI = 4;
-    const toJ = 2;
+    const from: Position = [6, 0];
+    const to: Position = [4, 2];
 
     const gameState: GameState = {
       boardState,
@@ -29,7 +27,7 @@ describe('getMostAmountCanBeCapturedFromTo', () => {
       selectedPiece: null,
     };
 
-    const amount = strategy.getMostAmountCanBeCaptured(fromI, fromJ, toI, toJ, gameState);
+    const amount = strategy.getMostAmountCanBeCaptured(from, to, gameState);
 
     expect(amount).toBe(7);
   });
@@ -45,10 +43,8 @@ describe('getMostAmountCanBeCapturedFromTo', () => {
     ];
     const boardState = createBoard(board);
 
-    const fromI = 3;
-    const fromJ = 0;
-    const toI = 1;
-    const toJ = 2;
+    const from: Position = [3, 0];
+    const to: Position = [1, 2];
 
     const gameState: GameState = {
       boardState,
@@ -57,7 +53,7 @@ describe('getMostAmountCanBeCapturedFromTo', () => {
       selectedPiece: null,
     };
 
-    const amount = strategy.getMostAmountCanBeCaptured(fromI, fromJ, toI, toJ, gameState);
+    const amount = strategy.getMostAmountCanBeCaptured(from, to, gameState);
 
     expect(amount).toBe(0);
   });
@@ -74,10 +70,8 @@ describe('getMostAmountCanBeCapturedFromTo', () => {
 
     const boardState = createBoard(board);
 
-    const fromI = 3;
-    const fromJ = 0;
-    const toI = 1;
-    const toJ = 2;
+    const from: Position = [3, 0];
+    const to: Position = [1, 2];
 
     const gameState: GameState = {
       boardState,
@@ -86,7 +80,7 @@ describe('getMostAmountCanBeCapturedFromTo', () => {
       selectedPiece: null,
     };
 
-    const amount = strategy.getMostAmountCanBeCaptured(fromI, fromJ, toI, toJ, gameState);
+    const amount = strategy.getMostAmountCanBeCaptured(from, to, gameState);
 
     expect(amount).toBe(1);
   });
@@ -105,10 +99,8 @@ describe('getMostAmountCanBeCapturedFromTo', () => {
     ];
     const boardState = createBoard(board);
 
-    const fromI = 6;
-    const fromJ = 0;
-    const toI = 4;
-    const toJ = 2;
+    const from: Position = [6, 0];
+    const to: Position = [4, 2];
 
     const gameState: GameState = {
       boardState,
@@ -117,7 +109,7 @@ describe('getMostAmountCanBeCapturedFromTo', () => {
       selectedPiece: null,
     };
 
-    const amount = strategy.getMostAmountCanBeCaptured(fromI, fromJ, toI, toJ, gameState);
+    const amount = strategy.getMostAmountCanBeCaptured(from, to, gameState);
 
     expect(amount).toBe(5);
   });

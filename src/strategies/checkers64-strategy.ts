@@ -1,4 +1,4 @@
-import { Color, GameState } from '@common/types';
+import { Color, GameState, Position } from '@common/types';
 import { BaseCheckersStrategy } from './base-checkers-strategy';
 
 export class Checkers64Strategy extends BaseCheckersStrategy {
@@ -7,17 +7,18 @@ export class Checkers64Strategy extends BaseCheckersStrategy {
   private rowsNotation = Array.from({ length: 8 }, (_, i) => (this.squares - i).toString());
   private columnsNotation = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 
-  getSquareNotation(i: number, j: number) {
+  getSquareNotation([i, j]: Position) {
     return `${this.columnsNotation[j]}${this.rowsNotation[i]}`;
   }
 
-  isValidPieceCaptureByKing(fromI: number, fromJ: number, toI: number, toJ: number, gameState: GameState) {
+  isValidPieceCaptureByKing([fromI, fromJ]: Position, [toI, toJ]: Position, gameState: GameState) {
     // Check if the move is diagonal and the distance is 2 or more
     const distance = Math.abs(fromI - toI);
     if (Math.abs(fromJ - toJ) !== distance || distance < 2) {
       return false;
     }
 
+    // TODO: Use iterateBetweenFromTo
     // Check if there is an enemy piece to capture
     let i = fromI;
     let j = fromJ;
@@ -49,7 +50,7 @@ export class Checkers64Strategy extends BaseCheckersStrategy {
     return true;
   }
 
-  isValidPieceCaptureByRegular(fromI: number, fromJ: number, toI: number, toJ: number, gameState: GameState): boolean {
+  isValidPieceCaptureByRegular([fromI, fromJ]: Position, [toI, toJ]: Position, gameState: GameState): boolean {
     const { boardState, currentPlayer } = gameState;
 
     const capturedPieceRow = (fromI + toI) / 2;
@@ -72,12 +73,14 @@ export class Checkers64Strategy extends BaseCheckersStrategy {
     return true;
   }
 
-  isValidMoveByKing(fromI: number, fromJ: number, toI: number, toJ: number, gameState: GameState) {
+  isValidMoveByKing([fromI, fromJ]: Position, [toI, toJ]: Position, gameState: GameState) {
+    // TODO: Use isValidPath
     // Check if the move is diagonal
     if (Math.abs(fromI - toI) !== Math.abs(fromJ - toJ)) {
       return false;
     }
 
+    // TODO: Use iterateBetweenFromTo ?
     // Check if there are no pieces in the path of the move
     let i = fromI;
     let j = fromJ;
@@ -93,7 +96,7 @@ export class Checkers64Strategy extends BaseCheckersStrategy {
     return true;
   }
 
-  isValidMoveByRegular(fromI: number, fromJ: number, toI: number, toJ: number, gameState: GameState): boolean {
+  isValidMoveByRegular([fromI, fromJ]: Position, [toI, toJ]: Position, gameState: GameState): boolean {
     // Check if the move is diagonal and the distance is 1
     if (Math.abs(toI - fromI) !== 1 || Math.abs(toJ - fromJ) !== 1) {
       return false;

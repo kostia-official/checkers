@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Color, GameState } from '../../../../../common/types';
+import { Color, GameState, Position } from '../../../../../common/types';
 
 export interface HookArgs {
   gameState: GameState;
@@ -31,7 +31,7 @@ export const useEditMode = ({ updateGameState, gameState }: HookArgs) => {
     updateGameState(updatedGameState);
   };
 
-  const handleSquareEdit = (i: number, j: number) => {
+  const handleSquareEdit = ([i, j]: Position) => {
     const piece = gameState.boardState[i][j].piece;
     const updatedPiece = piece ? null : editPiecesColor;
     const updatedIsKing = piece ? false : isKing;
