@@ -1,4 +1,4 @@
-import { GameType, Color, Coordinates, BoardState } from '@common/types';
+import { GameType, Color, Position, BoardState } from '@common/types';
 
 export interface GameModel {
   id: string;
@@ -30,8 +30,8 @@ export type UpdateGamePlayerInput = Partial<Omit<GamePlayerModel, 'id'>>;
 export interface GameHistoryModel {
   id: string;
   gameId: string;
-  jumpFrom?: Coordinates;
-  jumpTo?: Coordinates;
+  jumpFrom?: Position;
+  jumpTo?: Position;
   boardState: BoardState;
   currentPlayerColor: Color;
   currentPlayerId?: string;

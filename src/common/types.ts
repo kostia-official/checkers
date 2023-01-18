@@ -18,7 +18,7 @@ export type BoardState = Square[][];
 export interface GameState {
   boardState: BoardState;
   currentPlayer: Color;
-  selectedPiece: Coordinates | null;
+  selectedPiece: Position | null;
   hasMadeCapture: boolean;
 }
 
@@ -27,7 +27,7 @@ export type GameStateHistory = Array<{
   currentPlayerColor: Color;
 }>;
 
-export type Coordinates = [number, number];
+export type Position = [number, number];
 
 export interface GamePlayerExtended extends GamePlayerModel {
   name: string;

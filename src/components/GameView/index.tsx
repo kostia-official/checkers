@@ -7,9 +7,10 @@ import { DEBUG } from '@common/constants';
 import { Button } from '@mantine/core';
 import { Link } from 'react-router-dom';
 import { EditMode } from './components/EditMode';
-import { GameState, Color, GameStateHistory } from '@common/types';
+import { GameState, Color, GameStateHistory, Position } from '@common/types';
 import { EditModeState } from './components/EditMode/hooks/useEditMode';
 import { useTranslation } from 'react-i18next';
+import { isEqualPosition } from '@common/utils';
 
 export interface CheckersGameProps {
   strategy: ICheckersStrategy;
@@ -18,8 +19,8 @@ export interface CheckersGameProps {
   playerColor: Color;
   winnerLabel: string | undefined;
   editModeState: EditModeState;
-  handleSquareClick: (i: number, j: number) => void;
-  handlePieceClick: (i: number, j: number) => void;
+  handleSquareClick: (position: Position) => void;
+  handlePieceClick: (position: Position) => void;
   onUndoMoveClick: () => void;
   undoMoveLoading?: boolean;
   handleNewGame: () => void;
@@ -46,28 +47,28 @@ export const GameView: React.FC<CheckersGameProps> = ({
 
   const { boardState, selectedPiece } = gameState;
 
-  const getSquareColor = (i: number, j: number) => {
+  const getSquareColor = ([i, j]: Position) => {
     if ((i + j) % 2 !== 0) {
       return Color.White;
     }
     return Color.Black;
   };
 
-  const getIsSelectedPiece = (i: number, j: number) => {
+  const getIsSelectedPiece = (position: Position) => {
     if (!selectedPiece) {
       return false;
     }
-    const [selectedI, selectedJ] = selectedPiece;
-    return selectedI === i && selectedJ === j;
+
+    return isEqualPosition(position, selectedPiece);
   };
 
   const isValidJumpDestination = useCallback(
-    (i: number, j: number): boolean => {
+    (position: Position): boolean => {
       if (!selectedPiece) {
         return false;
       }
 
-      return strategy.isValidJump(selectedPiece[0], selectedPiece[1], i, j, gameState);
+      return strategy.isValidJump(selectedPiece, position, gameState);
     },
     [selectedPiece, strategy, gameState]
   );
@@ -87,25 +88,25 @@ export const GameView: React.FC<CheckersGameProps> = ({
             <CheckersRow key={playerI}>
               {playerRow.map((square, j) => {
                 const playerJ = shouldReverse ? rowLength - 1 - j : j;
-                const squareNotation = strategy.getSquareNotation(playerI, playerJ);
+                const squareNotation = strategy.getSquareNotation([playerI, playerJ]);
 
                 return (
                   <CheckersSquare
-                    className={getSquareColor(playerI, playerJ)}
+                    className={getSquareColor([playerI, playerJ])}
                     key={playerJ}
                     onClick={() => {
                       if (editModeState.isEditMode) {
-                        editModeState.handleSquareEdit(playerI, playerJ);
+                        editModeState.handleSquareEdit([playerI, playerJ]);
                       } else {
-                        handleSquareClick(playerI, playerJ);
-                        handlePieceClick(playerI, playerJ);
+                        handleSquareClick([playerI, playerJ]);
+                        handlePieceClick([playerI, playerJ]);
                       }
                     }}
                     rowSquaresCount={rowLength}
-                    isValidJumpDestination={isValidJumpDestination(playerI, playerJ)}
+                    isValidJumpDestination={isValidJumpDestination([playerI, playerJ])}
                   >
                     {square.piece ? (
-                      <CheckerPiece square={square} isSelected={getIsSelectedPiece(playerI, playerJ)} />
+                      <CheckerPiece square={square} isSelected={getIsSelectedPiece([playerI, playerJ])} />
                     ) : null}
                     {DEBUG && <SquareNotation>{squareNotation}</SquareNotation>}
                   </CheckersSquare>

@@ -1,5 +1,5 @@
 import { createBoard } from '@common/test-utils/board';
-import { Color, GameState } from '@common/types';
+import { Color, GameState, Position } from '@common/types';
 import { Checkers64Strategy } from '@strategies/checkers64-strategy';
 
 describe('getValidCaptures', () => {
@@ -14,9 +14,7 @@ describe('getValidCaptures', () => {
       [0, 0, 1, 0, 0],
     ];
     const boardState = createBoard(board);
-
-    const fromI = 4;
-    const fromJ = 2;
+    const from: Position = [4, 2];
 
     const gameState: GameState = {
       boardState,
@@ -25,7 +23,7 @@ describe('getValidCaptures', () => {
       selectedPiece: null,
     };
 
-    const validCaptures = strategy.getValidCaptures(fromI, fromJ, gameState);
+    const validCaptures = strategy.getValidCaptures(from, gameState);
 
     expect(validCaptures.length).toBe(2);
     expect(validCaptures).toStrictEqual([
@@ -46,8 +44,7 @@ describe('getValidCaptures', () => {
     ];
     const boardState = createBoard(board);
 
-    const fromI = 4;
-    const fromJ = 1;
+    const from: Position = [4, 1];
 
     const gameState: GameState = {
       boardState,
@@ -56,7 +53,7 @@ describe('getValidCaptures', () => {
       selectedPiece: null,
     };
 
-    const validCaptures = strategy.getValidCaptures(fromI, fromJ, gameState);
+    const validCaptures = strategy.getValidCaptures(from, gameState);
 
     expect(validCaptures.length).toBe(1);
     expect(validCaptures).toStrictEqual([[2, 3]]);
@@ -74,8 +71,7 @@ describe('getValidCaptures', () => {
     ];
     const boardState = createBoard(board);
 
-    const fromI = 4;
-    const fromJ = 1;
+    const from: Position = [4, 1];
 
     const gameState: GameState = {
       boardState,
@@ -84,7 +80,7 @@ describe('getValidCaptures', () => {
       selectedPiece: null,
     };
 
-    const validCaptures = strategy.getValidCaptures(fromI, fromJ, gameState);
+    const validCaptures = strategy.getValidCaptures(from, gameState);
 
     expect(validCaptures.length).toBe(0);
   });

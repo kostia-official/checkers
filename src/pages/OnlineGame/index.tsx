@@ -4,7 +4,7 @@ import { gameService } from '@services/game.service';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { CenteredLoader } from '@components/CenteredLoader';
 import { mapGameTypeToStrategy } from '@common/mappers';
-import { Coordinates, GameState, GamePlayers } from '@common/types';
+import { Position, GameState, GamePlayers } from '@common/types';
 import { useEditMode } from '@components/GameView/components/EditMode/hooks/useEditMode';
 import { GameView } from '@components/GameView';
 import { GameModel, UserModel, GameHistoryModel, RequestType, GamePlayerModel } from '@services/types';
@@ -136,7 +136,7 @@ export const OnlineGame: React.FC<OnlineGameProps> = ({ game, user, gameHistory,
     return new Strategy();
   }, [game.gameType]);
 
-  const [selectedPiece, setSelectedPiece] = useState<Coordinates | null>(null);
+  const [selectedPiece, setSelectedPiece] = useState<Position | null>(null);
   const [hasMadeCapture, setHasMadeCapture] = useState(false);
 
   const gameState = useMemo((): GameState => {
@@ -203,17 +203,17 @@ export const OnlineGame: React.FC<OnlineGameProps> = ({ game, user, gameHistory,
     await createRequest('undoMove');
   };
 
-  const handlePieceClick = (i: number, j: number) => {
+  const handlePieceClick = (position: Position) => {
     if (!canMakeJump) return;
 
-    const newSelectedPiece = strategy.handlePieceClick(i, j, gameState);
+    const newSelectedPiece = strategy.handlePieceClick(position, gameState);
     if (newSelectedPiece) setSelectedPiece(newSelectedPiece);
   };
 
-  const handleSquareClick = (i: number, j: number) => {
+  const handleSquareClick = (position: Position) => {
     if (!canMakeJump) return;
 
-    const newGameState = strategy.handleSquareClick(i, j, gameState);
+    const newGameState = strategy.handleSquareClick(position, gameState);
     if (newGameState) updateGameState(newGameState);
   };
 

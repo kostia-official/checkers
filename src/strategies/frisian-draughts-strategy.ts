@@ -1,9 +1,9 @@
-import { GameState } from '@common/types';
+import { GameState, Position } from '@common/types';
 import { Checkers100Strategy } from '@strategies/checkers100-strategy';
-import { toggleColor } from '@common/utils';
+import { toggleColor, getSquares, getSquare } from '@common/utils';
 
 export class FrisianDraughtsStrategy extends Checkers100Strategy {
-  isValidPieceCaptureByRegular(fromI: number, fromJ: number, toI: number, toJ: number, gameState: GameState): boolean {
+  isValidPieceCaptureByRegular([fromI, fromJ]: Position, [toI, toJ]: Position, gameState: GameState): boolean {
     const { boardState, currentPlayer } = gameState;
 
     const capturedPieceRow = (fromI + toI) / 2;
@@ -15,6 +15,7 @@ export class FrisianDraughtsStrategy extends Checkers100Strategy {
       return false;
     }
 
+    // TODO: Refactor with isValidCapturePath ?
     // Check that distance is 2 using Manhattan distance formula
     if (Math.abs(toI - fromI) + Math.abs(toJ - fromJ) !== 4) {
       return false;
@@ -23,7 +24,7 @@ export class FrisianDraughtsStrategy extends Checkers100Strategy {
     return true;
   }
 
-  isValidPath(fromI: number, fromJ: number, toI: number, toJ: number) {
+  isValidPath([fromI, fromJ]: Position, [toI, toJ]: Position): boolean {
     const xDiff = Math.abs(fromI - toI);
     const yDiff = Math.abs(fromJ - toJ);
     const isDiagonalJump = xDiff >= 1 && yDiff >= 1 && xDiff === yDiff;
@@ -33,11 +34,11 @@ export class FrisianDraughtsStrategy extends Checkers100Strategy {
     return isDiagonalJump || isVerticalCapture || isHorizontalCapture;
   }
 
-  isValidPieceCaptureByKing(fromI: number, fromJ: number, toI: number, toJ: number, gameState: GameState) {
+  isValidPieceCaptureByKing(from: Position, to: Position, gameState: GameState): boolean {
     const { boardState, currentPlayer } = gameState;
     const opponentColor = toggleColor(currentPlayer);
-    const fromSquare = boardState[fromI]?.[fromJ];
-    const toSquare = boardState[toI]?.[toJ];
+
+    const { fromSquare, toSquare } = getSquares(boardState, from, to);
 
     // Check if the "from" square is occupied by a king of the current player's color
     if (!fromSquare || fromSquare.piece === opponentColor || !fromSquare.isKing) {
@@ -50,7 +51,7 @@ export class FrisianDraughtsStrategy extends Checkers100Strategy {
     }
 
     // Check if the move is diagonal, vertical, or horizontal
-    if (!this.isValidPath(fromI, fromJ, toI, toJ)) {
+    if (!this.isValidPath(from, to)) {
       return false;
     }
 
@@ -58,8 +59,8 @@ export class FrisianDraughtsStrategy extends Checkers100Strategy {
     let piecesCaptured = 0;
     let isOwnPieceCaptured = false;
     let isPendingCapturingPiece = false;
-    this.iterateBetweenFromTo(fromI, fromJ, toI, toJ, (i, j) => {
-      const captured = boardState[i]?.[j];
+    this.iterateBetweenFromTo(from, to, (position) => {
+      const captured = getSquare(boardState, position);
       if (!captured) return true;
 
       if (captured?.piece === currentPlayer) {
@@ -85,16 +86,12 @@ export class FrisianDraughtsStrategy extends Checkers100Strategy {
     return true;
   }
 
-  iterateBetweenFromTo(
-    fromI: number,
-    fromJ: number,
-    toI: number,
-    toJ: number,
-    cb: (i: number, j: number) => boolean
-  ): void {
-    if (!this.isValidPath(fromI, fromJ, toI, toJ)) {
+  iterateBetweenFromTo(from: Position, to: Position, cb: (position: Position) => boolean): void {
+    if (!this.isValidPath(from, to)) {
       return;
     }
+    const [fromI, fromJ] = from;
+    const [toI, toJ] = to;
 
     const xDiff = Math.abs(toI - fromI);
     const yDiff = Math.abs(toJ - fromJ);
@@ -110,7 +107,7 @@ export class FrisianDraughtsStrategy extends Checkers100Strategy {
     }
 
     for (let i = fromI + iStep, j = fromJ + jStep; i !== toI || j !== toJ; i += iStep, j += jStep) {
-      const isProceed = cb(i, j);
+      const isProceed = cb([i, j]);
       if (!isProceed) return;
     }
   }

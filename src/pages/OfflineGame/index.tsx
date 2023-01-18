@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import { BoardState, Color, Coordinates, GameState, GameStateHistory } from '@common/types';
+import { BoardState, Color, Position, GameState, GameStateHistory } from '@common/types';
 import { ICheckersStrategy } from '@strategies/checkers-strategy.interface';
 import { useEditMode } from '@components/GameView/components/EditMode/hooks/useEditMode';
 import { GameView } from '@components/GameView';
@@ -18,7 +18,7 @@ export const OfflineGame: React.FC<CheckersGameProps> = ({ strategy }) => {
     { boardState, currentPlayerColor: currentPlayer },
   ]);
   const [winner, setWinner] = useState<Color | undefined>();
-  const [selectedPiece, setSelectedPiece] = useState<Coordinates | null>(null);
+  const [selectedPiece, setSelectedPiece] = useState<Position | null>(null);
   const [hasMadeCapture, setHasMadeCapture] = useState(false);
 
   const updateGameState = ({ boardState, currentPlayer, selectedPiece, hasMadeCapture }: GameState) => {
@@ -45,13 +45,13 @@ export const OfflineGame: React.FC<CheckersGameProps> = ({ strategy }) => {
     return { currentPlayer, boardState, selectedPiece, hasMadeCapture };
   }, [boardState, currentPlayer, hasMadeCapture, selectedPiece]);
 
-  const handlePieceClick = (i: number, j: number) => {
-    const newSelectedPiece = strategy.handlePieceClick(i, j, getGameState());
+  const handlePieceClick = (position: Position) => {
+    const newSelectedPiece = strategy.handlePieceClick(position, getGameState());
     if (newSelectedPiece) setSelectedPiece(newSelectedPiece);
   };
 
-  const handleSquareClick = (i: number, j: number) => {
-    const newGameState = strategy.handleSquareClick(i, j, getGameState());
+  const handleSquareClick = (position: Position) => {
+    const newGameState = strategy.handleSquareClick(position, getGameState());
     if (newGameState) updateGameState(newGameState);
   };
 
