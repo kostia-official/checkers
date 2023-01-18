@@ -1,6 +1,7 @@
 import { ICheckersStrategy } from './checkers-strategy.interface';
 import { BoardState, Color, GameState, Coordinates, Square } from '../common/types';
 import cloneDeep from 'lodash.clonedeep';
+import { toggleColor } from '@common/utils';
 
 export abstract class BaseCheckersStrategy implements ICheckersStrategy {
   abstract squares: number;
@@ -196,6 +197,33 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
     return boardState;
   }
 
+  protected updateGameStateAfterCapture(
+    fromI: number,
+    fromJ: number,
+    toI: number,
+    toJ: number,
+    gameState: GameState
+  ): GameState {
+    const newGameState = cloneDeep(gameState);
+
+    // Check if the piece can become a king and update its isKing status
+    if (this.canBecomeKing(toI, toJ, newGameState.currentPlayer)) {
+      newGameState.boardState[toI][toJ].isKing = true;
+    }
+
+    // Check if there are more valid captures available for the moved piece
+    const validCaptures = this.getValidCaptures(toI, toJ, newGameState);
+
+    if (validCaptures.length === 0) {
+      // If there are no more valid captures, change the current player
+      newGameState.currentPlayer = toggleColor(newGameState.currentPlayer);
+
+      newGameState.boardState = this.removePendingCapturePieces(newGameState.boardState);
+    }
+
+    return newGameState;
+  }
+
   capturePiece(fromI: number, fromJ: number, toI: number, toJ: number, gameState: GameState): GameState {
     const newGameState = cloneDeep(gameState);
 
@@ -205,6 +233,7 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
     newGameState.boardState[toI][toJ].piece = newGameState.boardState[fromI][fromJ].piece;
     newGameState.boardState[toI][toJ].isKing = newGameState.boardState[fromI][fromJ].isKing;
     newGameState.boardState[fromI][fromJ].piece = null;
+    newGameState.boardState[fromI][fromJ].isKing = false;
 
     if (!isKing) {
       const capturedPieceRow = (fromI + toI) / 2;
@@ -217,22 +246,7 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
       }
     }
 
-    // Check if the piece can become a king and update its isKing status
-    if (this.canBecomeKing(toI, toJ, newGameState)) {
-      newGameState.boardState[toI][toJ].isKing = true;
-    }
-
-    // Check if there are more valid captures available for the moved piece
-    const validCaptures = this.getValidCaptures(toI, toJ, newGameState);
-
-    if (validCaptures.length === 0) {
-      // If there are no more valid captures, change the current player
-      newGameState.currentPlayer = newGameState.currentPlayer === Color.White ? Color.Black : Color.White;
-
-      newGameState.boardState = this.removePendingCapturePieces(newGameState.boardState);
-    }
-
-    return newGameState;
+    return this.updateGameStateAfterCapture(fromI, fromJ, toI, toJ, newGameState);
   }
 
   removePendingCapturePieces(boardState: BoardState) {
@@ -260,7 +274,7 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
     newGameState.boardState[fromI][fromJ].piece = null;
 
     // Check if the piece can become a king and update its isKing status
-    if (this.canBecomeKing(toI, toJ, gameState)) {
+    if (this.canBecomeKing(toI, toJ, gameState.currentPlayer)) {
       newGameState.boardState[toI][toJ].isKing = true;
     }
 
@@ -292,7 +306,7 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
     return piecesThatCanCapture;
   }
 
-  canBecomeKing(i: number, j: number, { currentPlayer }: GameState): boolean {
+  canBecomeKing(i: number, j: number, currentPlayer: Color): boolean {
     // If the piece is white, it can become a king if it reaches the first row
     if (currentPlayer === Color.White && i === 0) {
       return true;

@@ -1,6 +1,7 @@
-import { GameState, Coordinates, Color } from '@common/types';
+import { GameState, Coordinates } from '@common/types';
 import cloneDeep from 'lodash.clonedeep';
 import { Checkers64Strategy } from './checkers64-strategy';
+import { toggleColor } from '@common/utils';
 
 export class Checkers100Strategy extends Checkers64Strategy {
   squares = 10;
@@ -106,44 +107,31 @@ export class Checkers100Strategy extends Checkers64Strategy {
     return amount;
   }
 
-  capturePiece(fromI: number, fromJ: number, toI: number, toJ: number, gameState: GameState): GameState {
+  protected updateGameStateAfterCapture(
+    fromI: number,
+    fromJ: number,
+    toI: number,
+    toJ: number,
+    gameState: GameState
+  ): GameState {
     const newGameState = cloneDeep(gameState);
-
-    // Check if the piece being moved is a king
-    const isKing = newGameState.boardState[fromI][fromJ].isKing;
-
-    newGameState.boardState[toI][toJ].piece = newGameState.boardState[fromI][fromJ].piece;
-    newGameState.boardState[toI][toJ].isKing = newGameState.boardState[fromI][fromJ].isKing;
-    newGameState.boardState[fromI][fromJ].piece = null;
-    newGameState.boardState[fromI][fromJ].isKing = false;
-
-    if (!isKing) {
-      const capturedPieceRow = (fromI + toI) / 2;
-      const capturedPieceColumn = (fromJ + toJ) / 2;
-      newGameState.boardState[capturedPieceRow][capturedPieceColumn].pendingCapture = true;
-    } else {
-      const updatedBoardState = this.capturePieceByKing(fromI, fromJ, toI, toJ, newGameState);
-      if (updatedBoardState) {
-        newGameState.boardState = updatedBoardState;
-      }
-    }
 
     // Check if there are more valid captures available for the moved piece
     const validCaptures = this.getValidCaptures(toI, toJ, newGameState);
     const hasValidCaptures = validCaptures.length > 0;
 
     // The piece can become a king if no more captures for it as a regular piece
-    if (!hasValidCaptures && this.canBecomeKing(toI, toJ, newGameState)) {
+    if (!hasValidCaptures && this.canBecomeKing(toI, toJ, newGameState.currentPlayer)) {
       newGameState.boardState[toI][toJ].isKing = true;
     }
 
     if (!hasValidCaptures) {
       // If there are no more valid captures, change the current player
-      newGameState.currentPlayer = newGameState.currentPlayer === Color.White ? Color.Black : Color.White;
+      newGameState.currentPlayer = toggleColor(newGameState.currentPlayer);
 
       newGameState.boardState = this.removePendingCapturePieces(newGameState.boardState);
     }
 
-    return { ...newGameState };
+    return newGameState;
   }
 }
