@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { CheckersGameWrapper, CheckersBoard, CheckersRow, CheckersSquare, GameExtras, SquareNotation } from './styled';
 import { CheckerPiece } from './components/CheckersPiece';
@@ -61,14 +61,16 @@ export const GameView: React.FC<CheckersGameProps> = ({
     return selectedI === i && selectedJ === j;
   };
 
-  const isValidJumpDestination = (i: number, j: number): boolean => {
-    if (!selectedPiece) {
-      return false;
-    }
-    const validMoves = strategy.getValidMoves(selectedPiece[0], selectedPiece[1], gameState);
-    const validCaptures = strategy.getValidCaptures(selectedPiece[0], selectedPiece[1], gameState);
-    return validMoves.some(([x, y]) => x === i && y === j) || validCaptures.some(([x, y]) => x === i && y === j);
-  };
+  const isValidJumpDestination = useCallback(
+    (i: number, j: number): boolean => {
+      if (!selectedPiece) {
+        return false;
+      }
+
+      return strategy.isValidJump(selectedPiece[0], selectedPiece[1], i, j, gameState);
+    },
+    [selectedPiece, strategy, gameState]
+  );
 
   const shouldReverse = playerColor === 'black';
   const playerBoardState = shouldReverse ? [...boardState].reverse() : boardState;

@@ -275,11 +275,15 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
 
     for (let i = 0; i < this.squares; i++) {
       for (let j = 0; j < this.squares; j++) {
+        if (boardState[i][j].piece !== currentPlayer) {
+          continue; // skip opponent pieces
+        }
         if (i === selectedI && j === selectedJ) {
           continue; // skip the selected piece
         }
+
         const validCaptures = this.getValidCaptures(i, j, gameState);
-        if (validCaptures.length > 0 && boardState[i][j].piece === currentPlayer) {
+        if (validCaptures.length > 0) {
           piecesThatCanCapture.push([i, j]);
         }
       }
@@ -300,31 +304,52 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
     return false;
   }
 
-  getValidMoves(i: number, j: number, gameState: GameState): Coordinates[] {
-    const validMoves: Coordinates[] = [];
-    // Check all possible moves and add them to the validMoves array if they are valid
+  // Can add isValidPath for king/regular & capture/move for extra optimisation
+  isValidPath(fromI: number, fromJ: number, toI: number, toJ: number) {
+    const xDiff = Math.abs(fromI - toI);
+    const yDiff = Math.abs(fromJ - toJ);
+    const isDiagonal = xDiff >= 1 && yDiff >= 1 && xDiff === yDiff;
+
+    return isDiagonal;
+  }
+
+  iterateBoard(i: number, j: number, gameState: GameState, cb: (i: number, j: number) => void): void {
+    const isEvenSquares = (i + j) % 2 === 0;
+    const checkSquareWith = isEvenSquares ? 0 : 1;
+
+    // Check all possible captures and add them to the validCaptures array if they are valid
     for (let toI = 0; toI < this.squares; toI++) {
       for (let toJ = 0; toJ < this.squares; toJ++) {
-        if (this.isValidMove(i, j, toI, toJ, gameState)) {
-          validMoves.push([toI, toJ]);
+        const isValidSquare = (toI + toJ) % 2 === checkSquareWith;
+
+        if (isValidSquare && this.isValidPath(i, j, toI, toJ)) {
+          cb(toI, toJ);
         }
       }
     }
+  }
+
+  getValidMoves(i: number, j: number, gameState: GameState): Coordinates[] {
+    const validMoves: Coordinates[] = [];
+
+    this.iterateBoard(i, j, gameState, (toI, toJ) => {
+      if (this.isValidMove(i, j, toI, toJ, gameState)) {
+        validMoves.push([toI, toJ]);
+      }
+    });
 
     return validMoves;
   }
 
-  // TODO: Optimise to not check every square
   getValidCaptures(i: number, j: number, gameState: GameState): Coordinates[] {
     const validCaptures: Coordinates[] = [];
+
     // Check all possible captures and add them to the validCaptures array if they are valid
-    for (let toI = 0; toI < this.squares; toI++) {
-      for (let toJ = 0; toJ < this.squares; toJ++) {
-        if (this.isValidPieceCapture(i, j, toI, toJ, gameState)) {
-          validCaptures.push([toI, toJ]);
-        }
+    this.iterateBoard(i, j, gameState, (toI, toJ) => {
+      if (this.isValidPieceCapture(i, j, toI, toJ, gameState)) {
+        validCaptures.push([toI, toJ]);
       }
-    }
+    });
 
     return validCaptures;
   }
@@ -386,5 +411,14 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
       const isProceed = cb(i, j);
       if (!isProceed) return;
     }
+  }
+
+  isValidJump(fromI: number, fromJ: number, toI: number, toJ: number, gameState: GameState): boolean {
+    if (!this.isValidPath(fromI, fromJ, toI, toJ)) return false;
+
+    const isValidCapture = this.isValidPieceCapture(fromI, fromJ, toI, toJ, gameState);
+    const isValidMove = isValidCapture ? false : this.isValidMove(fromI, fromJ, toI, toJ, gameState);
+
+    return isValidMove || isValidCapture;
   }
 }

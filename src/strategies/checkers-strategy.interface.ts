@@ -12,6 +12,7 @@ export interface ICheckersStrategy {
   getValidCaptures(i: number, j: number, gameState: GameState): Coordinates[];
   getOtherPiecesWithValidCaptures(selectedI: number, selectedJ: number, gameState: GameState): Coordinates[];
   canBecomeKing(i: number, j: number, gameState: GameState): boolean;
+  isValidJump(fromI: number, fromJ: number, toI: number, toJ: number, gameState: GameState): boolean;
 
   movePiece(fromI: number, fromJ: number, toI: number, toJ: number, gameState: GameState): GameState;
   capturePieceByKing(

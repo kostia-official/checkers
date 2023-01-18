@@ -15,10 +15,10 @@ export class Checkers100Strategy extends Checkers64Strategy {
     if (!selectedPiece) return;
 
     // Check if the clicked piece has the most captures
-    const clickedPieceCaptures = this.getMostAmountCanBeCaptured(i, j, gameState);
+    const { amount: clickedPieceCaptures } = this.getBiggestCaptures(i, j, gameState);
 
     for (const [otherI, otherJ] of this.getOtherPiecesWithValidCaptures(i, j, gameState)) {
-      const otherCaptures = this.getMostAmountCanBeCaptured(otherI, otherJ, gameState);
+      const { amount: otherCaptures } = this.getBiggestCaptures(otherI, otherJ, gameState);
       if (otherCaptures > clickedPieceCaptures) {
         // The clicked piece does not have the most captures, so it cannot be selected
         return;
@@ -28,41 +28,79 @@ export class Checkers100Strategy extends Checkers64Strategy {
     return selectedPiece;
   }
 
-  getMostAmountCanBeCaptured(fromI: number, fromJ: number, gameState: GameState): number {
+  handleSquareClick(toI: number, toJ: number, gameState: GameState): GameState | undefined {
+    const { selectedPiece } = gameState;
+    if (!selectedPiece) return;
+
+    const [fromI, fromJ] = selectedPiece;
+
+    // If not capture use regular logic
+    if (!this.isValidPieceCapture(fromI, fromJ, toI, toJ, gameState)) {
+      return super.handleSquareClick(toI, toJ, gameState);
+    }
+
+    const biggestCaptures = this.getBiggestCaptures(selectedPiece[0], selectedPiece[1], gameState).captures;
+    const isBiggestCapture = biggestCaptures.some(([x, y]) => x === toI && y === toJ);
+
+    if (!isBiggestCapture) return;
+
+    return super.handleSquareClick(toI, toJ, gameState);
+  }
+
+  isValidJump(fromI: number, fromJ: number, toI: number, toJ: number, gameState: GameState): boolean {
+    if (!this.isValidPath(fromI, fromJ, toI, toJ)) return false;
+
+    const biggestCaptures = this.getBiggestCaptures(fromI, fromJ, gameState).captures;
+    const isValidMove = !!biggestCaptures.length ? false : this.isValidMove(fromI, fromJ, toI, toJ, gameState);
+
+    return isValidMove || biggestCaptures.some(([x, y]) => x === toI && y === toJ);
+  }
+
+  getBiggestCaptures(fromI: number, fromJ: number, gameState: GameState): { captures: Coordinates[]; amount: number } {
+    const validCaptures = super.getValidCaptures(fromI, fromJ, gameState);
+    let highestAmount = 0;
+    const amountCaptures: Record<number, Coordinates[]> = {};
+
+    // loop through all the valid captures
+    for (const [toI, toJ] of validCaptures) {
+      // Check the amount of captures that can be made from the current capture
+      const amount = this.getMostAmountCanBeCaptured(fromI, fromJ, toI, toJ, gameState);
+      if (amountCaptures[amount] === undefined) {
+        amountCaptures[amount] = [];
+      }
+      amountCaptures[amount].push([toI, toJ]);
+
+      // update the highest amount if the current capture has more captures
+      if (amount > highestAmount) {
+        highestAmount = amount;
+      }
+    }
+
+    return { captures: amountCaptures[highestAmount] || [], amount: highestAmount };
+  }
+
+  getMostAmountCanBeCaptured(fromI: number, fromJ: number, toI: number, toJ: number, gameState: GameState): number {
     let amount = 0;
 
     // Clone the game state to avoid mutating the original
     let clonedGameState = cloneDeep(gameState);
 
-    // Get the valid captures for the current position
-    const validCaptures = this.getValidCaptures(fromI, fromJ, clonedGameState);
+    // Check if the capture is valid
+    if (this.isValidPieceCapture(fromI, fromJ, toI, toJ, clonedGameState)) {
+      // Increment the amount of captured pieces
+      amount += 1;
 
-    // Loop through all the valid captures
-    for (const [toI, toJ] of validCaptures) {
-      // Check if the capture is valid
-      if (this.isValidPieceCaptureByRegular(fromI, fromJ, toI, toJ, clonedGameState)) {
-        // Increment the amount of captured pieces
-        let captures = 1;
+      clonedGameState.boardState = this.capturePiece(fromI, fromJ, toI, toJ, clonedGameState).boardState;
 
-        // Remove the captured piece from the board
-        clonedGameState.boardState[(fromI + toI) / 2][(fromJ + toJ) / 2].piece = null;
+      // Get the valid captures for the new position
+      const nextValidCaptures = this.getValidCaptures(toI, toJ, clonedGameState);
+      let nextAmount = 0;
 
-        // Update the position of the capturing piece
-        clonedGameState.boardState[toI][toJ].piece = gameState.currentPlayer;
-
-        // Get the valid captures for the new position
-        const nextValidCaptures = this.getValidCaptures(toI, toJ, clonedGameState);
-
-        // If there are more valid captures, continue the loop
-        if (nextValidCaptures.length > 0) {
-          captures += this.getMostAmountCanBeCaptured(toI, toJ, clonedGameState);
-        }
-
-        // Update the amount of pieces captured if the current path captures more pieces than the previous paths
-        if (captures > amount) {
-          amount = captures;
-        }
+      for (const [nextToI, nextToJ] of nextValidCaptures) {
+        const captureAmount = this.getMostAmountCanBeCaptured(toI, toJ, nextToI, nextToJ, clonedGameState);
+        nextAmount = captureAmount > nextAmount ? captureAmount : nextAmount;
       }
+      amount += nextAmount;
     }
 
     return amount;
