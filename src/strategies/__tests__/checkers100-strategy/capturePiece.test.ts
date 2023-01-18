@@ -92,4 +92,152 @@ describe('capturePiece', () => {
     expect(capturedPieceSquare.piece).toBe(null);
     expect(capturedPieceSquare.isKing).toBe(false);
   });
+
+  it('should not become a king when not finished capture on a king square', () => {
+    const strategy = new Checkers100Strategy();
+
+    const board = [
+      [0, 0, 0, 0, 0, 0],
+      [0, 0, 2, 0, 2, 0],
+      [0, 0, 0, 0, 0, 1],
+      [0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0],
+    ];
+    const boardState = createBoard(board);
+
+    const gameState: GameState = {
+      boardState,
+      currentPlayer: Color.White,
+      hasMadeCapture: false,
+      selectedPiece: null,
+    };
+
+    const toI = 2;
+    const toJ = 1;
+
+    const firstCaptureGameState = strategy.capturePiece(2, 5, 0, 3, gameState);
+    const newGameState = strategy.capturePiece(0, 3, 2, 1, firstCaptureGameState);
+
+    expect(newGameState.boardState[toI][toJ].piece).toBe(Color.White);
+    expect(newGameState.boardState[toI][toJ].isKing).toBe(false);
+    expect(newGameState.currentPlayer).toBe(Color.Black);
+
+    const capturedPieces = [newGameState.boardState[1][4], newGameState.boardState[1][2]];
+    capturedPieces.forEach((square) => {
+      expect(square.piece).toBe(null);
+      expect(square.isKing).toBe(false);
+      expect(square.pendingCapture).toBe(false);
+    });
+  });
+
+  it('should become a king when finished capture on a king square', () => {
+    const strategy = new Checkers100Strategy();
+
+    const board = [
+      [0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 2, 0],
+      [0, 0, 0, 0, 0, 1],
+      [0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0],
+    ];
+    const boardState = createBoard(board);
+
+    const gameState: GameState = {
+      boardState,
+      currentPlayer: Color.White,
+      hasMadeCapture: false,
+      selectedPiece: null,
+    };
+
+    const toI = 0;
+    const toJ = 3;
+
+    const newGameState = strategy.capturePiece(2, 5, toI, toJ, gameState);
+
+    expect(newGameState.boardState[toI][toJ].piece).toBe(Color.White);
+    expect(newGameState.boardState[toI][toJ].isKing).toBe(true);
+    expect(newGameState.currentPlayer).toBe(Color.Black);
+
+    const capturedPiece = newGameState.boardState[1][4];
+
+    expect(capturedPiece.piece).toBe(null);
+    expect(capturedPiece.isKing).toBe(false);
+    expect(capturedPiece.pendingCapture).toBe(false);
+  });
+
+  it('should become a king when finished capture on a king square with possible capture as king next time', () => {
+    const strategy = new Checkers100Strategy();
+
+    const board = [
+      [0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 2, 0],
+      [0, 2, 0, 0, 0, 1],
+      [0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0],
+    ];
+    const boardState = createBoard(board);
+
+    const gameState: GameState = {
+      boardState,
+      currentPlayer: Color.White,
+      hasMadeCapture: false,
+      selectedPiece: null,
+    };
+
+    const toI = 0;
+    const toJ = 3;
+
+    const newGameState = strategy.capturePiece(2, 5, toI, toJ, gameState);
+
+    expect(newGameState.boardState[toI][toJ].piece).toBe(Color.White);
+    expect(newGameState.boardState[toI][toJ].isKing).toBe(true);
+    expect(newGameState.currentPlayer).toBe(Color.Black);
+
+    const capturedPiece = newGameState.boardState[1][4];
+
+    expect(capturedPiece.piece).toBe(null);
+    expect(capturedPiece.isKing).toBe(false);
+    expect(capturedPiece.pendingCapture).toBe(false);
+  });
+
+  it('should stay as a king when captured over a king square', () => {
+    const strategy = new Checkers100Strategy();
+
+    const board = [
+      [0, 0, 0, 0, 0, 0],
+      [0, 0, 2, 0, 2, 0],
+      [0, 0, 0, 0, 0, 3],
+      [0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0],
+    ];
+    const boardState = createBoard(board);
+
+    const gameState: GameState = {
+      boardState,
+      currentPlayer: Color.White,
+      hasMadeCapture: false,
+      selectedPiece: null,
+    };
+
+    const toI = 2;
+    const toJ = 1;
+
+    const firstCaptureGameState = strategy.capturePiece(2, 5, 0, 3, gameState);
+    const newGameState = strategy.capturePiece(0, 3, 2, 1, firstCaptureGameState);
+
+    expect(newGameState.boardState[toI][toJ].piece).toBe(Color.White);
+    expect(newGameState.boardState[toI][toJ].isKing).toBe(true);
+    expect(newGameState.currentPlayer).toBe(Color.Black);
+
+    const capturedPieces = [newGameState.boardState[1][4], newGameState.boardState[1][2]];
+    capturedPieces.forEach((square) => {
+      expect(square.piece).toBe(null);
+      expect(square.isKing).toBe(false);
+      expect(square.pendingCapture).toBe(false);
+    });
+  });
 });
