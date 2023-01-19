@@ -1,6 +1,7 @@
 const config = {
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
+  reporters: ['jest-progress-bar-reporter'],
   moduleNameMapper: {
     '^@src(.*)$': '<rootDir>/src$1',
     '^@services(.*)$': '<rootDir>/src/services$1',

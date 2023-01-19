@@ -27,7 +27,7 @@ describe('getMostAmountCanBeCapturedFromTo', () => {
       selectedPiece: null,
     };
 
-    const amount = strategy.getMostAmountCanBeCaptured(from, to, gameState);
+    const amount = strategy.getBiggestCaptureValue(from, to, gameState);
 
     expect(amount).toBe(7);
   });
@@ -53,7 +53,7 @@ describe('getMostAmountCanBeCapturedFromTo', () => {
       selectedPiece: null,
     };
 
-    const amount = strategy.getMostAmountCanBeCaptured(from, to, gameState);
+    const amount = strategy.getBiggestCaptureValue(from, to, gameState);
 
     expect(amount).toBe(0);
   });
@@ -80,7 +80,7 @@ describe('getMostAmountCanBeCapturedFromTo', () => {
       selectedPiece: null,
     };
 
-    const amount = strategy.getMostAmountCanBeCaptured(from, to, gameState);
+    const amount = strategy.getBiggestCaptureValue(from, to, gameState);
 
     expect(amount).toBe(1);
   });
@@ -109,7 +109,7 @@ describe('getMostAmountCanBeCapturedFromTo', () => {
       selectedPiece: null,
     };
 
-    const amount = strategy.getMostAmountCanBeCaptured(from, to, gameState);
+    const amount = strategy.getBiggestCaptureValue(from, to, gameState);
 
     expect(amount).toBe(5);
   });

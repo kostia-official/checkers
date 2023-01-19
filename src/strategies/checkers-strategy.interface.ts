@@ -14,6 +14,7 @@ export interface ICheckersStrategy {
   getValidMoves(from: Position, gameState: GameState): Position[];
   getValidCaptures(from: Position, gameState: GameState): Position[];
   getOtherPiecesWithValidCaptures(selected: Position, gameState: GameState): Position[];
+  getCaptureValue(from: Position, to: Position, gameState: GameState): number;
   canBecomeKing(position: Position, currentPlayer: Color): boolean;
   isValidJump(from: Position, to: Position, gameState: GameState): boolean;
 

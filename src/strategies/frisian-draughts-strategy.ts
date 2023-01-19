@@ -34,6 +34,25 @@ export class FrisianDraughtsStrategy extends Checkers100Strategy {
     return isDiagonalJump || isVerticalCapture || isHorizontalCapture;
   }
 
+  getCaptureValue(from: Position, to: Position, gameState: GameState): number {
+    let value = 0;
+
+    this.iterateBetweenFromTo(from, to, (position) => {
+      const square = getSquare(gameState.boardState, position);
+      if (!square.piece) return true;
+
+      if (square.isKing) {
+        value += 1.5;
+      } else {
+        value += 1;
+      }
+
+      return true;
+    });
+
+    return value;
+  }
+
   isValidPieceCaptureByKing(from: Position, to: Position, gameState: GameState): boolean {
     const { boardState, currentPlayer } = gameState;
     const opponentColor = toggleColor(currentPlayer);

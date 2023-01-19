@@ -16,12 +16,21 @@ export class Checkers100Strategy extends Checkers64Strategy {
     if (!selectedPiece) return;
 
     // Check if the clicked piece has the most captures
-    const { amount: clickedPieceCaptures } = this.getBiggestCaptures(position, gameState);
+    const { captureValue: clickedPieceCaptureValue } = this.getBiggestCaptures(position, gameState);
 
     for (const otherPiecePosition of this.getOtherPiecesWithValidCaptures(position, gameState)) {
-      const { amount: otherCaptures } = this.getBiggestCaptures(otherPiecePosition, gameState);
-      if (otherCaptures > clickedPieceCaptures) {
+      const { captureValue: otherCaptureValue } = this.getBiggestCaptures(otherPiecePosition, gameState);
+      if (otherCaptureValue > clickedPieceCaptureValue) {
         // The clicked piece does not have the most captures, so it cannot be selected
+        return;
+      }
+      const isSameCaptureValue = otherCaptureValue === clickedPieceCaptureValue;
+      const isKingOtherPiece = getSquare(gameState.boardState, otherPiecePosition)?.isKing;
+      const isKingSelectedPiece = getSquare(gameState.boardState, position)?.isKing;
+      const isOtherKingShouldCapture = isKingOtherPiece && !isKingSelectedPiece;
+
+      if (isSameCaptureValue && isOtherKingShouldCapture) {
+        // King has priority to capture
         return;
       }
     }
@@ -56,54 +65,54 @@ export class Checkers100Strategy extends Checkers64Strategy {
     return isValidMove || isBiggestCapture;
   }
 
-  getBiggestCaptures(from: Position, gameState: GameState): { captures: Position[]; amount: number } {
+  getBiggestCaptures(from: Position, gameState: GameState): { captures: Position[]; captureValue: number } {
     const validCaptures = super.getValidCaptures(from, gameState);
-    let highestAmount = 0;
-    const amountCaptures: Record<number, Position[]> = {};
+    let highestValue = 0;
+    const capturesOfValue: Record<number, Position[]> = {};
 
     // loop through all the valid captures
     for (const to of validCaptures) {
-      // Check the amount of captures that can be made from the current capture
-      const amount = this.getMostAmountCanBeCaptured(from, to, gameState);
-      if (amountCaptures[amount] === undefined) {
-        amountCaptures[amount] = [];
+      // Check the value of captures that can be made from the current capture
+      const value = this.getBiggestCaptureValue(from, to, gameState);
+      if (capturesOfValue[value] === undefined) {
+        capturesOfValue[value] = [];
       }
-      amountCaptures[amount].push(to);
+      capturesOfValue[value].push(to);
 
       // update the highest amount if the current capture has more captures
-      if (amount > highestAmount) {
-        highestAmount = amount;
+      if (value > highestValue) {
+        highestValue = value;
       }
     }
 
-    return { captures: amountCaptures[highestAmount] || [], amount: highestAmount };
+    return { captures: capturesOfValue[highestValue] || [], captureValue: highestValue };
   }
 
-  getMostAmountCanBeCaptured(from: Position, to: Position, gameState: GameState): number {
-    let amount = 0;
+  getBiggestCaptureValue(from: Position, to: Position, gameState: GameState): number {
+    let biggestValue = 0;
 
     // Clone the game state to avoid mutating the original
     let clonedGameState = cloneDeep(gameState);
 
     // Check if the capture is valid
     if (this.isValidPieceCapture(from, to, clonedGameState)) {
-      // Increment the amount of captured pieces
-      amount += 1;
+      // Increment the biggestValue of captured pieces
+      biggestValue += this.getCaptureValue(from, to, clonedGameState);
 
       clonedGameState.boardState = this.capturePiece(from, to, clonedGameState).boardState;
 
       // Get the valid captures for the new position
       const nextValidCaptures = this.getValidCaptures(to, clonedGameState);
-      let nextAmount = 0;
+      let nextValue = 0;
 
       for (const nextTo of nextValidCaptures) {
-        const captureAmount = this.getMostAmountCanBeCaptured(to, nextTo, clonedGameState);
-        nextAmount = captureAmount > nextAmount ? captureAmount : nextAmount;
+        const captureValue = this.getBiggestCaptureValue(to, nextTo, clonedGameState);
+        nextValue = captureValue > nextValue ? captureValue : nextValue;
       }
-      amount += nextAmount;
+      biggestValue += nextValue;
     }
 
-    return amount;
+    return biggestValue;
   }
 
   protected updateGameStateAfterCapture(from: Position, to: Position, gameState: GameState): GameState {

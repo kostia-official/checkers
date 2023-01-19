@@ -1,7 +1,7 @@
 import { ICheckersStrategy } from './checkers-strategy.interface';
 import { BoardState, Color, GameState, Position, Square } from '../common/types';
 import cloneDeep from 'lodash.clonedeep';
-import { toggleColor, getSquare, getSquares } from '@common/utils';
+import { toggleColor, getSquare, getSquares, isEqualPosition } from '@common/utils';
 
 export abstract class BaseCheckersStrategy implements ICheckersStrategy {
   abstract squares: number;
@@ -272,25 +272,27 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
     return newGameState;
   }
 
-  getOtherPiecesWithValidCaptures([selectedI, selectedJ]: Position, gameState: GameState): Position[] {
+  getOtherPiecesWithValidCaptures(selected: Position, gameState: GameState): Position[] {
     const { boardState, currentPlayer } = gameState;
     const piecesThatCanCapture: Position[] = [];
 
-    for (let i = 0; i < this.squares; i++) {
-      for (let j = 0; j < this.squares; j++) {
-        if (boardState[i][j].piece !== currentPlayer) {
-          continue; // skip opponent pieces
-        }
-        if (i === selectedI && j === selectedJ) {
-          continue; // skip the selected piece
-        }
+    this.iterateBoard(selected, gameState, (position) => {
+      const square = getSquare(boardState, position);
+      if (!square) return true;
 
-        const validCaptures = this.getValidCaptures([i, j], gameState);
-        if (validCaptures.length > 0) {
-          piecesThatCanCapture.push([i, j]);
-        }
+      if (square.piece !== currentPlayer) {
+        return true;
       }
-    }
+      // Skip selected piece
+      if (isEqualPosition(position, selected)) {
+        return true;
+      }
+
+      const validCaptures = this.getValidCaptures(position, gameState);
+      if (validCaptures.length > 0) {
+        piecesThatCanCapture.push(position);
+      }
+    });
 
     return piecesThatCanCapture;
   }
@@ -421,5 +423,9 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
     const isValidMove = isValidCapture ? false : this.isValidMove(from, to, gameState);
 
     return isValidMove || isValidCapture;
+  }
+
+  getCaptureValue(from: Position, to: Position, gameState: GameState): number {
+    return 1;
   }
 }
