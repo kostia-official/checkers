@@ -4,7 +4,7 @@ import { Button, Menu } from '@mantine/core';
 import { Wrapper } from './styled';
 import { MenuSelectItem } from '@components/MenuSelectItem';
 import { IconChevronDown } from '@tabler/icons';
-import { Lang } from '@src/lang/i18n';
+import { Lang } from '@src/lang/types';
 
 const shortLabelMap: Record<Lang, string> = {
   en: 'ENG',
