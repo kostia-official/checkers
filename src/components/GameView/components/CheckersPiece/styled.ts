@@ -40,6 +40,10 @@ export const CheckerPieceInner = styled.div<{ color: Color }>`
   border-radius: 50%;
   border: 2px solid ${colors.black.dark};
 
+  @media (max-width: ${(p) => p.theme.breakpoints.xs}px) {
+    border: 1px solid ${colors.black.dark};
+  }
+
   background-color: ${(p) => (p.color === 'black' ? 'black' : colors.beige.main)};
 
   &.king {
