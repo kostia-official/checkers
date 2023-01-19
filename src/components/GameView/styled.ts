@@ -30,8 +30,8 @@ const validJump = css`
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 10px;
-    height: 10px;
+    width: 12%;
+    height: 12%;
     border-radius: 50%;
     background-color: ${colors.gold.main};
   }
@@ -77,8 +77,12 @@ export const GameExtras = styled.div`
 
 export const SquareNotation = styled.div`
   position: absolute;
-  font-size: 12px;
   color: white;
   left: 3px;
   bottom: 0;
+  font-size: 12px;
+
+  @media (max-width: ${(p) => p.theme.breakpoints.xs}px) {
+    display: none;
+  }
 `;
