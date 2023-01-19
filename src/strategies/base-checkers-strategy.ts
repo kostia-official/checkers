@@ -206,7 +206,7 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
     return newGameState;
   }
 
-  capturePiece(from: Position, to: Position, gameState: GameState): GameState {
+  markPendingCapture(from: Position, to: Position, gameState: GameState): GameState {
     const newGameState = cloneDeep(gameState);
 
     const { fromSquare, toSquare } = getSquares(newGameState.boardState, from, to);
@@ -233,6 +233,11 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
       }
     }
 
+    return newGameState;
+  }
+
+  capturePiece(from: Position, to: Position, gameState: GameState): GameState {
+    const newGameState = this.markPendingCapture(from, to, gameState);
     return this.updateGameStateAfterCapture(from, to, newGameState);
   }
 
@@ -416,13 +421,11 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
     }
   }
 
-  isValidJump(from: Position, to: Position, gameState: GameState): boolean {
-    if (!this.isValidPath(from, to)) return false;
+  getValidJumps(from: Position, gameState: GameState): Position[] {
+    const validCaptures = this.getValidCaptures(from, gameState);
+    const validMoves = validCaptures.length ? undefined : this.getValidMoves(from, gameState);
 
-    const isValidCapture = this.isValidPieceCapture(from, to, gameState);
-    const isValidMove = isValidCapture ? false : this.isValidMove(from, to, gameState);
-
-    return isValidMove || isValidCapture;
+    return validMoves || validCaptures;
   }
 
   getCaptureValue(from: Position, to: Position, gameState: GameState): number {

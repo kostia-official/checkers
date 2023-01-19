@@ -55,14 +55,11 @@ export class Checkers100Strategy extends Checkers64Strategy {
     return super.handleSquareClick(to, gameState);
   }
 
-  isValidJump(from: Position, to: Position, gameState: GameState): boolean {
-    if (!this.isValidPath(from, to)) return false;
+  getValidJumps(from: Position, gameState: GameState): Position[] {
+    const { captures: biggestCaptures } = this.getBiggestCaptures(from, gameState);
+    const validMoves = biggestCaptures.length ? undefined : this.getValidMoves(from, gameState);
 
-    const biggestCaptures = this.getBiggestCaptures(from, gameState).captures;
-    const isValidMove = !!biggestCaptures.length ? false : this.isValidMove(from, to, gameState);
-    const isBiggestCapture = hasPosition(biggestCaptures, to);
-
-    return isValidMove || isBiggestCapture;
+    return validMoves || biggestCaptures;
   }
 
   getBiggestCaptures(from: Position, gameState: GameState): { captures: Position[]; captureValue: number } {
@@ -74,6 +71,7 @@ export class Checkers100Strategy extends Checkers64Strategy {
     for (const to of validCaptures) {
       // Check the value of captures that can be made from the current capture
       const value = this.getBiggestCaptureValue(from, to, gameState);
+
       if (capturesOfValue[value] === undefined) {
         capturesOfValue[value] = [];
       }
@@ -90,8 +88,6 @@ export class Checkers100Strategy extends Checkers64Strategy {
 
   getBiggestCaptureValue(from: Position, to: Position, gameState: GameState): number {
     let biggestValue = 0;
-
-    // Clone the game state to avoid mutating the original
     let clonedGameState = cloneDeep(gameState);
 
     // Check if the capture is valid
@@ -99,7 +95,7 @@ export class Checkers100Strategy extends Checkers64Strategy {
       // Increment the biggestValue of captured pieces
       biggestValue += this.getCaptureValue(from, to, clonedGameState);
 
-      clonedGameState.boardState = this.capturePiece(from, to, clonedGameState).boardState;
+      clonedGameState.boardState = this.markPendingCapture(from, to, clonedGameState).boardState;
 
       // Get the valid captures for the new position
       const nextValidCaptures = this.getValidCaptures(to, clonedGameState);

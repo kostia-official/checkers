@@ -82,4 +82,30 @@ describe('getBiggestCaptures', () => {
     expect(captureValue).toBe(2);
     expect(captures).toStrictEqual([[2, 0]]);
   });
+
+  it('should not return extra capture value for jumping over a piece with pending capture', () => {
+    const strategy = new FrisianDraughtsStrategy();
+
+    const board = [
+      [0, 0, 0, 0, 3],
+      [0, 0, 0, 0, 0],
+      [2, 0, 2, 0, 0],
+      [0, 0, 0, 2, 0],
+      [0, 0, 0, 0, 0],
+    ];
+    const boardState = createBoard(board);
+
+    const from: Position = [0, 4];
+
+    const gameState: GameState = {
+      boardState,
+      currentPlayer: Color.White,
+      hasMadeCapture: false,
+      selectedPiece: null,
+    };
+
+    const { captureValue } = strategy.getBiggestCaptures(from, gameState);
+
+    expect(captureValue).toBe(2);
+  });
 });

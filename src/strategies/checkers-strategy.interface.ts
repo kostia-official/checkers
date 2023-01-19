@@ -16,11 +16,12 @@ export interface ICheckersStrategy {
   getOtherPiecesWithValidCaptures(selected: Position, gameState: GameState): Position[];
   getCaptureValue(from: Position, to: Position, gameState: GameState): number;
   canBecomeKing(position: Position, currentPlayer: Color): boolean;
-  isValidJump(from: Position, to: Position, gameState: GameState): boolean;
+  getValidJumps(from: Position, gameState: GameState): Position[];
 
   movePiece(from: Position, to: Position, gameState: GameState): GameState;
   capturePieceByKing(from: Position, to: Position, gameState: GameState): BoardState | undefined;
   capturePiece(from: Position, to: Position, gameState: GameState): GameState;
+  markPendingCapture(from: Position, to: Position, gameState: GameState): GameState;
   removePendingCapturePieces(boardState: BoardState): BoardState;
 
   handlePieceClick(position: Position, gameState: GameState): Position | undefined;

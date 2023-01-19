@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import { CheckersGameWrapper, CheckersBoard, CheckersRow, CheckersSquare, GameExtras, SquareNotation } from './styled';
 import { CheckerPiece } from './components/CheckersPiece';
@@ -10,7 +10,7 @@ import { EditMode } from './components/EditMode';
 import { GameState, Color, GameStateHistory, Position } from '@common/types';
 import { EditModeState } from './components/EditMode/hooks/useEditMode';
 import { useTranslation } from 'react-i18next';
-import { isEqualPosition } from '@common/utils';
+import { isEqualPosition, hasPosition } from '@common/utils';
 
 export interface CheckersGameProps {
   strategy: ICheckersStrategy;
@@ -62,15 +62,19 @@ export const GameView: React.FC<CheckersGameProps> = ({
     return isEqualPosition(position, selectedPiece);
   };
 
-  const isValidJumpDestination = useCallback(
-    (position: Position): boolean => {
-      if (!selectedPiece) {
-        return false;
-      }
+  const validJumpDestinations = useMemo((): Position[] => {
+    if (!selectedPiece) {
+      return [];
+    }
 
-      return strategy.isValidJump(selectedPiece, position, gameState);
+    return strategy.getValidJumps(selectedPiece, gameState);
+  }, [gameState, selectedPiece, strategy]);
+
+  const isValidJumpDestination = useCallback(
+    (position: Position) => {
+      return hasPosition(validJumpDestinations, position);
     },
-    [selectedPiece, strategy, gameState]
+    [validJumpDestinations]
   );
 
   const shouldReverse = playerColor === 'black';
