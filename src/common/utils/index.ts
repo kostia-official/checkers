@@ -1,4 +1,4 @@
-import { Color, BoardState, Position } from '../types';
+import { Color, BoardState, Position, Piece } from '../types';
 import { QuerySnapshot } from 'firebase/firestore';
 
 export function capitalize(string: string): string {
@@ -26,6 +26,17 @@ export const getSquares = (boardState: BoardState, from: Position, to: Position)
   const toSquare = getSquare(boardState, to);
 
   return { fromSquare, toSquare };
+};
+
+export const getPiece = (boardState: BoardState, position: Position): Piece | undefined => {
+  return getSquare(boardState, position)?.piece;
+};
+
+export const getPieces = (boardState: BoardState, from: Position, to: Position) => {
+  const fromPiece = getPiece(boardState, from);
+  const toPiece = getPiece(boardState, to);
+
+  return { fromPiece, toPiece };
 };
 
 export const noop = () => {};

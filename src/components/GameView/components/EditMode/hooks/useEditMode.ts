@@ -24,21 +24,18 @@ export const useEditMode = ({ updateGameState, gameState }: HookArgs) => {
   const clearBoard = () => {
     const updatedGameState = {
       ...gameState,
-      boardState: gameState.boardState.map((row) =>
-        row.map((square) => ({ ...square, piece: null, isKing: false, pendingCapture: undefined }))
-      ),
+      boardState: gameState.boardState.map((row) => row.map((square) => ({ ...square, piece: undefined }))),
     };
     updateGameState(updatedGameState);
   };
 
   const handleSquareEdit = ([i, j]: Position) => {
     const piece = gameState.boardState[i][j].piece;
-    const updatedPiece = piece ? null : editPiecesColor;
-    const updatedIsKing = piece ? false : isKing;
+    const updatedPiece = piece ? undefined : { id: Date.now(), color: editPiecesColor, isKing };
 
     const updatedBoardState = gameState.boardState.map((row, rowIndex) =>
       row.map((square, squareIndex) =>
-        rowIndex === i && squareIndex === j ? { ...square, piece: updatedPiece, isKing: updatedIsKing } : square
+        rowIndex === i && squareIndex === j ? { ...square, piece: updatedPiece } : square
       )
     );
 

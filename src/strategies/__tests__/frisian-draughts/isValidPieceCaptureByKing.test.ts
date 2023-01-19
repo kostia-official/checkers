@@ -185,7 +185,8 @@ describe('isValidPieceCaptureByKing', () => {
     const from: Position = [3, 3];
     const to: Position = [3, 0];
 
-    boardState[3][1].pendingCapture = true;
+    const pendingCapturePiece = boardState[3][1].piece!;
+    pendingCapturePiece.pendingCapture = true;
 
     const gameState: GameState = {
       boardState,

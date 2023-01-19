@@ -109,9 +109,8 @@ export const GameView: React.FC<CheckersGameProps> = ({
                     rowSquaresCount={rowLength}
                     isValidJumpDestination={isValidJumpDestination([playerI, playerJ])}
                   >
-                    {square.piece ? (
-                      <CheckerPiece square={square} isSelected={getIsSelectedPiece([playerI, playerJ])} />
-                    ) : null}
+                    <CheckerPiece piece={square.piece} isSelected={getIsSelectedPiece([playerI, playerJ])} />
+
                     {DEBUG && <SquareNotation>{squareNotation}</SquareNotation>}
                   </CheckersSquare>
                 );

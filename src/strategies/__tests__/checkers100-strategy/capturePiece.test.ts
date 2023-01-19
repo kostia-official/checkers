@@ -1,7 +1,7 @@
 import { Checkers100Strategy } from '@strategies/checkers100-strategy';
 import { createBoard } from '@common/test-utils/board';
 import { Color, GameState, Position } from '@common/types';
-import { getSquare } from '@common/utils';
+import { getSquare, getPiece } from '@common/utils';
 
 describe('capturePiece', () => {
   it('should capture 2 pieces with marking pending the first one', () => {
@@ -31,13 +31,13 @@ describe('capturePiece', () => {
 
     gameState = strategy.capturePiece(from, to, gameState);
 
-    expect(getSquare(gameState.boardState, to).piece).toBe(Color.White);
-    expect(getSquare(gameState.boardState, to).isKing).toBe(false);
+    expect(getPiece(gameState.boardState, to)?.color).toBe(Color.White);
+    expect(getPiece(gameState.boardState, to)?.isKing).toBe(false);
 
-    const capturedPieceSquare = gameState.boardState[4][3];
+    const capturedPieceSquare = gameState.boardState[4][3].piece;
 
-    expect(capturedPieceSquare.piece).toBe(Color.Black);
-    expect(capturedPieceSquare.pendingCapture).toBe(true);
+    expect(capturedPieceSquare?.color).toBe(Color.Black);
+    expect(capturedPieceSquare?.pendingCapture).toBe(true);
 
     // should capture pieces marked as pending when the last capture was done
 
@@ -46,15 +46,11 @@ describe('capturePiece', () => {
 
     gameState = strategy.capturePiece(from, to, gameState);
 
-    const firstCaptured = gameState.boardState[4][3];
-    expect(firstCaptured.piece).toBe(null);
-    expect(firstCaptured.pendingCapture).toBe(false);
-    expect(firstCaptured.isKing).toBe(false);
+    const firstCaptured = gameState.boardState[4][3].piece;
+    expect(firstCaptured).toBeUndefined();
 
-    const lastCaptured = gameState.boardState[2][3];
-    expect(lastCaptured.piece).toBe(null);
-    expect(lastCaptured.pendingCapture).toBe(false);
-    expect(lastCaptured.isKing).toBe(false);
+    const lastCaptured = gameState.boardState[2][3].piece;
+    expect(lastCaptured).toBeUndefined();
   });
 
   it('should remove a piece when no capture can be done', () => {
@@ -82,12 +78,11 @@ describe('capturePiece', () => {
     const { boardState: newBoardState, hasMadeCapture } = strategy.capturePiece(from, to, gameState);
 
     expect(hasMadeCapture).toBe(false);
-    expect(getSquare(newBoardState, to).piece).toBe(Color.White);
-    expect(getSquare(newBoardState, to).isKing).toBe(false);
+    expect(getSquare(newBoardState, to).piece?.color).toBe(Color.White);
+    expect(getSquare(newBoardState, to).piece?.isKing).toBe(false);
 
     const capturedPieceSquare = newBoardState[4][4];
-    expect(capturedPieceSquare.piece).toBe(null);
-    expect(capturedPieceSquare.isKing).toBe(false);
+    expect(capturedPieceSquare.piece).toBe(undefined);
   });
 
   it('should not become a king when not finished capture on a king square', () => {
@@ -115,15 +110,13 @@ describe('capturePiece', () => {
     const firstCaptureGameState = strategy.capturePiece([2, 5], [0, 3], gameState);
     const newGameState = strategy.capturePiece([0, 3], [2, 1], firstCaptureGameState);
 
-    expect(getSquare(newGameState.boardState, to).piece).toBe(Color.White);
-    expect(getSquare(newGameState.boardState, to).isKing).toBe(false);
+    expect(getSquare(newGameState.boardState, to).piece?.color).toBe(Color.White);
+    expect(getSquare(newGameState.boardState, to).piece?.isKing).toBe(false);
     expect(newGameState.currentPlayer).toBe(Color.Black);
 
     const capturedPieces = [newGameState.boardState[1][4], newGameState.boardState[1][2]];
     capturedPieces.forEach((square) => {
-      expect(square.piece).toBe(null);
-      expect(square.isKing).toBe(false);
-      expect(square.pendingCapture).toBe(false);
+      expect(square.piece).toBe(undefined);
     });
   });
 
@@ -151,15 +144,13 @@ describe('capturePiece', () => {
 
     const newGameState = strategy.capturePiece([2, 5], to, gameState);
 
-    expect(getSquare(newGameState.boardState, to).piece).toBe(Color.White);
-    expect(getSquare(newGameState.boardState, to).isKing).toBe(true);
+    expect(getSquare(newGameState.boardState, to).piece?.color).toBe(Color.White);
+    expect(getSquare(newGameState.boardState, to).piece?.isKing).toBe(true);
     expect(newGameState.currentPlayer).toBe(Color.Black);
 
     const capturedPiece = newGameState.boardState[1][4];
 
-    expect(capturedPiece.piece).toBe(null);
-    expect(capturedPiece.isKing).toBe(false);
-    expect(capturedPiece.pendingCapture).toBe(false);
+    expect(capturedPiece.piece).toBe(undefined);
   });
 
   it('should become a king when finished capture on a king square with possible capture as king next time', () => {
@@ -186,15 +177,13 @@ describe('capturePiece', () => {
 
     const newGameState = strategy.capturePiece([2, 5], to, gameState);
 
-    expect(getSquare(newGameState.boardState, to).piece).toBe(Color.White);
-    expect(getSquare(newGameState.boardState, to).isKing).toBe(true);
+    expect(getSquare(newGameState.boardState, to).piece?.color).toBe(Color.White);
+    expect(getSquare(newGameState.boardState, to).piece?.isKing).toBe(true);
     expect(newGameState.currentPlayer).toBe(Color.Black);
 
     const capturedPiece = newGameState.boardState[1][4];
 
-    expect(capturedPiece.piece).toBe(null);
-    expect(capturedPiece.isKing).toBe(false);
-    expect(capturedPiece.pendingCapture).toBe(false);
+    expect(capturedPiece.piece).toBe(undefined);
   });
 
   it('should stay as a king when captured over a king square', () => {
@@ -220,17 +209,15 @@ describe('capturePiece', () => {
     const to: Position = [2, 1];
 
     const firstCaptureGameState = strategy.capturePiece([2, 5], [0, 3], gameState);
-    const newGameState = strategy.capturePiece([0, 3], [2, 1], firstCaptureGameState);
+    const newGameState = strategy.capturePiece([0, 3], to, firstCaptureGameState);
 
-    expect(getSquare(newGameState.boardState, to).piece).toBe(Color.White);
-    expect(getSquare(newGameState.boardState, to).isKing).toBe(true);
+    expect(getSquare(newGameState.boardState, to).piece?.color).toBe(Color.White);
+    expect(getSquare(newGameState.boardState, to).piece?.isKing).toBe(true);
     expect(newGameState.currentPlayer).toBe(Color.Black);
 
     const capturedPieces = [newGameState.boardState[1][4], newGameState.boardState[1][2]];
     capturedPieces.forEach((square) => {
-      expect(square.piece).toBe(null);
-      expect(square.isKing).toBe(false);
-      expect(square.pendingCapture).toBe(false);
+      expect(square.piece).toBe(undefined);
     });
   });
 });

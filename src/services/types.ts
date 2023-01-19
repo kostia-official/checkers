@@ -1,4 +1,4 @@
-import { GameType, Color, Position, BoardState } from '@common/types';
+import { GameType, Color, Position, BoardState, KingsMovesCount } from '@common/types';
 
 export interface GameModel {
   id: string;
@@ -33,6 +33,7 @@ export interface GameHistoryModel {
   jumpFrom?: Position;
   jumpTo?: Position;
   boardState: BoardState;
+  kingsMovesCount?: KingsMovesCount;
   currentPlayerColor: Color;
   currentPlayerId?: string;
   createdAt: Date;

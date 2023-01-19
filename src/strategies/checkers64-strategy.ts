@@ -29,10 +29,10 @@ export class Checkers64Strategy extends BaseCheckersStrategy {
 
       const capturedPieceSquare = gameState.boardState[i][j];
 
-      if (capturedPieceSquare.piece === gameState.currentPlayer) {
+      if (capturedPieceSquare.piece?.color === gameState.currentPlayer) {
         return false;
       }
-      if (capturedPieceSquare.pendingCapture) {
+      if (capturedPieceSquare.piece?.pendingCapture) {
         return false;
       }
 
@@ -55,10 +55,11 @@ export class Checkers64Strategy extends BaseCheckersStrategy {
 
     const capturedPieceRow = (fromI + toI) / 2;
     const capturedPieceColumn = (fromJ + toJ) / 2;
+    // TODO: Refactor with getPiece
     const capturedPieceSquare = boardState[capturedPieceRow]?.[capturedPieceColumn];
     const capturedPiece = capturedPieceSquare?.piece;
 
-    if (capturedPieceSquare?.pendingCapture || !capturedPiece || capturedPiece === currentPlayer) {
+    if (!capturedPiece || capturedPiece.pendingCapture || capturedPiece.color === currentPlayer) {
       return false;
     }
 

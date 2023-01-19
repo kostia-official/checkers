@@ -113,7 +113,7 @@ export const OnlineGame: React.FC<OnlineGameProps> = ({ game, user, gameHistory,
   const { mutateAsync: removeGameHistory } = useMutation((id: string) => gameHistoryService.remove(id));
 
   const lastGameState = gameHistory[gameHistory.length - 1];
-  const { boardState, currentPlayerColor } = lastGameState;
+  const { boardState, currentPlayerColor, kingsMovesCount } = lastGameState;
 
   const { isInviter, opponentId, isGameStarted } = useResolvedGameInfo({ game, user });
   const currentUserPlayer = isInviter ? inviter : invitee;
@@ -140,8 +140,8 @@ export const OnlineGame: React.FC<OnlineGameProps> = ({ game, user, gameHistory,
   const [hasMadeCapture, setHasMadeCapture] = useState(false);
 
   const gameState = useMemo((): GameState => {
-    return { currentPlayer: currentPlayerColor, boardState, selectedPiece, hasMadeCapture };
-  }, [boardState, currentPlayerColor, hasMadeCapture, selectedPiece]);
+    return { currentPlayer: currentPlayerColor, boardState, selectedPiece, hasMadeCapture, kingsMovesCount };
+  }, [boardState, currentPlayerColor, hasMadeCapture, kingsMovesCount, selectedPiece]);
 
   const updateGameState = ({ boardState, currentPlayer, selectedPiece, hasMadeCapture }: GameState) => {
     setSelectedPiece(selectedPiece);

@@ -1,7 +1,7 @@
 import { ICheckersStrategy } from './checkers-strategy.interface';
 import { BoardState, Color, GameState, Position, Square } from '../common/types';
 import cloneDeep from 'lodash.clonedeep';
-import { toggleColor, getSquare, getSquares, isEqualPosition } from '@common/utils';
+import { toggleColor, getSquare, getSquares, isEqualPosition, getPiece, getPieces } from '@common/utils';
 
 export abstract class BaseCheckersStrategy implements ICheckersStrategy {
   abstract squares: number;
@@ -16,22 +16,25 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
 
   makeInitialBoardState() {
     const initialBoardState: BoardState = [];
+    let id = -1;
 
     for (let i = 0; i < this.squares; i++) {
       const row: Square[] = [];
       for (let j = 0; j < this.squares; j++) {
+        id += 1;
+
         const isPieceSquare = (i + j) % 2 !== 0;
 
-        let piece = null;
+        let color;
         const halfSquares = Math.floor(this.squares / 2);
 
         if (i < halfSquares - 1 && isPieceSquare) {
-          piece = Color.Black;
+          color = Color.Black;
         }
         if (i > halfSquares && isPieceSquare) {
-          piece = Color.White;
+          color = Color.White;
         }
-        row.push({ piece, isKing: false });
+        row.push({ piece: color && { id, color, isKing: false, pendingCapture: false } });
       }
       initialBoardState.push(row);
     }
@@ -39,17 +42,31 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
     return initialBoardState;
   }
 
+  changePieceSquare(from: Position, to: Position, gameState: GameState) {
+    const newGameState = cloneDeep(gameState);
+    const { fromSquare, toSquare } = getSquares(newGameState.boardState, from, to);
+    if (!fromSquare?.piece) return newGameState;
+
+    toSquare.piece = { ...fromSquare.piece };
+    fromSquare.piece = undefined;
+
+    return newGameState;
+  }
+
   isValidMove(from: Position, to: Position, gameState: GameState): boolean {
     const { boardState, currentPlayer } = gameState;
 
+    const toSquare = getSquare(boardState, to);
+    if (!toSquare) return false;
+
     // Check if the piece being moved is the current player's piece
-    const piece = getSquare(boardState, from).piece;
-    if (piece !== currentPlayer) {
+    const fromPiece = getPiece(boardState, from);
+    if (fromPiece?.color !== currentPlayer) {
       return false;
     }
 
     // Check if the destination square is empty
-    if (getSquare(boardState, to)?.piece !== null) {
+    if (getPiece(boardState, to)) {
       return false;
     }
 
@@ -60,7 +77,7 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
       return false;
     }
 
-    if (getSquare(boardState, from).isKing) {
+    if (fromPiece.isKing) {
       return this.isValidMoveByKing(from, to, gameState);
     } else {
       return this.isValidMoveByRegular(from, to, gameState);
@@ -70,14 +87,15 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
   isValidPieceCapture(from: Position, to: Position, gameState: GameState): boolean {
     const { boardState, currentPlayer } = gameState;
 
-    const { fromSquare, toSquare } = getSquares(boardState, from, to);
+    const toSquare = getSquare(boardState, to);
+    const { fromPiece, toPiece } = getPieces(boardState, from, to);
 
     // Check if piece exists
-    if (!fromSquare?.piece) {
+    if (!fromPiece) {
       return false;
     }
     // Check if piece belongs to a current player
-    if (fromSquare.piece !== currentPlayer) {
+    if (fromPiece.color !== currentPlayer) {
       return false;
     }
     // Check if the destination square is over the board
@@ -85,11 +103,11 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
       return false;
     }
     // Check if the destination square is empty
-    if (toSquare.piece !== null) {
+    if (toPiece) {
       return false;
     }
 
-    if (fromSquare.isKing) {
+    if (fromPiece.isKing) {
       return this.isValidPieceCaptureByKing(from, to, gameState);
     } else {
       return this.isValidPieceCaptureByRegular(from, to, gameState);
@@ -126,7 +144,7 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
       return;
     }
 
-    if (getSquare(boardState, to).piece === currentPlayer) {
+    if (getPiece(boardState, to)?.color === currentPlayer) {
       this.handlePieceClick(to, newGameState);
       return;
     }
@@ -161,36 +179,28 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
   }
 
   capturePieceByKing(from: Position, to: Position, gameState: GameState): BoardState {
-    let { boardState } = cloneDeep(gameState);
+    let newGameState = cloneDeep(gameState);
 
     // Capture enemy pieces along the path
-    this.iterateBetweenFromTo(from, to, ([i, j]: Position) => {
-      if (boardState[i][j].piece) {
-        boardState[i][j].pendingCapture = true;
+    this.iterateBetweenFromTo(from, to, (position: Position) => {
+      const piece = getPiece(newGameState.boardState, position);
+      if (piece) {
+        piece.pendingCapture = true;
       }
       return true;
     });
 
-    const { fromSquare, toSquare } = getSquares(boardState, from, to);
-
-    // Update the board state and current player
-    fromSquare.piece = null;
-    fromSquare.isKing = false;
-    toSquare.piece = gameState.currentPlayer;
-    toSquare.isKing = true;
-
-    // TODO: Update so we don't need to mark as not pendingCapture player's piece
-    toSquare.pendingCapture = false;
-
-    return boardState;
+    return this.changePieceSquare(from, to, newGameState).boardState;
   }
 
   protected updateGameStateAfterCapture(from: Position, to: Position, gameState: GameState): GameState {
     const newGameState = cloneDeep(gameState);
 
+    const toPiece = getPiece(newGameState.boardState, to);
+
     // Check if the piece can become a king and update its isKing status
-    if (this.canBecomeKing(to, newGameState.currentPlayer)) {
-      getSquare(newGameState.boardState, to).isKing = true;
+    if (toPiece && this.canBecomeKing(to, newGameState.currentPlayer)) {
+      toPiece.isKing = true;
     }
 
     // Check if there are more valid captures available for the moved piece
@@ -207,25 +217,27 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
   }
 
   markPendingCapture(from: Position, to: Position, gameState: GameState): GameState {
-    const newGameState = cloneDeep(gameState);
+    let newGameState = cloneDeep(gameState);
 
-    const { fromSquare, toSquare } = getSquares(newGameState.boardState, from, to);
+    const { fromSquare } = getSquares(newGameState.boardState, from, to);
+    if (!fromSquare?.piece) return newGameState;
 
     // Check if the piece being moved is a king
-    const isKing = fromSquare.isKing;
+    const isKing = fromSquare?.piece?.isKing;
 
-    toSquare.piece = fromSquare.piece;
-    toSquare.isKing = fromSquare.isKing;
-    fromSquare.piece = null;
-    fromSquare.isKing = false;
+    // Move piece to the destination square
+    newGameState = this.changePieceSquare(from, to, newGameState);
 
     const [fromI, fromJ] = from;
     const [toI, toJ] = to;
 
     if (!isKing) {
-      const capturedPieceRow = (fromI + toI) / 2;
-      const capturedPieceColumn = (fromJ + toJ) / 2;
-      newGameState.boardState[capturedPieceRow][capturedPieceColumn].pendingCapture = true;
+      const capturedPiecePosition: Position = [(fromI + toI) / 2, (fromJ + toJ) / 2];
+      const capturedPiece = getPiece(newGameState.boardState, capturedPiecePosition);
+
+      if (capturedPiece) {
+        capturedPiece.pendingCapture = true;
+      }
     } else {
       const updatedBoardState = this.capturePieceByKing(from, to, newGameState);
       if (updatedBoardState) {
@@ -247,10 +259,8 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
     for (let i = 0; i < this.squares; i++) {
       for (let j = 0; j < this.squares; j++) {
         const square = newBoardState[i]?.[j];
-        if (square?.pendingCapture) {
-          square.pendingCapture = false;
-          square.isKing = false;
-          square.piece = null;
+        if (square?.piece && square.piece.pendingCapture) {
+          square.piece = undefined;
         }
       }
     }
@@ -259,17 +269,16 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
   }
 
   movePiece(from: Position, to: Position, gameState: GameState): GameState {
-    const newGameState = cloneDeep(gameState);
+    let newGameState = cloneDeep(gameState);
 
     const { fromSquare, toSquare } = getSquares(newGameState.boardState, from, to);
+    if (!fromSquare?.piece) return newGameState;
 
-    toSquare.piece = fromSquare.piece;
-    toSquare.isKing = fromSquare.isKing;
-    fromSquare.piece = null;
+    newGameState = this.changePieceSquare(from, to, newGameState);
 
     // Check if the piece can become a king and update its isKing status
-    if (this.canBecomeKing(to, gameState.currentPlayer)) {
-      toSquare.isKing = true;
+    if (toSquare?.piece && this.canBecomeKing(to, gameState.currentPlayer)) {
+      toSquare.piece.isKing = true;
     }
 
     newGameState.currentPlayer = toggleColor(newGameState.currentPlayer);
@@ -283,9 +292,9 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
 
     this.iterateBoard(selected, gameState, (position) => {
       const square = getSquare(boardState, position);
-      if (!square) return true;
+      if (!square?.piece) return true;
 
-      if (square.piece !== currentPlayer) {
+      if (square.piece.color !== currentPlayer) {
         return true;
       }
       // Skip selected piece
@@ -375,9 +384,9 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
     // TODO: Use iterateBoard ?
     for (let i = 0; i < this.squares; i++) {
       for (let j = 0; j < this.squares; j++) {
-        if (boardState[i][j].piece === Color.White) {
+        if (boardState[i][j].piece?.color === Color.White) {
           whitePieces++;
-        } else if (boardState[i][j].piece === Color.Black) {
+        } else if (boardState[i][j].piece?.color === Color.Black) {
           blackPieces++;
         }
       }
@@ -396,7 +405,7 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
     // TODO: Use iterateBoard
     for (let i = 0; i < this.squares; i++) {
       for (let j = 0; j < this.squares; j++) {
-        if (boardState[i][j].piece !== currentPlayer) {
+        if (boardState[i][j].piece?.color !== currentPlayer) {
           continue;
         }
         if (this.getValidCaptures([i, j], gameState).length > 0) {

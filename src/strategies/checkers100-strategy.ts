@@ -1,7 +1,7 @@
 import { GameState, Position } from '@common/types';
 import cloneDeep from 'lodash.clonedeep';
 import { Checkers64Strategy } from './checkers64-strategy';
-import { toggleColor, hasPosition, getSquare } from '@common/utils';
+import { toggleColor, hasPosition, getPiece } from '@common/utils';
 
 export class Checkers100Strategy extends Checkers64Strategy {
   squares = 10;
@@ -10,27 +10,37 @@ export class Checkers100Strategy extends Checkers64Strategy {
     return String(i * 5 + j / 2 + 0.5 + (i % 2) / 2);
   }
 
+  isBiggerCapturePriority(
+    piecePosition: Position,
+    pieceCaptureValue: number,
+    otherPiecePosition: Position,
+    otherPieceCaptureValue: number,
+    gameState: GameState
+  ): boolean {
+    return pieceCaptureValue >= otherPieceCaptureValue;
+  }
+
   handlePieceClick(position: Position, gameState: GameState): Position | undefined {
     const selectedPiece = super.handlePieceClick(position, gameState);
-
     if (!selectedPiece) return;
 
-    // Check if the clicked piece has the most captures
-    const { captureValue: clickedPieceCaptureValue } = this.getBiggestCaptures(position, gameState);
+    const { captureValue: pieceCaptureValue, captures } = this.getBiggestCaptures(position, gameState);
+    if (!captures.length) return selectedPiece;
 
-    for (const otherPiecePosition of this.getOtherPiecesWithValidCaptures(position, gameState)) {
-      const { captureValue: otherCaptureValue } = this.getBiggestCaptures(otherPiecePosition, gameState);
-      if (otherCaptureValue > clickedPieceCaptureValue) {
-        // The clicked piece does not have the most captures, so it cannot be selected
-        return;
-      }
-      const isSameCaptureValue = otherCaptureValue === clickedPieceCaptureValue;
-      const isKingOtherPiece = getSquare(gameState.boardState, otherPiecePosition)?.isKing;
-      const isKingSelectedPiece = getSquare(gameState.boardState, position)?.isKing;
-      const isOtherKingShouldCapture = isKingOtherPiece && !isKingSelectedPiece;
+    const otherPiecesWithValidCaptures = this.getOtherPiecesWithValidCaptures(position, gameState);
 
-      if (isSameCaptureValue && isOtherKingShouldCapture) {
-        // King has priority to capture
+    for (const otherPiecePosition of otherPiecesWithValidCaptures) {
+      const { captureValue: otherPieceCaptureValue } = this.getBiggestCaptures(otherPiecePosition, gameState);
+
+      if (
+        !this.isBiggerCapturePriority(
+          position,
+          pieceCaptureValue,
+          otherPiecePosition,
+          otherPieceCaptureValue,
+          gameState
+        )
+      ) {
         return;
       }
     }
@@ -114,13 +124,16 @@ export class Checkers100Strategy extends Checkers64Strategy {
   protected updateGameStateAfterCapture(from: Position, to: Position, gameState: GameState): GameState {
     const newGameState = cloneDeep(gameState);
 
+    const toPiece = getPiece(newGameState.boardState, to);
+    if (!toPiece) return newGameState;
+
     // Check if there are more valid captures available for the moved piece
     const validCaptures = this.getValidCaptures(to, newGameState);
     const hasValidCaptures = validCaptures.length > 0;
 
     // The piece can become a king if no more captures for it as a regular piece
     if (!hasValidCaptures && this.canBecomeKing(to, newGameState.currentPlayer)) {
-      getSquare(newGameState.boardState, to).isKing = true;
+      toPiece.isKing = true;
     }
 
     if (!hasValidCaptures) {

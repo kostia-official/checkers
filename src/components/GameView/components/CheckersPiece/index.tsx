@@ -1,21 +1,19 @@
 import React from 'react';
 import clsx from 'clsx';
 import { CheckerPieceInner, CheckerPieceWrapper } from './styled';
-import { Square } from '@common/types';
+import { Piece } from '@common/types';
 
 export interface CheckerPieceProps {
-  square: Square;
+  piece: Piece | undefined;
   isSelected: boolean;
 }
 
-export const CheckerPiece: React.FC<CheckerPieceProps> = ({ square, isSelected }) => {
-  if (!square.piece) return null;
+export const CheckerPiece: React.FC<CheckerPieceProps> = ({ piece, isSelected }) => {
+  if (!piece) return null;
 
   return (
-    <CheckerPieceWrapper
-      className={clsx(square.piece, { selected: isSelected, pendingCapture: square.pendingCapture })}
-    >
-      <CheckerPieceInner className={clsx({ king: square.isKing })} color={square.piece} />
+    <CheckerPieceWrapper className={clsx(piece.color, { selected: isSelected, pendingCapture: piece.pendingCapture })}>
+      <CheckerPieceInner className={clsx({ king: piece.isKing })} color={piece.color} />
     </CheckerPieceWrapper>
   );
 };

@@ -1,17 +1,81 @@
 import { GameState, Position } from '@common/types';
 import { Checkers100Strategy } from '@strategies/checkers100-strategy';
-import { toggleColor, getSquares, getSquare } from '@common/utils';
+import { toggleColor, getPiece, getPieces } from '@common/utils';
 
 export class FrisianDraughtsStrategy extends Checkers100Strategy {
+  hasMoreRegularPieces(position: Position, gameState: GameState): boolean {
+    let result = false;
+
+    this.iterateBoard(position, gameState, (position) => {
+      const piece = getPiece(gameState.boardState, position);
+
+      if (piece?.color === gameState.currentPlayer && !piece.isKing) {
+        result = true;
+        return false;
+      }
+
+      return true;
+    });
+
+    return result;
+  }
+
+  isBiggerCapturePriority(
+    piecePosition: Position,
+    pieceCaptureValue: number,
+    otherPiecePosition: Position,
+    otherPieceCaptureValue: number,
+    gameState: GameState
+  ): boolean {
+    const isBiggerCapturePriority = super.isBiggerCapturePriority(
+      piecePosition,
+      pieceCaptureValue,
+      otherPiecePosition,
+      otherPieceCaptureValue,
+      gameState
+    );
+    if (!isBiggerCapturePriority) return false;
+
+    const isSameCaptureValue = otherPieceCaptureValue === pieceCaptureValue;
+    const isKingOtherPiece = getPiece(gameState.boardState, otherPiecePosition)?.isKing;
+    const isKingSelectedPiece = getPiece(gameState.boardState, piecePosition)?.isKing;
+    const isOtherKingShouldCapture = isKingOtherPiece && !isKingSelectedPiece;
+
+    if (isSameCaptureValue && isOtherKingShouldCapture) {
+      // King has priority to capture
+      return false;
+    }
+
+    return isBiggerCapturePriority;
+  }
+
+  // TODO: Finish locking king after 3 moves
+  // handlePieceClick(position: Position, gameState: GameState): Position | undefined {
+  //   const selectedPiece = super.handlePieceClick(position, gameState);
+  //   if (!selectedPiece) return;
+
+  // const reachedMovesLimit = false;
+  // if (!reachedMovesLimit) return selectedPiece;
+  //
+  // const hasMoreRegularPieces = this.hasMoreRegularPieces(position, gameState);
+  // if (!hasMoreRegularPieces) return selectedPiece;
+  //
+  // const canCapture = !!this.getValidCaptures(selectedPiece, gameState).length;
+  // if (canCapture) return selectedPiece;
+
+  //   return selectedPiece;
+  // }
+
   isValidPieceCaptureByRegular([fromI, fromJ]: Position, [toI, toJ]: Position, gameState: GameState): boolean {
     const { boardState, currentPlayer } = gameState;
 
+    // TODO: Refactor with getPiece
     const capturedPieceRow = (fromI + toI) / 2;
     const capturedPieceColumn = (fromJ + toJ) / 2;
     const capturedPieceSquare = boardState[capturedPieceRow]?.[capturedPieceColumn];
     const capturedPiece = capturedPieceSquare?.piece;
 
-    if (capturedPieceSquare?.pendingCapture || !capturedPiece || capturedPiece === currentPlayer) {
+    if (!capturedPiece || capturedPiece?.pendingCapture || capturedPiece.color === currentPlayer) {
       return false;
     }
 
@@ -38,10 +102,10 @@ export class FrisianDraughtsStrategy extends Checkers100Strategy {
     let value = 0;
 
     this.iterateBetweenFromTo(from, to, (position) => {
-      const square = getSquare(gameState.boardState, position);
-      if (!square.piece) return true;
+      const piece = getPiece(gameState.boardState, position);
+      if (!piece) return true;
 
-      if (square.isKing) {
+      if (piece.isKing) {
         value += 1.5;
       } else {
         value += 1;
@@ -57,15 +121,15 @@ export class FrisianDraughtsStrategy extends Checkers100Strategy {
     const { boardState, currentPlayer } = gameState;
     const opponentColor = toggleColor(currentPlayer);
 
-    const { fromSquare, toSquare } = getSquares(boardState, from, to);
+    const { fromPiece, toPiece } = getPieces(boardState, from, to);
 
     // Check if the "from" square is occupied by a king of the current player's color
-    if (!fromSquare || fromSquare.piece === opponentColor || !fromSquare.isKing) {
+    if (!fromPiece || fromPiece.color === opponentColor || !fromPiece.isKing) {
       return false;
     }
 
     // Check if the "to" square exists, or it's occupied
-    if (!toSquare || toSquare.piece) {
+    if (toPiece) {
       return false;
     }
 
@@ -79,19 +143,19 @@ export class FrisianDraughtsStrategy extends Checkers100Strategy {
     let isOwnPieceCaptured = false;
     let isPendingCapturingPiece = false;
     this.iterateBetweenFromTo(from, to, (position) => {
-      const captured = getSquare(boardState, position);
+      const captured = getPiece(boardState, position);
       if (!captured) return true;
 
-      if (captured?.piece === currentPlayer) {
+      if (captured.color === currentPlayer) {
         isOwnPieceCaptured = true;
         return false;
       }
-      if (captured?.pendingCapture) {
+      if (captured.pendingCapture) {
         isPendingCapturingPiece = true;
         return false;
       }
 
-      if (captured?.piece === opponentColor) {
+      if (captured.color === opponentColor) {
         piecesCaptured += 1;
       }
 

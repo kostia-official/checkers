@@ -7,18 +7,26 @@ export enum Color {
   White = 'white',
 }
 
-export interface Square {
-  piece: Color | null;
+export interface Piece {
+  id: number;
+  color: Color;
   isKing: boolean;
   pendingCapture?: boolean;
 }
 
+export interface Square {
+  piece?: Piece;
+}
+
 export type BoardState = Square[][];
+
+export type KingsMovesCount = Record<string, number>;
 
 export interface GameState {
   boardState: BoardState;
   currentPlayer: Color;
   selectedPiece: Position | null;
+  kingsMovesCount?: KingsMovesCount;
   hasMadeCapture: boolean;
 }
 
