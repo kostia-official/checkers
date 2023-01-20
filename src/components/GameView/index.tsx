@@ -8,7 +8,7 @@ import {
   GameExtrasWrapper,
 } from './styled';
 import { CheckerPiece } from './components/CheckersPiece';
-import { ICheckersStrategy } from '@strategies/checkers-strategy.interface';
+import { ICheckersStrategy } from '@strategies/draughts-strategy.interface';
 import { DEBUG } from '@common/constants';
 import { GameState, Color, Position } from '@common/types';
 import { EditModeState } from './components/EditMode/hooks/useEditMode';

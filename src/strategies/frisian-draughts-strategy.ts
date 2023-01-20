@@ -1,9 +1,9 @@
 import { GameState, Position } from '@common/types';
-import { Checkers100Strategy } from '@strategies/checkers100-strategy';
+import { Draughts100Strategy } from '@strategies/draughts100-strategy';
 import { toggleColor, getPiece, getPieces, isEqualPosition } from '@common/utils';
 import { t } from 'i18next';
 
-export class FrisianDraughtsStrategy extends Checkers100Strategy {
+export class FrisianDraughtsStrategy extends Draughts100Strategy {
   readonly kingMovesLimit = 3;
 
   isBiggerCapturePriority(

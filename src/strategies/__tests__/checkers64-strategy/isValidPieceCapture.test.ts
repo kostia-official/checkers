@@ -1,11 +1,11 @@
-import { Checkers64Strategy } from '../../checkers64-strategy';
+import { Draughts64Strategy } from '../../draughts64-strategy';
 import { createGameState } from '@common/test-utils/gameState';
 import { Color, GameState, Position } from '@common/types';
 
 describe('isValidPieceCapture', () => {
   describe('capture by a regular piece', () => {
     it('should return true for a valid piece capture forward', () => {
-      const strategy = new Checkers64Strategy();
+      const strategy = new Draughts64Strategy();
 
       const board = [
         [0, 0, 0],
@@ -21,7 +21,7 @@ describe('isValidPieceCapture', () => {
     });
 
     it('should return true for a valid piece capture backward', () => {
-      const strategy = new Checkers64Strategy();
+      const strategy = new Draughts64Strategy();
 
       const board = [
         [0, 0, 1],
@@ -36,7 +36,7 @@ describe('isValidPieceCapture', () => {
     });
 
     it('should return false for a valid piece move but not capture', () => {
-      const strategy = new Checkers64Strategy();
+      const strategy = new Draughts64Strategy();
 
       const board = [
         [0, 2, 0],
@@ -51,7 +51,7 @@ describe('isValidPieceCapture', () => {
     });
 
     it('should return false for a capture on not empty space', () => {
-      const strategy = new Checkers64Strategy();
+      const strategy = new Draughts64Strategy();
 
       const board = [
         [0, 0, 2],
@@ -66,7 +66,7 @@ describe('isValidPieceCapture', () => {
     });
 
     it('should return false for a capture over the board', () => {
-      const strategy = new Checkers64Strategy();
+      const strategy = new Draughts64Strategy();
 
       const board = [
         [0, 0, 0],
@@ -81,7 +81,7 @@ describe('isValidPieceCapture', () => {
     });
 
     it('should return false for a capture of own piece', () => {
-      const strategy = new Checkers64Strategy();
+      const strategy = new Draughts64Strategy();
 
       const board = [
         [0, 0, 0],
@@ -96,7 +96,7 @@ describe('isValidPieceCapture', () => {
     });
 
     it('should return false for a capture in wrong turn', () => {
-      const strategy = new Checkers64Strategy();
+      const strategy = new Draughts64Strategy();
 
       const board = [
         [0, 0, 0],
@@ -111,7 +111,7 @@ describe('isValidPieceCapture', () => {
     });
 
     it('should return false for capturing with empty piece', () => {
-      const strategy = new Checkers64Strategy();
+      const strategy = new Draughts64Strategy();
 
       const board = [
         [0, 0, 0],
@@ -126,7 +126,7 @@ describe('isValidPieceCapture', () => {
     });
 
     it('should return false for capturing to a wrong square according to rules', () => {
-      const strategy = new Checkers64Strategy();
+      const strategy = new Draughts64Strategy();
 
       const board = [
         [0, 0, 0],
@@ -151,7 +151,7 @@ describe('isValidPieceCapture', () => {
     });
 
     it('should return false for capturing by regular piece as a king', () => {
-      const strategy = new Checkers64Strategy();
+      const strategy = new Draughts64Strategy();
 
       const board = [
         [0, 0, 0, 0],
@@ -167,7 +167,7 @@ describe('isValidPieceCapture', () => {
     });
 
     it('should return false for capturing by a piece over a board', () => {
-      const strategy = new Checkers64Strategy();
+      const strategy = new Draughts64Strategy();
 
       const board = [
         [0, 0, 0],
@@ -184,7 +184,7 @@ describe('isValidPieceCapture', () => {
 
   describe('capture by a king piece', () => {
     it('should return true for a valid piece capture forward by a king', () => {
-      const strategy = new Checkers64Strategy();
+      const strategy = new Draughts64Strategy();
 
       const board = [
         [0, 0, 0, 0],
@@ -200,7 +200,7 @@ describe('isValidPieceCapture', () => {
     });
 
     it('should return true for a valid piece capture forward like regular piece', () => {
-      const strategy = new Checkers64Strategy();
+      const strategy = new Draughts64Strategy();
 
       const board = [
         [0, 0, 0],
@@ -215,7 +215,7 @@ describe('isValidPieceCapture', () => {
     });
 
     it('should return true for a valid piece capture backward as a king', () => {
-      const strategy = new Checkers64Strategy();
+      const strategy = new Draughts64Strategy();
 
       const board = [
         [0, 0, 0, 3],
@@ -231,7 +231,7 @@ describe('isValidPieceCapture', () => {
     });
 
     it('should return false for a valid piece move but not capture as a king', () => {
-      const strategy = new Checkers64Strategy();
+      const strategy = new Draughts64Strategy();
 
       const board = [
         [0, 2, 0],
@@ -246,7 +246,7 @@ describe('isValidPieceCapture', () => {
     });
 
     it('should return false for a capture on not empty space as a king', () => {
-      const strategy = new Checkers64Strategy();
+      const strategy = new Draughts64Strategy();
 
       const board = [
         [0, 0, 0, 2],
@@ -262,7 +262,7 @@ describe('isValidPieceCapture', () => {
     });
 
     it('should return false for a capture over the board as a king', () => {
-      const strategy = new Checkers64Strategy();
+      const strategy = new Draughts64Strategy();
 
       const board = [
         [0, 0, 0],
@@ -277,7 +277,7 @@ describe('isValidPieceCapture', () => {
     });
 
     it('should return false for a capture of own piece as a king', () => {
-      const strategy = new Checkers64Strategy();
+      const strategy = new Draughts64Strategy();
 
       const board = [
         [0, 0, 0, 0],
@@ -293,7 +293,7 @@ describe('isValidPieceCapture', () => {
     });
 
     it('should return false for a capture of 2 pieces at a time as a king', () => {
-      const strategy = new Checkers64Strategy();
+      const strategy = new Draughts64Strategy();
 
       const board = [
         [0, 0, 0, 0, 0],
@@ -310,7 +310,7 @@ describe('isValidPieceCapture', () => {
     });
 
     it('should return false for a move not a capture as a king', () => {
-      const strategy = new Checkers64Strategy();
+      const strategy = new Draughts64Strategy();
 
       const board = [
         [0, 0, 0, 0, 0],
@@ -327,7 +327,7 @@ describe('isValidPieceCapture', () => {
     });
 
     it('should return false for a capture of 2 pieces as a single capture as a king', () => {
-      const strategy = new Checkers64Strategy();
+      const strategy = new Draughts64Strategy();
 
       const board = [
         [0, 0, 0, 0, 0],
@@ -344,7 +344,7 @@ describe('isValidPieceCapture', () => {
     });
 
     it('should return false for a capture in wrong turn as a king', () => {
-      const strategy = new Checkers64Strategy();
+      const strategy = new Draughts64Strategy();
 
       const board = [
         [0, 0, 0, 0],
@@ -360,7 +360,7 @@ describe('isValidPieceCapture', () => {
     });
 
     it('should return false for capturing to a wrong square according to rules as a king', () => {
-      const strategy = new Checkers64Strategy();
+      const strategy = new Draughts64Strategy();
 
       const board = [
         [0, 0, 0, 0],

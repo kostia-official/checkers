@@ -1,11 +1,13 @@
 import { MainMenu } from '@pages/MainMenu';
 import { OfflineGame } from '@pages/OfflineGame';
 import { createBrowserRouter } from 'react-router-dom';
-import { Checkers64Strategy } from '@strategies/checkers64-strategy';
-import { Checkers100Strategy } from '@strategies/checkers100-strategy';
+import { Draughts64Strategy } from '@strategies/draughts64-strategy';
+import { Draughts100Strategy } from '@strategies/draughts100-strategy';
 import { NewGame } from '@pages/NewGame';
 import { OnlineGame } from '@pages/OnlineGame';
 import { FrisianDraughtsStrategy } from '@strategies/frisian-draughts-strategy';
+import { BrazilianDraughtsStrategy } from '@strategies/brasilian-draughts-strategy';
+import { FrisianDraughts64Strategy } from '@strategies/frisian-draughts64-strategy';
 
 export const routes = [
   {
@@ -22,15 +24,23 @@ export const routes = [
   },
   {
     path: '/game/offline/draughts64',
-    element: <OfflineGame strategy={new Checkers64Strategy()} />,
+    element: <OfflineGame strategy={new Draughts64Strategy()} />,
   },
   {
     path: '/game/offline/internation',
-    element: <OfflineGame strategy={new Checkers100Strategy()} />,
+    element: <OfflineGame strategy={new Draughts100Strategy()} />,
+  },
+  {
+    path: '/game/offline/brazilian',
+    element: <OfflineGame strategy={new BrazilianDraughtsStrategy()} />,
   },
   {
     path: '/game/offline/frisian',
     element: <OfflineGame strategy={new FrisianDraughtsStrategy()} />,
+  },
+  {
+    path: '/game/offline/frisian64',
+    element: <OfflineGame strategy={new FrisianDraughts64Strategy()} />,
   },
 ];
 

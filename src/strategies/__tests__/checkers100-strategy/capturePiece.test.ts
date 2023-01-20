@@ -1,11 +1,11 @@
-import { Checkers100Strategy } from '@strategies/checkers100-strategy';
+import { Draughts100Strategy } from '@strategies/draughts100-strategy';
 import { createGameState } from '@common/test-utils/gameState';
 import { Color, Position } from '@common/types';
 import { getSquare, getPiece } from '@common/utils';
 
 describe('capturePiece', () => {
   it('should capture 2 pieces with marking pending the first one', () => {
-    const strategy = new Checkers100Strategy();
+    const strategy = new Draughts100Strategy();
 
     const board = [
       [0, 0, 0, 0, 0, 0],
@@ -47,7 +47,7 @@ describe('capturePiece', () => {
   });
 
   it('should remove a piece when no capture can be done', () => {
-    const strategy = new Checkers100Strategy();
+    const strategy = new Draughts100Strategy();
 
     const board = [
       [0, 0, 0, 0, 0, 0],
@@ -73,7 +73,7 @@ describe('capturePiece', () => {
   });
 
   it('should not become a king when not finished capture on a king square', () => {
-    const strategy = new Checkers100Strategy();
+    const strategy = new Draughts100Strategy();
 
     const board = [
       [0, 0, 0, 0, 0, 0],
@@ -101,7 +101,7 @@ describe('capturePiece', () => {
   });
 
   it('should become a king when finished capture on a king square', () => {
-    const strategy = new Checkers100Strategy();
+    const strategy = new Draughts100Strategy();
 
     const board = [
       [0, 0, 0, 0, 0, 0],
@@ -127,7 +127,7 @@ describe('capturePiece', () => {
   });
 
   it('should become a king when finished capture on a king square with possible capture as king next time', () => {
-    const strategy = new Checkers100Strategy();
+    const strategy = new Draughts100Strategy();
 
     const board = [
       [0, 0, 0, 0, 0, 0],
@@ -153,7 +153,7 @@ describe('capturePiece', () => {
   });
 
   it('should stay as a king when captured over a king square', () => {
-    const strategy = new Checkers100Strategy();
+    const strategy = new Draughts100Strategy();
 
     const board = [
       [0, 0, 0, 0, 0, 0],

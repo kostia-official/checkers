@@ -1,9 +1,9 @@
-import { ICheckersStrategy } from './checkers-strategy.interface';
+import { ICheckersStrategy } from './draughts-strategy.interface';
 import { BoardState, Color, GameState, Position, Square, LimitedJumpsCount } from '@common/types';
 import cloneDeep from 'lodash.clonedeep';
 import { toggleColor, getSquare, getSquares, isEqualPosition, getPiece, getPieces } from '@common/utils';
 
-export abstract class BaseCheckersStrategy implements ICheckersStrategy {
+export abstract class BaseDraughtsStrategy implements ICheckersStrategy {
   abstract squares: number;
 
   abstract isValidMoveByKing(from: Position, to: Position, gameState: GameState): boolean;
@@ -271,14 +271,16 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
   movePiece(from: Position, to: Position, gameState: GameState): GameState {
     let newGameState = cloneDeep(gameState);
 
-    const { fromSquare, toSquare } = getSquares(newGameState.boardState, from, to);
-    if (!fromSquare?.piece) return newGameState;
+    const fromPiece = getPiece(newGameState.boardState, from);
+    if (!fromPiece) return newGameState;
 
     newGameState = this.changePieceSquare(from, to, newGameState);
 
+    const toPiece = getPiece(newGameState.boardState, to);
+
     // Check if the piece can become a king and update its isKing status
-    if (toSquare?.piece && this.canBecomeKing(to, gameState.currentPlayer)) {
-      toSquare.piece.isKing = true;
+    if (toPiece && this.canBecomeKing(to, gameState.currentPlayer)) {
+      toPiece.isKing = true;
     }
 
     newGameState.currentPlayer = toggleColor(newGameState.currentPlayer);

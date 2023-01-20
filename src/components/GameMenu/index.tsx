@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '@mantine/core';
+import { Button, Text } from '@mantine/core';
 import { Link } from 'react-router-dom';
 import { EditMode } from '@components/GameView/components/EditMode';
 import { useTranslation } from 'react-i18next';
@@ -44,9 +44,9 @@ export const GameMenu: React.FC<GameMenuProps> = ({
 
       {/* TODO: Redesign */}
       {winnerLabel ? (
-        <div className="winner">
+        <Text align="center">
           {winnerLabel} {t('winner.winsLabel')}
-        </div>
+        </Text>
       ) : null}
     </>
   );

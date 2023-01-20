@@ -1,7 +1,7 @@
 import { Color, GameState, Position } from '@common/types';
-import { BaseCheckersStrategy } from './base-checkers-strategy';
+import { BaseDraughtsStrategy } from './base-draughts-strategy';
 
-export class Checkers64Strategy extends BaseCheckersStrategy {
+export class Draughts64Strategy extends BaseDraughtsStrategy {
   squares = 8;
 
   private rowsNotation = Array.from({ length: 8 }, (_, i) => (this.squares - i).toString());

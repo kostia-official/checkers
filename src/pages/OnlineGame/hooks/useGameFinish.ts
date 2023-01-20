@@ -1,6 +1,6 @@
 import { useMemo, useEffect, useCallback } from 'react';
 import { GameModel } from '@services/types';
-import { ICheckersStrategy } from '@strategies/checkers-strategy.interface';
+import { ICheckersStrategy } from '@strategies/draughts-strategy.interface';
 import { useMutation } from 'react-query';
 import { gameService, FinishGameArgs } from '@services/game.service';
 import { GameState, Color, GamePlayers } from '@common/types';

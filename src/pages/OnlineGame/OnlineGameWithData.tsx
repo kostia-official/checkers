@@ -18,7 +18,7 @@ import { GameView } from '@components/GameView';
 import { PlayersCard } from '@pages/OnlineGame/components/PlayersCard';
 import { CopyInviteLinkButton } from '@pages/OnlineGame/components/CopyInviteLinkButton';
 import { GameResultsButtons } from '@pages/OnlineGame/components/GameResultsButtons';
-import { GameMenu } from '@components/GameExtras';
+import { GameMenu } from '@components/GameMenu';
 
 export interface OnlineGameWithDataProps {
   game: GameModel;

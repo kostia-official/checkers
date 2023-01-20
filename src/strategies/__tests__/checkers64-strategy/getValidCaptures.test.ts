@@ -1,10 +1,10 @@
 import { createGameState } from '@common/test-utils/gameState';
 import { Position } from '@common/types';
-import { Checkers64Strategy } from '@strategies/checkers64-strategy';
+import { Draughts64Strategy } from '@strategies/draughts64-strategy';
 
 describe('getValidCaptures', () => {
   it('should return 2 valid captures', () => {
-    const strategy = new Checkers64Strategy();
+    const strategy = new Draughts64Strategy();
 
     const board = [
       [0, 0, 0, 0, 0],
@@ -27,7 +27,7 @@ describe('getValidCaptures', () => {
   });
 
   it('should return 1 valid capture', () => {
-    const strategy = new Checkers64Strategy();
+    const strategy = new Draughts64Strategy();
 
     const board = [
       [0, 0, 0, 0, 0],
@@ -46,7 +46,7 @@ describe('getValidCaptures', () => {
   });
 
   it('should return 0 valid captures', () => {
-    const strategy = new Checkers64Strategy();
+    const strategy = new Draughts64Strategy();
 
     const board = [
       [0, 0, 0, 0, 0],

@@ -1,11 +1,11 @@
-import { Checkers64Strategy } from '../../checkers64-strategy';
+import { Draughts64Strategy } from '../../draughts64-strategy';
 import { createGameState } from '@common/test-utils/gameState';
 import { Position } from '@common/types';
 
 describe('isValidPieceCapture', () => {
   describe('a regular piece', () => {
     it('should return true for a valid moves', () => {
-      const strategy = new Checkers64Strategy();
+      const strategy = new Draughts64Strategy();
 
       const board = [
         [0, 0, 0],
@@ -26,7 +26,7 @@ describe('isValidPieceCapture', () => {
     });
 
     it('should return false for a invalid moves', () => {
-      const strategy = new Checkers64Strategy();
+      const strategy = new Draughts64Strategy();
 
       const board = [
         [0, 0, 0],
@@ -50,7 +50,7 @@ describe('isValidPieceCapture', () => {
     });
 
     it('should return false for an invalid moves by black piece', () => {
-      const strategy = new Checkers64Strategy();
+      const strategy = new Draughts64Strategy();
 
       const board = [
         [0, 0, 0],
@@ -74,7 +74,7 @@ describe('isValidPieceCapture', () => {
     });
 
     it('should return false for a move to not empty square', () => {
-      const strategy = new Checkers64Strategy();
+      const strategy = new Draughts64Strategy();
 
       const board = [
         [0, 0, 1],
@@ -89,7 +89,7 @@ describe('isValidPieceCapture', () => {
     });
 
     it('should return false for a move over the board', () => {
-      const strategy = new Checkers64Strategy();
+      const strategy = new Draughts64Strategy();
 
       const board = [
         [0, 0, 0],
@@ -104,7 +104,7 @@ describe('isValidPieceCapture', () => {
     });
 
     it('should return false for a move by empty square', () => {
-      const strategy = new Checkers64Strategy();
+      const strategy = new Draughts64Strategy();
 
       const board = [
         [0, 0, 0],
@@ -119,7 +119,7 @@ describe('isValidPieceCapture', () => {
     });
 
     it('should return false for a move by a piece of other player', () => {
-      const strategy = new Checkers64Strategy();
+      const strategy = new Draughts64Strategy();
 
       const board = [
         [0, 0, 0],

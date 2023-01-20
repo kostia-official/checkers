@@ -1,11 +1,15 @@
 import { GameType } from '../types';
-import { Checkers64Strategy } from '@strategies/checkers64-strategy';
-import { Checkers100Strategy } from '@strategies/checkers100-strategy';
-import { ICheckersStrategy } from '@strategies/checkers-strategy.interface';
+import { Draughts64Strategy } from '@strategies/draughts64-strategy';
+import { Draughts100Strategy } from '@strategies/draughts100-strategy';
+import { ICheckersStrategy } from '@strategies/draughts-strategy.interface';
 import { FrisianDraughtsStrategy } from '@strategies/frisian-draughts-strategy';
+import { BrazilianDraughtsStrategy } from '@strategies/brasilian-draughts-strategy';
+import { FrisianDraughts64Strategy } from '@strategies/frisian-draughts64-strategy';
 
 export const mapGameTypeToStrategy: Record<GameType, new () => ICheckersStrategy> = {
-  draughts64: Checkers64Strategy,
-  internation: Checkers100Strategy,
-  frisian: FrisianDraughtsStrategy,
+  [GameType.Draughts64]: Draughts64Strategy,
+  [GameType.International]: Draughts100Strategy,
+  [GameType.Frisian]: FrisianDraughtsStrategy,
+  [GameType.Brazilian]: BrazilianDraughtsStrategy,
+  [GameType.Frisian64]: FrisianDraughts64Strategy,
 };

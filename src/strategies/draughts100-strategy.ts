@@ -1,9 +1,9 @@
 import { GameState, Position } from '@common/types';
 import cloneDeep from 'lodash.clonedeep';
-import { Checkers64Strategy } from './checkers64-strategy';
+import { Draughts64Strategy } from './draughts64-strategy';
 import { toggleColor, hasPosition, getPiece } from '@common/utils';
 
-export class Checkers100Strategy extends Checkers64Strategy {
+export class Draughts100Strategy extends Draughts64Strategy {
   squares = 10;
 
   getSquareNotation([i, j]: Position): string {
