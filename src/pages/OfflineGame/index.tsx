@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import { BoardState, Color, Position, GameState, GameStateHistory } from '@common/types';
+import { BoardState, Color, Position, GameState, GameStateHistory, LimitedJumpsCount, GameAlert } from '@common/types';
 import { ICheckersStrategy } from '@strategies/checkers-strategy.interface';
 import { useEditMode } from '@components/GameView/components/EditMode/hooks/useEditMode';
 import { GameView } from '@components/GameView';
 import { useTranslation } from 'react-i18next';
+import { GameMenu } from '@components/GameExtras';
 
 export interface CheckersGameProps {
   strategy: ICheckersStrategy;
@@ -18,14 +19,25 @@ export const OfflineGame: React.FC<CheckersGameProps> = ({ strategy }) => {
     { boardState, currentPlayerColor: currentPlayer },
   ]);
   const [winner, setWinner] = useState<Color | undefined>();
-  const [selectedPiece, setSelectedPiece] = useState<Position | null>(null);
+  const [selectedPiece, setSelectedPiece] = useState<Position>();
   const [hasMadeCapture, setHasMadeCapture] = useState(false);
+  const [limitedJumpsCount, setLimitedJumpsCount] = useState<LimitedJumpsCount>({});
+  const [gameAlerts, setGameAlerts] = useState<GameAlert[]>([]);
 
-  const updateGameState = ({ boardState, currentPlayer, selectedPiece, hasMadeCapture }: GameState) => {
+  const updateGameState = ({
+    boardState,
+    currentPlayer,
+    selectedPiece,
+    hasMadeCapture,
+    limitedJumpsCount,
+    gameAlerts,
+  }: GameState) => {
     setBoardState(boardState);
     setCurrentPlayer(currentPlayer);
     setSelectedPiece(selectedPiece);
     setHasMadeCapture(hasMadeCapture);
+    setLimitedJumpsCount(limitedJumpsCount);
+    setGameAlerts(gameAlerts);
 
     setGameStateHistory((prev) => [...prev, { boardState, currentPlayerColor: currentPlayer }]);
   };
@@ -36,18 +48,24 @@ export const OfflineGame: React.FC<CheckersGameProps> = ({ strategy }) => {
 
     setBoardState(prevGameHistory.boardState);
     setCurrentPlayer(prevGameHistory.currentPlayerColor);
-    setSelectedPiece(null);
+    setSelectedPiece(undefined);
     setWinner(undefined);
     setGameStateHistory(gameStateHistory.slice(0, gameStateHistory.length - 1));
   };
 
   const getGameState = useCallback((): GameState => {
-    return { currentPlayer, boardState, selectedPiece, hasMadeCapture };
-  }, [boardState, currentPlayer, hasMadeCapture, selectedPiece]);
+    return { currentPlayer, boardState, selectedPiece, hasMadeCapture, limitedJumpsCount, gameAlerts };
+  }, [boardState, currentPlayer, hasMadeCapture, selectedPiece, limitedJumpsCount, gameAlerts]);
 
   const handlePieceClick = (position: Position) => {
-    const newSelectedPiece = strategy.handlePieceClick(position, getGameState());
-    if (newSelectedPiece) setSelectedPiece(newSelectedPiece);
+    const newGameState = strategy.handlePieceClick(position, getGameState());
+
+    if (newGameState?.selectedPiece) {
+      setSelectedPiece(newGameState?.selectedPiece);
+    }
+    if (newGameState?.gameAlerts) {
+      setGameAlerts(newGameState?.gameAlerts);
+    }
   };
 
   const handleSquareClick = (position: Position) => {
@@ -62,7 +80,7 @@ export const OfflineGame: React.FC<CheckersGameProps> = ({ strategy }) => {
 
     setCurrentPlayer(Color.White);
     setWinner(undefined);
-    setSelectedPiece(null);
+    setSelectedPiece(undefined);
     setHasMadeCapture(false);
   };
 
@@ -90,14 +108,21 @@ export const OfflineGame: React.FC<CheckersGameProps> = ({ strategy }) => {
     <GameView
       strategy={strategy}
       gameState={getGameState()}
-      gameStateHistory={gameStateHistory}
       playerColor={Color.White}
-      winnerLabel={winnerLabel}
       editModeState={editModeState}
       handleSquareClick={handleSquareClick}
       handlePieceClick={handlePieceClick}
-      onUndoMoveClick={handleUndoMove}
-      handleNewGame={handleNewGame}
+      gameExtrasContent={
+        <>
+          <GameMenu
+            editModeState={editModeState}
+            gameStateHistory={gameStateHistory}
+            winnerLabel={winnerLabel}
+            onUndoMoveClick={handleUndoMove}
+            handleNewGame={handleNewGame}
+          />
+        </>
+      }
     />
   );
 };

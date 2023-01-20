@@ -1,24 +1,10 @@
 import { GameState, Position } from '@common/types';
 import { Checkers100Strategy } from '@strategies/checkers100-strategy';
-import { toggleColor, getPiece, getPieces } from '@common/utils';
+import { toggleColor, getPiece, getPieces, isEqualPosition } from '@common/utils';
+import { t } from 'i18next';
 
 export class FrisianDraughtsStrategy extends Checkers100Strategy {
-  hasMoreRegularPieces(position: Position, gameState: GameState): boolean {
-    let result = false;
-
-    this.iterateBoard(position, gameState, (position) => {
-      const piece = getPiece(gameState.boardState, position);
-
-      if (piece?.color === gameState.currentPlayer && !piece.isKing) {
-        result = true;
-        return false;
-      }
-
-      return true;
-    });
-
-    return result;
-  }
+  readonly kingMovesLimit = 3;
 
   isBiggerCapturePriority(
     piecePosition: Position,
@@ -49,22 +35,102 @@ export class FrisianDraughtsStrategy extends Checkers100Strategy {
     return isBiggerCapturePriority;
   }
 
-  // TODO: Finish locking king after 3 moves
-  // handlePieceClick(position: Position, gameState: GameState): Position | undefined {
-  //   const selectedPiece = super.handlePieceClick(position, gameState);
-  //   if (!selectedPiece) return;
+  movePiece(from: Position, to: Position, gameState: GameState): GameState {
+    const newGameState = super.movePiece(from, to, gameState);
+    const wasMove = gameState.currentPlayer !== newGameState.currentPlayer;
+    const piece = getPiece(newGameState.boardState, to);
 
-  // const reachedMovesLimit = false;
-  // if (!reachedMovesLimit) return selectedPiece;
-  //
-  // const hasMoreRegularPieces = this.hasMoreRegularPieces(position, gameState);
-  // if (!hasMoreRegularPieces) return selectedPiece;
-  //
-  // const canCapture = !!this.getValidCaptures(selectedPiece, gameState).length;
-  // if (canCapture) return selectedPiece;
+    // Increment king moves count
+    if (wasMove && piece?.isKing) {
+      newGameState.limitedJumpsCount = this.updateLimitedJumpsCount(
+        `${piece.color}/${piece.id}`,
+        newGameState.limitedJumpsCount,
+        (prevCount) => prevCount + 1
+      );
+    }
 
-  //   return selectedPiece;
-  // }
+    if (wasMove && piece) {
+      // Limited king moves count resets after move of other piece
+      newGameState.limitedJumpsCount = this.mapLimitedJumpsCount(newGameState.limitedJumpsCount, (key, count) => {
+        // For other pieces with the same color reset count
+        if (!key.includes(String(piece.id)) && key.includes(piece.color)) {
+          return 0;
+        }
+
+        return count;
+      });
+    }
+
+    return newGameState;
+  }
+
+  capturePiece(from: Position, to: Position, gameState: GameState): GameState {
+    const newGameState = super.capturePiece(from, to, gameState);
+    const wasCapture = gameState.currentPlayer !== newGameState.currentPlayer;
+    const piece = getPiece(newGameState.boardState, to);
+
+    if (wasCapture && piece) {
+      // Limited king moves count resets after capture
+      newGameState.limitedJumpsCount = this.mapLimitedJumpsCount(newGameState.limitedJumpsCount, (key, count) => {
+        // Reset count for all pieces with the same color
+        if (key.includes(piece.color)) {
+          return 0;
+        }
+
+        return count;
+      });
+    }
+
+    return newGameState;
+  }
+
+  hasMoreRegularPieces(currentPosition: Position, gameState: GameState): boolean {
+    let result = false;
+
+    this.iterateBoard(currentPosition, gameState, (position) => {
+      if (isEqualPosition(position, currentPosition)) return true;
+
+      const piece = getPiece(gameState.boardState, position);
+
+      if (piece?.color === gameState.currentPlayer && !piece.isKing) {
+        result = true;
+        return false;
+      }
+
+      return true;
+    });
+
+    return result;
+  }
+
+  handlePieceClick(position: Position, gameState: GameState): GameState | undefined {
+    const newGameState = super.handlePieceClick(position, gameState);
+    if (!newGameState?.selectedPiece) return;
+
+    const selectedPosition = newGameState.selectedPiece;
+
+    const piece = getPiece(gameState.boardState, selectedPosition);
+
+    if (!piece) return;
+    if (!piece.isKing) return newGameState;
+
+    // King moves limit rules
+
+    // King can't move more than 3 times
+    const kingMovesCount = gameState.limitedJumpsCount?.[`${gameState.currentPlayer}/${piece.id}`] ?? 0;
+    const reachedMovesLimit = kingMovesCount >= this.kingMovesLimit;
+    if (!reachedMovesLimit) return newGameState;
+
+    // King can move without limits if it has more regular pieces
+    const hasMoreRegularPieces = this.hasMoreRegularPieces(position, gameState);
+    if (!hasMoreRegularPieces) return newGameState;
+
+    // King can capture without limits
+    const canCapture = !!this.getValidCaptures(selectedPosition, gameState).length;
+    if (canCapture) return newGameState;
+
+    return this.addAlert(t('gameAlerts.kingMaxMoves'), gameState);
+  }
 
   isValidPieceCaptureByRegular([fromI, fromJ]: Position, [toI, toJ]: Position, gameState: GameState): boolean {
     const { boardState, currentPlayer } = gameState;

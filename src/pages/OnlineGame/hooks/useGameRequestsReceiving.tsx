@@ -7,6 +7,7 @@ import { Unsubscribe } from 'firebase/firestore';
 import { hideNotification, showNotification } from '@mantine/notifications';
 import i18next from 'i18next';
 import { RequestNotificationContent } from '@components/RequestNotificationContent';
+import { mantineColors } from '@common/colors';
 
 export interface HookArgs {
   game: GameModel;
@@ -40,7 +41,7 @@ export const useGameRequestsReceiving = ({ game }: HookArgs) => {
     (id: string, requestType: RequestType) => {
       showNotification({
         id,
-        color: 'yellow.4',
+        color: mantineColors.warning,
         autoClose: false,
         message: (
           <RequestNotificationContent

@@ -1,6 +1,6 @@
 import { Checkers64Strategy } from '../../checkers64-strategy';
-import { createBoard } from '../../../common/test-utils/board';
-import { Color, GameState, Position } from '../../../common/types';
+import { createGameState } from '@common/test-utils/gameState';
+import { Position } from '@common/types';
 
 describe('isValidPieceCapture', () => {
   describe('a regular piece', () => {
@@ -12,20 +12,13 @@ describe('isValidPieceCapture', () => {
         [0, 1, 0],
         [0, 0, 0],
       ];
-      const boardState = createBoard(board);
-
       const from: Position = [1, 1];
+      const gameState = createGameState(board, { selectedPiece: from });
+
       const destinations: Position[] = [
         [0, 0],
         [0, 2],
       ];
-
-      const gameState: GameState = {
-        boardState,
-        currentPlayer: Color.White,
-        hasMadeCapture: false,
-        selectedPiece: from,
-      };
 
       destinations.forEach((to) => {
         expect(strategy.isValidMove(from, to, gameState)).toBe(true);
@@ -40,8 +33,6 @@ describe('isValidPieceCapture', () => {
         [0, 1, 0],
         [0, 0, 0],
       ];
-      const boardState = createBoard(board);
-
       const from: Position = [1, 1];
       const destinations: Position[] = [
         [0, 1],
@@ -51,13 +42,7 @@ describe('isValidPieceCapture', () => {
         [2, 1],
         [2, 2],
       ];
-
-      const gameState: GameState = {
-        boardState,
-        currentPlayer: Color.White,
-        hasMadeCapture: false,
-        selectedPiece: from,
-      };
+      const gameState = createGameState(board, { selectedPiece: from });
 
       destinations.forEach((to) => {
         expect(strategy.isValidMove(from, to, gameState)).toBe(false);
@@ -72,8 +57,6 @@ describe('isValidPieceCapture', () => {
         [0, 2, 0],
         [0, 0, 0],
       ];
-      const boardState = createBoard(board);
-
       const from: Position = [1, 1];
       const destinations: Position[] = [
         [0, 1],
@@ -83,13 +66,7 @@ describe('isValidPieceCapture', () => {
         [2, 1],
         [2, 2],
       ];
-
-      const gameState: GameState = {
-        boardState,
-        currentPlayer: Color.White,
-        hasMadeCapture: false,
-        selectedPiece: from,
-      };
+      const gameState = createGameState(board, { selectedPiece: from });
 
       destinations.forEach((to) => {
         expect(strategy.isValidMove(from, to, gameState)).toBe(false);
@@ -104,17 +81,9 @@ describe('isValidPieceCapture', () => {
         [0, 1, 0],
         [0, 0, 0],
       ];
-      const boardState = createBoard(board);
-
       const from: Position = [1, 1];
       const to: Position = [0, 2];
-
-      const gameState: GameState = {
-        boardState,
-        currentPlayer: Color.White,
-        hasMadeCapture: false,
-        selectedPiece: from,
-      };
+      const gameState = createGameState(board, { selectedPiece: from });
 
       expect(strategy.isValidMove(from, to, gameState)).toBe(false);
     });
@@ -127,17 +96,9 @@ describe('isValidPieceCapture', () => {
         [0, 0, 0],
         [0, 0, 1],
       ];
-      const boardState = createBoard(board);
-
       const from: Position = [2, 2];
       const to: Position = [1, 3];
-
-      const gameState: GameState = {
-        boardState,
-        currentPlayer: Color.White,
-        hasMadeCapture: false,
-        selectedPiece: from,
-      };
+      const gameState = createGameState(board, { selectedPiece: from });
 
       expect(strategy.isValidMove(from, to, gameState)).toBe(false);
     });
@@ -150,17 +111,9 @@ describe('isValidPieceCapture', () => {
         [0, 0, 0],
         [0, 0, 0],
       ];
-      const boardState = createBoard(board);
-
       const from: Position = [1, 1];
       const to: Position = [0, 0];
-
-      const gameState: GameState = {
-        boardState,
-        currentPlayer: Color.White,
-        hasMadeCapture: false,
-        selectedPiece: from,
-      };
+      const gameState = createGameState(board, { selectedPiece: from });
 
       expect(strategy.isValidMove(from, to, gameState)).toBe(false);
     });
@@ -173,17 +126,9 @@ describe('isValidPieceCapture', () => {
         [0, 2, 0],
         [0, 0, 0],
       ];
-      const boardState = createBoard(board);
-
       const from: Position = [1, 1];
       const to: Position = [2, 2];
-
-      const gameState: GameState = {
-        boardState,
-        currentPlayer: Color.White,
-        hasMadeCapture: false,
-        selectedPiece: from,
-      };
+      const gameState = createGameState(board, { selectedPiece: from });
 
       expect(strategy.isValidMove(from, to, gameState)).toBe(false);
     });

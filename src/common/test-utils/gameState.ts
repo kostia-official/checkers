@@ -1,6 +1,6 @@
-import { BoardState, Color } from '../types';
+import { BoardState, Color, GameState } from '../types';
 
-export function createBoard(board: number[][]) {
+export function createGameState(board: number[][], otherGameState: Partial<GameState> = {}): GameState {
   let id = -1;
   const boardState: BoardState = [];
   for (let i = 0; i < board.length; i++) {
@@ -33,5 +33,14 @@ export function createBoard(board: number[][]) {
       };
     }
   }
-  return boardState;
+
+  return {
+    boardState,
+    currentPlayer: Color.White,
+    hasMadeCapture: false,
+    selectedPiece: undefined,
+    limitedJumpsCount: {},
+    gameAlerts: [],
+    ...otherGameState,
+  };
 }

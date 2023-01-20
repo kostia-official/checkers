@@ -19,4 +19,5 @@ export const colors = {
 export const mantineColors = {
   accept: 'teal.7',
   decline: 'red.6',
+  warning: 'yellow.4',
 };

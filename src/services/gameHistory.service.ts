@@ -9,8 +9,8 @@ import {
   Timestamp,
 } from '@firebase/firestore';
 import { AddGameHistoryInput, GameHistoryModel } from './types';
-import { firebaseClient } from '../common/firebase';
-import { BoardState } from '../common/types';
+import { firebaseClient } from '@common/firebase';
+import { BoardState, LimitedJumpsCount } from '@common/types';
 import { getDocs, onSnapshot, query, where, doc, orderBy, deleteDoc } from 'firebase/firestore';
 
 export class GameHistoryService {
@@ -26,6 +26,7 @@ export class GameHistoryService {
       ...doc,
       createdAt: Timestamp.fromDate(doc.createdAt),
       boardState: JSON.stringify(doc.boardState),
+      limitedJumpsCount: JSON.stringify(doc.limitedJumpsCount),
     }),
     fromFirestore: (snapshot: QueryDocumentSnapshot<DocumentData>, options: SnapshotOptions) => {
       const data = snapshot.data(options) as any;
@@ -34,6 +35,7 @@ export class GameHistoryService {
         id: snapshot.id,
         createdAt: data.createdAt.toDate(),
         boardState: JSON.parse(data.boardState) as BoardState,
+        limitedJumpsCount: JSON.parse(data.limitedJumpsCount) as LimitedJumpsCount,
       } as GameHistoryModel;
     },
   };

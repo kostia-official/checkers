@@ -1,5 +1,5 @@
-import { createBoard } from '@common/test-utils/board';
-import { Color, GameState, Position } from '@common/types';
+import { createGameState } from '@common/test-utils/gameState';
+import { Position } from '@common/types';
 import { Checkers64Strategy } from '@strategies/checkers64-strategy';
 
 describe('getValidCaptures', () => {
@@ -13,15 +13,9 @@ describe('getValidCaptures', () => {
       [0, 2, 0, 2, 0],
       [0, 0, 1, 0, 0],
     ];
-    const boardState = createBoard(board);
-    const from: Position = [4, 2];
+    const gameState = createGameState(board);
 
-    const gameState: GameState = {
-      boardState,
-      currentPlayer: Color.White,
-      hasMadeCapture: false,
-      selectedPiece: null,
-    };
+    const from: Position = [4, 2];
 
     const validCaptures = strategy.getValidCaptures(from, gameState);
 
@@ -42,16 +36,8 @@ describe('getValidCaptures', () => {
       [0, 0, 2, 0, 0],
       [0, 1, 0, 0, 0],
     ];
-    const boardState = createBoard(board);
-
+    const gameState = createGameState(board);
     const from: Position = [4, 1];
-
-    const gameState: GameState = {
-      boardState,
-      currentPlayer: Color.White,
-      hasMadeCapture: false,
-      selectedPiece: null,
-    };
 
     const validCaptures = strategy.getValidCaptures(from, gameState);
 
@@ -69,16 +55,8 @@ describe('getValidCaptures', () => {
       [0, 0, 0, 0, 0],
       [0, 1, 0, 0, 0],
     ];
-    const boardState = createBoard(board);
-
+    const gameState = createGameState(board);
     const from: Position = [4, 1];
-
-    const gameState: GameState = {
-      boardState,
-      currentPlayer: Color.White,
-      hasMadeCapture: false,
-      selectedPiece: null,
-    };
 
     const validCaptures = strategy.getValidCaptures(from, gameState);
 

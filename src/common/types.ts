@@ -20,13 +20,14 @@ export interface Square {
 
 export type BoardState = Square[][];
 
-export type KingsMovesCount = Record<string, number>;
+export type LimitedJumpsCount = Record<string, number>;
 
 export interface GameState {
   boardState: BoardState;
   currentPlayer: Color;
-  selectedPiece: Position | null;
-  kingsMovesCount?: KingsMovesCount;
+  selectedPiece: Position | undefined;
+  limitedJumpsCount: LimitedJumpsCount;
+  gameAlerts: GameAlert[];
   hasMadeCapture: boolean;
 }
 
@@ -47,4 +48,9 @@ export interface GamePlayers {
   invitee?: GamePlayerModel;
   currentUserPlayer?: GamePlayerModel;
   opponent?: GamePlayerModel;
+}
+
+export interface GameAlert {
+  message: string;
+  createdAt: Date;
 }

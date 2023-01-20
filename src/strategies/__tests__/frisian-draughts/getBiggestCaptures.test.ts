@@ -1,6 +1,6 @@
-import { Position, GameState, Color } from '@common/types';
+import { Position } from '@common/types';
 import { FrisianDraughtsStrategy } from '@strategies/frisian-draughts-strategy';
-import { createBoard } from '@common/test-utils/board';
+import { createGameState } from '@common/test-utils/gameState';
 
 describe('getBiggestCaptures', () => {
   it('should return 0 as value and [] of captures when no captures available', () => {
@@ -12,16 +12,9 @@ describe('getBiggestCaptures', () => {
       [0, 0, 0, 0],
       [1, 0, 0, 0],
     ];
-    const boardState = createBoard(board);
+    const gameState = createGameState(board);
 
     const from: Position = [3, 0];
-
-    const gameState: GameState = {
-      boardState,
-      currentPlayer: Color.White,
-      hasMadeCapture: false,
-      selectedPiece: null,
-    };
 
     const { captures, captureValue } = strategy.getBiggestCaptures(from, gameState);
 
@@ -39,16 +32,9 @@ describe('getBiggestCaptures', () => {
       [0, 2, 0, 4, 0],
       [0, 0, 1, 0, 0],
     ];
-    const boardState = createBoard(board);
+    const gameState = createGameState(board);
 
     const from: Position = [4, 2];
-
-    const gameState: GameState = {
-      boardState,
-      currentPlayer: Color.White,
-      hasMadeCapture: false,
-      selectedPiece: null,
-    };
 
     const { captures, captureValue } = strategy.getBiggestCaptures(from, gameState);
 
@@ -66,16 +52,9 @@ describe('getBiggestCaptures', () => {
       [0, 2, 0, 4, 0],
       [0, 0, 1, 0, 0],
     ];
-    const boardState = createBoard(board);
+    const gameState = createGameState(board);
 
     const from: Position = [4, 2];
-
-    const gameState: GameState = {
-      boardState,
-      currentPlayer: Color.White,
-      hasMadeCapture: false,
-      selectedPiece: null,
-    };
 
     const { captures, captureValue } = strategy.getBiggestCaptures(from, gameState);
 
@@ -93,16 +72,9 @@ describe('getBiggestCaptures', () => {
       [0, 0, 0, 2, 0],
       [0, 0, 0, 0, 0],
     ];
-    const boardState = createBoard(board);
+    const gameState = createGameState(board);
 
     const from: Position = [0, 4];
-
-    const gameState: GameState = {
-      boardState,
-      currentPlayer: Color.White,
-      hasMadeCapture: false,
-      selectedPiece: null,
-    };
 
     const { captureValue } = strategy.getBiggestCaptures(from, gameState);
 

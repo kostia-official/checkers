@@ -4,16 +4,17 @@ import { Color, GameState, Position } from '../../../../../common/types';
 export interface HookArgs {
   gameState: GameState;
   updateGameState: (gameState: GameState) => void;
+  disabled?: boolean;
 }
 
-export const useEditMode = ({ updateGameState, gameState }: HookArgs) => {
+export const useEditMode = ({ updateGameState, gameState, disabled }: HookArgs) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [isKing, setIsKing] = useState(false);
   const [editPiecesColor, setEditPiecesColor] = useState<Color>(Color.White);
 
   const enableEditMode = () => {
     setIsEditMode(true);
-    updateGameState({ ...gameState, selectedPiece: null });
+    updateGameState({ ...gameState, selectedPiece: undefined });
   };
 
   const disableEditMode = () => {
@@ -52,6 +53,7 @@ export const useEditMode = ({ updateGameState, gameState }: HookArgs) => {
     setEditPiecesColor,
     clearBoard,
     handleSquareEdit,
+    disabled,
   };
 };
 

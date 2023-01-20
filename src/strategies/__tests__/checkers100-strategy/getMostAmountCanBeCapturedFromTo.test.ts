@@ -1,6 +1,6 @@
 import { Checkers100Strategy } from '@strategies/checkers100-strategy';
-import { createBoard } from '@common/test-utils/board';
-import { Color, GameState, Position } from '@common/types';
+import { createGameState } from '@common/test-utils/gameState';
+import { Position } from '@common/types';
 
 describe('getMostAmountCanBeCapturedFromTo', () => {
   it('should return 7 as most amount can be captured', () => {
@@ -15,17 +15,10 @@ describe('getMostAmountCanBeCapturedFromTo', () => {
       [0, 2, 0, 2, 0, 2, 0],
       [1, 0, 0, 0, 0, 0, 0],
     ];
-    const boardState = createBoard(board);
+    const gameState = createGameState(board);
 
     const from: Position = [6, 0];
     const to: Position = [4, 2];
-
-    const gameState: GameState = {
-      boardState,
-      currentPlayer: Color.White,
-      hasMadeCapture: false,
-      selectedPiece: null,
-    };
 
     const amount = strategy.getBiggestCaptureValue(from, to, gameState);
 
@@ -41,17 +34,10 @@ describe('getMostAmountCanBeCapturedFromTo', () => {
       [0, 0, 0, 0],
       [1, 0, 0, 0],
     ];
-    const boardState = createBoard(board);
+    const gameState = createGameState(board);
 
     const from: Position = [3, 0];
     const to: Position = [1, 2];
-
-    const gameState: GameState = {
-      boardState,
-      currentPlayer: Color.White,
-      hasMadeCapture: false,
-      selectedPiece: null,
-    };
 
     const amount = strategy.getBiggestCaptureValue(from, to, gameState);
 
@@ -68,17 +54,10 @@ describe('getMostAmountCanBeCapturedFromTo', () => {
       [1, 0, 0, 0],
     ];
 
-    const boardState = createBoard(board);
+    const gameState = createGameState(board);
 
     const from: Position = [3, 0];
     const to: Position = [1, 2];
-
-    const gameState: GameState = {
-      boardState,
-      currentPlayer: Color.White,
-      hasMadeCapture: false,
-      selectedPiece: null,
-    };
 
     const amount = strategy.getBiggestCaptureValue(from, to, gameState);
 
@@ -97,17 +76,10 @@ describe('getMostAmountCanBeCapturedFromTo', () => {
       [0, 2, 0, 2, 0, 2, 0],
       [3, 0, 0, 0, 0, 0, 0],
     ];
-    const boardState = createBoard(board);
+    const gameState = createGameState(board);
 
     const from: Position = [6, 0];
     const to: Position = [4, 2];
-
-    const gameState: GameState = {
-      boardState,
-      currentPlayer: Color.White,
-      hasMadeCapture: false,
-      selectedPiece: null,
-    };
 
     const amount = strategy.getBiggestCaptureValue(from, to, gameState);
 

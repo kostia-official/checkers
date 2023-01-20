@@ -1,5 +1,5 @@
 import { ICheckersStrategy } from './checkers-strategy.interface';
-import { BoardState, Color, GameState, Position, Square } from '../common/types';
+import { BoardState, Color, GameState, Position, Square, LimitedJumpsCount } from '@common/types';
 import cloneDeep from 'lodash.clonedeep';
 import { toggleColor, getSquare, getSquares, isEqualPosition, getPiece, getPieces } from '@common/utils';
 
@@ -114,7 +114,7 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
     }
   }
 
-  handlePieceClick(position: Position, gameState: GameState): Position | undefined {
+  handlePieceClick(position: Position, gameState: GameState): GameState | undefined {
     // Check if there are any valid moves or captures available for this piece
     const validCaptures = this.getValidCaptures(position, gameState);
     // No moves can be done when a valid captures available
@@ -133,7 +133,7 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
     }
 
     // If there are no valid captures but there are valid moves, set the selected piece
-    return position;
+    return { ...gameState, selectedPiece: position };
   }
 
   handleSquareClick(to: Position, gameState: GameState): GameState | undefined {
@@ -171,7 +171,7 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
       newGameState.selectedPiece = to;
     } else {
       // If there are no more valid captures, clear the selected piece and reset the hasMadeCapture flag
-      newGameState.selectedPiece = null;
+      newGameState.selectedPiece = undefined;
       newGameState.hasMadeCapture = false;
     }
 
@@ -290,7 +290,7 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
     const { boardState, currentPlayer } = gameState;
     const piecesThatCanCapture: Position[] = [];
 
-    this.iterateBoard(selected, gameState, (position) => {
+    this.iteratePieceJumps(selected, gameState, (position) => {
       const square = getSquare(boardState, position);
       if (!square?.piece) return true;
 
@@ -332,18 +332,28 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
     return isDiagonal;
   }
 
+  iteratePieceJumps(piecePosition: Position, gameState: GameState, cb: (position: Position) => void): void {
+    this.iterateBoard(piecePosition, gameState, (position) => {
+      if (this.isValidPath(piecePosition, position)) {
+        cb(position);
+      }
+    });
+  }
+
+  // TODO: Add early return from iteration
+  // TODO: Add to interface
+  // piecePosition helps to determine what squares iterate over and speed up iteration
   iterateBoard(piecePosition: Position, gameState: GameState, cb: (position: Position) => void): void {
     const [i, j] = piecePosition;
 
     const isEvenSquares = (i + j) % 2 === 0;
     const checkSquareWith = isEvenSquares ? 0 : 1;
 
-    // Check all possible captures and add them to the validCaptures array if they are valid
     for (let toI = 0; toI < this.squares; toI++) {
       for (let toJ = 0; toJ < this.squares; toJ++) {
         const isValidSquare = (toI + toJ) % 2 === checkSquareWith;
 
-        if (isValidSquare && this.isValidPath([i, j], [toI, toJ])) {
+        if (isValidSquare) {
           cb([toI, toJ]);
         }
       }
@@ -353,7 +363,7 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
   getValidMoves(from: Position, gameState: GameState): Position[] {
     const validMoves: Position[] = [];
 
-    this.iterateBoard(from, gameState, (to) => {
+    this.iteratePieceJumps(from, gameState, (to) => {
       if (this.isValidMove(from, to, gameState)) {
         validMoves.push(to);
       }
@@ -366,7 +376,7 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
     const validCaptures: Position[] = [];
 
     // Check all possible captures and add them to the validCaptures array if they are valid
-    this.iterateBoard(from, gameState, (to) => {
+    this.iteratePieceJumps(from, gameState, (to) => {
       if (this.isValidPieceCapture(from, to, gameState)) {
         validCaptures.push(to);
       }
@@ -439,5 +449,40 @@ export abstract class BaseCheckersStrategy implements ICheckersStrategy {
 
   getCaptureValue(from: Position, to: Position, gameState: GameState): number {
     return 1;
+  }
+
+  updateLimitedJumpsCount(
+    key: string,
+    limitedJumpsCount: LimitedJumpsCount,
+    cb: (prevCount: number) => number
+  ): LimitedJumpsCount {
+    let newLimitedJumpsCount = limitedJumpsCount || {};
+    const prevCount = newLimitedJumpsCount?.[key] ?? 0;
+
+    newLimitedJumpsCount = {
+      ...newLimitedJumpsCount,
+      [key]: cb(prevCount),
+    };
+
+    return newLimitedJumpsCount;
+  }
+
+  mapLimitedJumpsCount(
+    limitedJumpsCount: LimitedJumpsCount,
+    cb: (key: string, count: number) => number
+  ): LimitedJumpsCount {
+    const newLimitedJumpsCount: LimitedJumpsCount = {};
+
+    Object.keys(limitedJumpsCount).forEach((key) => {
+      newLimitedJumpsCount[key] = cb(key, limitedJumpsCount[key]);
+    });
+
+    return newLimitedJumpsCount;
+  }
+
+  addAlert(message: string, gameState: GameState): GameState {
+    gameState.gameAlerts = [...gameState.gameAlerts, { message, createdAt: new Date() }];
+
+    return gameState;
   }
 }

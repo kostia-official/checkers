@@ -1,51 +1,42 @@
 import React, { useCallback, useMemo } from 'react';
-
-import { CheckersGameWrapper, CheckersBoard, CheckersRow, CheckersSquare, GameExtras, SquareNotation } from './styled';
+import {
+  CheckersGameWrapper,
+  CheckersBoard,
+  CheckersRow,
+  CheckersSquare,
+  SquareNotation,
+  GameExtrasWrapper,
+} from './styled';
 import { CheckerPiece } from './components/CheckersPiece';
 import { ICheckersStrategy } from '@strategies/checkers-strategy.interface';
 import { DEBUG } from '@common/constants';
-import { Button } from '@mantine/core';
-import { Link } from 'react-router-dom';
-import { EditMode } from './components/EditMode';
-import { GameState, Color, GameStateHistory, Position } from '@common/types';
+import { GameState, Color, Position } from '@common/types';
 import { EditModeState } from './components/EditMode/hooks/useEditMode';
-import { useTranslation } from 'react-i18next';
 import { isEqualPosition, hasPosition } from '@common/utils';
+import { useGameAlerts } from '@src/hooks/useGameAlerts';
 
 export interface CheckersGameProps {
   strategy: ICheckersStrategy;
   gameState: GameState;
-  gameStateHistory: GameStateHistory;
   playerColor: Color;
-  winnerLabel: string | undefined;
   editModeState: EditModeState;
   handleSquareClick: (position: Position) => void;
   handlePieceClick: (position: Position) => void;
-  onUndoMoveClick: () => void;
-  undoMoveLoading?: boolean;
-  handleNewGame: () => void;
-  gameInfoContent?: React.ReactNode;
-  isOnline?: boolean;
+  gameExtrasContent?: React.ReactNode;
 }
 
 export const GameView: React.FC<CheckersGameProps> = ({
   strategy,
   gameState,
-  gameStateHistory,
   playerColor,
-  winnerLabel,
   editModeState,
-  handleNewGame,
-  onUndoMoveClick,
-  undoMoveLoading,
   handleSquareClick,
   handlePieceClick,
-  gameInfoContent,
-  isOnline,
+  gameExtrasContent,
 }) => {
-  const { t } = useTranslation();
+  const { boardState, selectedPiece, gameAlerts } = gameState;
 
-  const { boardState, selectedPiece } = gameState;
+  useGameAlerts({ gameAlerts });
 
   const getSquareColor = ([i, j]: Position) => {
     if ((i + j) % 2 !== 0) {
@@ -120,25 +111,7 @@ export const GameView: React.FC<CheckersGameProps> = ({
         })}
       </CheckersBoard>
 
-      <GameExtras>
-        <Button fullWidth component={Link} to="/">
-          {t('gameMenu.mainMenu')}
-        </Button>
-        {!isOnline && <Button onClick={handleNewGame}> {t('gameMenu.newGame')}</Button>}
-        <Button onClick={onUndoMoveClick} disabled={gameStateHistory.length === 1} loading={undoMoveLoading}>
-          {t('gameMenu.undoMove')}
-        </Button>
-
-        {DEBUG && <EditMode {...editModeState} />}
-
-        {winnerLabel ? (
-          <div className="winner">
-            {winnerLabel} {t('winner.winsLabel')}
-          </div>
-        ) : null}
-
-        {gameInfoContent}
-      </GameExtras>
+      <GameExtrasWrapper>{gameExtrasContent}</GameExtrasWrapper>
     </CheckersGameWrapper>
   );
 };

@@ -1,7 +1,7 @@
-import { Position, GameState, BoardState, Color } from '../common/types';
+import { Position, GameState, BoardState, Color, LimitedJumpsCount } from '@common/types';
 
 export interface ICheckersStrategy {
-  squares: number;
+  readonly squares: number;
 
   makeInitialBoardState(): BoardState;
 
@@ -24,11 +24,23 @@ export interface ICheckersStrategy {
   markPendingCapture(from: Position, to: Position, gameState: GameState): GameState;
   removePendingCapturePieces(boardState: BoardState): BoardState;
 
-  handlePieceClick(position: Position, gameState: GameState): Position | undefined;
+  handlePieceClick(position: Position, gameState: GameState): GameState | undefined;
   handleSquareClick(position: Position, gameState: GameState): GameState | undefined;
 
   getWinner(gameState: GameState): Color | undefined;
 
   getSquareNotation(position: Position): string;
   iterateBetweenFromTo(from: Position, to: Position, cb: (position: Position) => boolean): void;
+
+  updateLimitedJumpsCount(
+    key: string,
+    limitedJumpsCount: LimitedJumpsCount,
+    cb: (prevCount: number) => number
+  ): LimitedJumpsCount;
+  mapLimitedJumpsCount(
+    limitedJumpsCount: LimitedJumpsCount,
+    cb: (key: string, count: number) => number
+  ): LimitedJumpsCount;
+
+  addAlert(message: string, gameState: GameState): GameState;
 }

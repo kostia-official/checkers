@@ -65,5 +65,9 @@ export const en = {
       white: 'White',
       black: 'Black',
     },
+    gameAlerts: {
+      kingMaxMoves:
+        "You've reached the limit of 3 moves for the king.\nYou need to move another piece or make a capture to unblock it.",
+    },
   },
 };

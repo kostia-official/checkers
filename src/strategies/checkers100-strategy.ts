@@ -20,12 +20,12 @@ export class Checkers100Strategy extends Checkers64Strategy {
     return pieceCaptureValue >= otherPieceCaptureValue;
   }
 
-  handlePieceClick(position: Position, gameState: GameState): Position | undefined {
-    const selectedPiece = super.handlePieceClick(position, gameState);
-    if (!selectedPiece) return;
+  handlePieceClick(position: Position, gameState: GameState): GameState | undefined {
+    const newGameState = super.handlePieceClick(position, gameState);
+    if (!newGameState) return;
 
     const { captureValue: pieceCaptureValue, captures } = this.getBiggestCaptures(position, gameState);
-    if (!captures.length) return selectedPiece;
+    if (!captures.length) return { ...gameState, selectedPiece: newGameState.selectedPiece };
 
     const otherPiecesWithValidCaptures = this.getOtherPiecesWithValidCaptures(position, gameState);
 
@@ -45,7 +45,7 @@ export class Checkers100Strategy extends Checkers64Strategy {
       }
     }
 
-    return selectedPiece;
+    return newGameState;
   }
 
   handleSquareClick(to: Position, gameState: GameState): GameState | undefined {

@@ -1,6 +1,6 @@
 import { Checkers100Strategy } from '@strategies/checkers100-strategy';
-import { createBoard } from '@common/test-utils/board';
-import { Color, GameState, Position } from '@common/types';
+import { createGameState } from '@common/test-utils/gameState';
+import { Color, Position } from '@common/types';
 import { getSquare, getPiece } from '@common/utils';
 
 describe('capturePiece', () => {
@@ -15,14 +15,7 @@ describe('capturePiece', () => {
       [0, 0, 0, 4, 0, 0],
       [0, 0, 1, 0, 0, 0],
     ];
-    const boardState = createBoard(board);
-
-    let gameState: GameState = {
-      boardState,
-      currentPlayer: Color.White,
-      hasMadeCapture: false,
-      selectedPiece: null,
-    };
+    let gameState = createGameState(board);
 
     // should mark as pending capture when second capture can be done
 
@@ -64,17 +57,11 @@ describe('capturePiece', () => {
       [0, 0, 0, 2, 0, 0],
       [0, 0, 1, 0, 0, 0],
     ];
-    const boardState = createBoard(board);
+    const gameState = createGameState(board);
 
     const from: Position = [5, 2];
     const to: Position = [3, 4];
 
-    const gameState: GameState = {
-      boardState,
-      currentPlayer: Color.White,
-      hasMadeCapture: false,
-      selectedPiece: null,
-    };
     const { boardState: newBoardState, hasMadeCapture } = strategy.capturePiece(from, to, gameState);
 
     expect(hasMadeCapture).toBe(false);
@@ -96,14 +83,7 @@ describe('capturePiece', () => {
       [0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0],
     ];
-    const boardState = createBoard(board);
-
-    const gameState: GameState = {
-      boardState,
-      currentPlayer: Color.White,
-      hasMadeCapture: false,
-      selectedPiece: null,
-    };
+    const gameState = createGameState(board);
 
     const to: Position = [2, 1];
 
@@ -131,14 +111,7 @@ describe('capturePiece', () => {
       [0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0],
     ];
-    const boardState = createBoard(board);
-
-    const gameState: GameState = {
-      boardState,
-      currentPlayer: Color.White,
-      hasMadeCapture: false,
-      selectedPiece: null,
-    };
+    const gameState = createGameState(board);
 
     const to: Position = [0, 3];
 
@@ -164,14 +137,7 @@ describe('capturePiece', () => {
       [0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0],
     ];
-    const boardState = createBoard(board);
-
-    const gameState: GameState = {
-      boardState,
-      currentPlayer: Color.White,
-      hasMadeCapture: false,
-      selectedPiece: null,
-    };
+    const gameState = createGameState(board);
 
     const to: Position = [0, 3];
 
@@ -197,14 +163,7 @@ describe('capturePiece', () => {
       [0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0],
     ];
-    const boardState = createBoard(board);
-
-    const gameState: GameState = {
-      boardState,
-      currentPlayer: Color.White,
-      hasMadeCapture: false,
-      selectedPiece: null,
-    };
+    const gameState = createGameState(board);
 
     const to: Position = [2, 1];
 

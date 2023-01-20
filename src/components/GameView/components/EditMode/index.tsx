@@ -14,6 +14,7 @@ export const EditMode: React.FC<EditModeState> = ({
   clearBoard,
   isKing,
   setIsKing,
+  disabled,
 }) => {
   const { t } = useTranslation();
 
@@ -49,7 +50,11 @@ export const EditMode: React.FC<EditModeState> = ({
         </CardStyled>
       )}
 
-      {!isEditMode && <Button onClick={() => enableEditMode()}>{t('editMode.title')}</Button>}
+      {!isEditMode && (
+        <Button onClick={() => enableEditMode()} disabled={disabled}>
+          {t('editMode.title')}
+        </Button>
+      )}
     </>
   );
 };

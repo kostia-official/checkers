@@ -90,6 +90,7 @@ export class GameService {
         gameId: game.id,
         boardState: strategy.makeInitialBoardState(),
         currentPlayerColor: Color.White,
+        limitedJumpsCount: {},
       }),
       gamePlayerService.create({
         userId: data.inviterId,
