@@ -5,7 +5,7 @@ import { useMutation } from 'react-query';
 import { gameHistoryService } from '@services/gameHistory.service';
 import { useResolvedGameInfo } from '@pages/OnlineGame/hooks/useResolvedGameInfo';
 import { GamePlayers, Position, GameState, GameAlert } from '@common/types';
-import { toggleColor, noop } from '@common/utils';
+import { toggleColor } from '@common/utils';
 import { useGameJoin } from '@pages/OnlineGame/hooks/useGameJoin';
 import { mapGameTypeToStrategy } from '@common/mappers';
 import { useEditMode } from '@components/GameView/components/EditMode/hooks/useEditMode';
@@ -124,6 +124,10 @@ export const OnlineGameWithData: React.FC<OnlineGameWithDataProps> = ({
 
   const { continueWithNewGame } = useNewGame();
 
+  const handleNewGame = useCallback(async () => {
+    await continueWithNewGame(game, gamePlayers);
+  }, [continueWithNewGame, game, gamePlayers]);
+
   const onNewAcceptedRequest = useCallback(
     async (type: RequestType) => {
       if (type === 'undoMove') {
@@ -185,7 +189,7 @@ export const OnlineGameWithData: React.FC<OnlineGameWithDataProps> = ({
             winnerLabel={winnerLabel}
             onUndoMoveClick={requestUndoMove}
             undoMoveLoading={isActiveUndoRequest}
-            handleNewGame={noop}
+            handleNewGame={handleNewGame}
             disableNewGame={!game.endedAt}
             disableEditMode={!!game.startedAt}
           />

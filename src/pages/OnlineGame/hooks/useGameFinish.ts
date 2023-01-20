@@ -41,7 +41,7 @@ export const useGameFinish = ({ game, strategy, isEditMode, gameState, gamePlaye
     await unfinishGame(game.id);
   }, [game.id, unfinishGame]);
 
-  const { winnerId, inviteeId, inviterId } = game;
+  const { winnerId, inviteeId, inviterId, startedAt } = game;
   const inviterColor = gamePlayers.inviter.color;
   const inviteeColor = gamePlayers.invitee?.color;
 
@@ -54,8 +54,7 @@ export const useGameFinish = ({ game, strategy, isEditMode, gameState, gamePlaye
 
   useEffect(() => {
     (async () => {
-      if (isEditMode) {
-        await clearWinner();
+      if (isEditMode || !startedAt) {
         return;
       }
 
@@ -66,7 +65,7 @@ export const useGameFinish = ({ game, strategy, isEditMode, gameState, gamePlaye
         await setWinner(winnerId);
       }
     })();
-  }, [gameState, isEditMode, inviterColor, inviterId, inviteeId, strategy, clearWinner, setWinner]);
+  }, [gameState, isEditMode, inviterColor, inviterId, inviteeId, strategy, clearWinner, setWinner, startedAt]);
 
   const winnerLabel = useMemo(() => {
     if (!winnerColor) return;
