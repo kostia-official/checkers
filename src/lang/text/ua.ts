@@ -51,7 +51,7 @@ export const ua: typeof en = {
     },
     onlineMenu: {
       copyLink: {
-        buttonLabel: 'Скопіювати запрошення',
+        buttonLabel: 'Запрошення',
         copyLinkTooltip: 'Посилання скопійовано!',
       },
       drawButton: 'Нічия',
