@@ -27,7 +27,7 @@ export const routes = [
     element: <OfflineGame strategy={new Draughts64Strategy()} />,
   },
   {
-    path: '/game/offline/internation',
+    path: '/game/offline/international',
     element: <OfflineGame strategy={new Draughts100Strategy()} />,
   },
   {

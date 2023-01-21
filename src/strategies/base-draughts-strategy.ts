@@ -292,7 +292,7 @@ export abstract class BaseDraughtsStrategy implements ICheckersStrategy {
     const { boardState, currentPlayer } = gameState;
     const piecesThatCanCapture: Position[] = [];
 
-    this.iteratePieceJumps(selected, gameState, (position) => {
+    this.iterateBoard(selected, gameState, (position) => {
       const square = getSquare(boardState, position);
       if (!square?.piece) return true;
 
