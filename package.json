@@ -8,13 +8,13 @@
     "test": "craco test --detectOpenHandles --forceExit --watchAll=false",
     "prepare": "husky install",
     "deploy": "yarn build && netlify deploy --prod",
-    "lint": "eslint --max-warnings=0",
-    "lint:fix": "eslint --fix --max-warnings=0"
+    "lint": "eslint --max-warnings=0 ./",
+    "lint:fix": "yarn lint --fix"
   },
   "lint-staged": {
     "**/*.ts?(x)": [
       "npx prettier --write",
-      "yarn lint:fix"
+      "npx eslint --fix --max-warnings=0"
     ]
   },
   "eslintConfig": {

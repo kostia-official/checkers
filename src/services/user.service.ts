@@ -8,9 +8,10 @@ import {
   collection,
   DocumentData,
   Timestamp,
+  updateDoc,
 } from 'firebase/firestore';
 import { Auth, signInAnonymously } from 'firebase/auth';
-import { UserModel, CreateUserInput } from './types';
+import { UserModel, CreateUserInput, UpdateUserInput } from './types';
 import { firebaseClient, FirebaseClient } from '@common/firebase';
 import { ServiceError } from '@common/enums';
 
@@ -76,6 +77,17 @@ export class UserService {
       throw new Error(ServiceError.NotFound);
     }
 
+    return docSnap.data() as UserModel;
+  }
+
+  async update(input: UpdateUserInput) {
+    const userId = await this.getCurrentUserId();
+    if (!userId) throw new Error(ServiceError.Unauthorized);
+
+    const docRef = doc(this.db, this.collection, userId);
+    await updateDoc(docRef, input);
+
+    const docSnap = await getDoc(docRef.withConverter(this.userConverter));
     return docSnap.data() as UserModel;
   }
 }

@@ -44,10 +44,13 @@ export type AddGameHistoryInput = Omit<GameHistoryModel, 'id' | 'createdAt'>;
 export interface UserModel {
   id: string;
   name: string;
+  language: string;
+  pushToken?: string;
   createdAt: Date;
 }
 
-export type CreateUserInput = Pick<UserModel, 'name'>;
+export type CreateUserInput = Pick<UserModel, 'name' | 'language'>;
+export type UpdateUserInput = Partial<Omit<UserModel, 'id' | 'createdAt'>>;
 
 export type RequestType = 'draw' | 'undoMove';
 

@@ -19,6 +19,7 @@ import { PlayersCard } from '@pages/OnlineGame/components/PlayersCard';
 import { CopyInviteLinkButton } from '@pages/OnlineGame/components/CopyInviteLinkButton';
 import { GameResultsButtons } from '@pages/OnlineGame/components/GameResultsButtons';
 import { GameMenu } from '@components/GameMenu';
+import { useUpdatePushToken } from '@pages/OnlineGame/hooks/useUpdatePushToken';
 
 export interface OnlineGameWithDataProps {
   game: GameModel;
@@ -36,6 +37,7 @@ export const OnlineGameWithData: React.FC<OnlineGameWithDataProps> = ({
   invitee,
 }) => {
   let [searchParams] = useSearchParams();
+  useUpdatePushToken({ user });
 
   const { mutateAsync: removeGameHistory } = useMutation((id: string) => gameHistoryService.remove(id));
 

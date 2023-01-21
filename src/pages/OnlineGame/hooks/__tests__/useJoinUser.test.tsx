@@ -2,7 +2,7 @@ import { renderHook } from '@testing-library/react-hooks';
 import { useGameJoin } from '../useGameJoin';
 import { gameService } from '@services/game.service';
 import { UserModel, GameModel, GamePlayerModel } from '@services/types';
-import { Color } from '@common/types';
+import { Color, GameType } from '@common/types';
 import { QueryClientProvider } from 'react-query';
 import { queryClient } from '@src/queryClient';
 import { waitFor } from '@testing-library/react';
@@ -14,14 +14,14 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => jest.fn(),
 }));
 
-const inviterUser: UserModel = { id: '1', name: 'User 1', createdAt: new Date() };
-const inviteeUser: UserModel = { id: '2', name: 'User 2', createdAt: new Date() };
-const spectatorUser: UserModel = { id: '3', name: 'Spectator', createdAt: new Date() };
+const inviterUser: UserModel = { id: '1', name: 'User 1', createdAt: new Date(), language: 'en' };
+const inviteeUser: UserModel = { id: '2', name: 'User 2', createdAt: new Date(), language: 'en' };
+const spectatorUser: UserModel = { id: '3', name: 'Spectator', createdAt: new Date(), language: 'en' };
 const game: GameModel = {
   id: '1',
   inviterId: inviterUser.id,
   createdAt: new Date(),
-  gameType: 'draughts64',
+  gameType: GameType.Draughts64,
 };
 const inviter: GamePlayerModel = {
   id: '123',

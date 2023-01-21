@@ -23,6 +23,7 @@ export const NewGame: React.FC = () => {
   const navigate = useNavigate();
   let [searchParams] = useSearchParams();
   const { startNewGame } = useNewGame();
+  const { i18n } = useTranslation();
 
   const gameType = searchParams.get('type') as GameType;
 
@@ -33,7 +34,7 @@ export const NewGame: React.FC = () => {
       let userId = user?.id;
 
       if (!user && userName) {
-        const createdUser = await createUser({ name: userName });
+        const createdUser = await createUser({ name: userName, language: i18n.resolvedLanguage });
         userId = createdUser.id;
       }
       if (!userId) return;

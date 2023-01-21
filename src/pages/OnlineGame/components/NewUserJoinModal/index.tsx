@@ -16,6 +16,7 @@ export interface NewUserJoinModalProps {
 export const NewUserJoinModal: React.FC<NewUserJoinModalProps> = ({ noUser, game }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { i18n } = useTranslation();
 
   const [isShowModal, setIsShowModal] = useState(false);
   const [userName, setUserName] = useState<string | undefined>();
@@ -25,7 +26,7 @@ export const NewUserJoinModal: React.FC<NewUserJoinModalProps> = ({ noUser, game
   const onJoinGameClick = async () => {
     if (!game || !userName) return;
 
-    const user = await createUser({ name: userName });
+    const user = await createUser({ name: userName, language: i18n.resolvedLanguage });
 
     queryClient.setQueryData('currentUser', user);
     setIsShowModal(false);
