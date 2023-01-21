@@ -3,22 +3,21 @@ import { MantineThemeOverride, DEFAULT_THEME } from '@mantine/core';
 export const theme: MantineThemeOverride = {
   ...DEFAULT_THEME,
   colorScheme: 'light',
-  primaryColor: 'dark',
+  primaryColor: 'coolBlack',
   colors: {
-    darkest: [
-      '#1A1B1E',
-      '#1A1B1E',
-      '#1A1B1E',
-      '#1A1B1E',
-      '#1A1B1E',
-      '#1A1B1E',
-      '#1A1B1E',
-      '#1A1B1E',
-      '#1A1B1E',
+    coolBlack: [
+      '#DEE2E6',
+      '#CED4DA',
+      '#C1C2C5',
+      '#A6A7AB',
+      '#909296',
+      '#5C5F66',
+      '#373A40', // default shade 6
+      '#2C2E33',
+      '#25262B',
       '#1A1B1E',
     ],
   },
-  primaryShade: 4,
   defaultRadius: 20,
   loader: 'dots',
   components: {

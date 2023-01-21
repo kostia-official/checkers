@@ -13,6 +13,9 @@ export const ua: typeof en = {
       white: 'Білі',
       black: 'Чорні',
     },
+    validation: {
+      required: "Обов'язкове поле",
+    },
     mainMenu: {
       title: 'Оберіть Гру',
     },

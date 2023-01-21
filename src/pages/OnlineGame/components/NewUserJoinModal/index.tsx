@@ -7,6 +7,7 @@ import { TextInputWrapper, ButtonWrapper } from './styled';
 import { queryClient } from '@src/queryClient';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useForm } from '@mantine/form';
 
 export interface NewUserJoinModalProps {
   noUser: boolean;
@@ -18,15 +19,23 @@ export const NewUserJoinModal: React.FC<NewUserJoinModalProps> = ({ noUser, game
   const { t } = useTranslation();
   const { i18n } = useTranslation();
 
+  const form = useForm({
+    initialValues: {
+      userName: '',
+    },
+    validate: {
+      userName: (value) => (value ? null : t('validation.required')),
+    },
+  });
+
   const [isShowModal, setIsShowModal] = useState(false);
-  const [userName, setUserName] = useState<string | undefined>();
 
-  const { mutateAsync: createUser } = useMutation((input: CreateUserInput) => userService.create(input));
+  const { mutateAsync: createUser, isLoading } = useMutation((input: CreateUserInput) => userService.create(input));
 
-  const onJoinGameClick = async () => {
-    if (!game || !userName) return;
+  const onSubmit = async (values: typeof form.values) => {
+    if (!game || !values.userName) return;
 
-    const user = await createUser({ name: userName, language: i18n.resolvedLanguage });
+    const user = await createUser({ name: values.userName, language: i18n.resolvedLanguage });
 
     queryClient.setQueryData('currentUser', user);
     setIsShowModal(false);
@@ -47,21 +56,23 @@ export const NewUserJoinModal: React.FC<NewUserJoinModalProps> = ({ noUser, game
       withCloseButton={false}
       title={t('joinModal.title')}
     >
-      <Flex gap="xs">
-        <TextInputWrapper>
-          <TextInput
-            required
-            placeholder={t('userForm.name')}
-            value={userName}
-            onChange={(e) => setUserName(e.target.value)}
-          />
-        </TextInputWrapper>
-        <ButtonWrapper>
-          <Button variant="filled" onClick={onJoinGameClick}>
-            {t('joinModal.start')}
-          </Button>
-        </ButtonWrapper>
-      </Flex>
+      <form onSubmit={form.onSubmit(onSubmit)} noValidate>
+        <Flex gap="xs">
+          <TextInputWrapper>
+            <TextInput
+              required
+              placeholder={t('userForm.name')}
+              {...form.getInputProps('userName')}
+              error={form.errors['userName']}
+            />
+          </TextInputWrapper>
+          <ButtonWrapper>
+            <Button variant="filled" type="submit" loading={isLoading} loaderPosition="center">
+              {t('joinModal.start')}
+            </Button>
+          </ButtonWrapper>
+        </Flex>
+      </form>
     </Modal>
   );
 };

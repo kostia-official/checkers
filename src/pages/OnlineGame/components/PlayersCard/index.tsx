@@ -93,9 +93,9 @@ export const PlayersCard: React.FC<PlayersCardProps> = ({
             player={players.black}
             isOwnPlayer={user.id === players.black?.userId}
           />
-        </Flex>
 
-        {isSpectator && <Text>{t('players.spectatorLabel')}</Text>}
+          {isSpectator && <Text>{t('players.spectatorLabel')}</Text>}
+        </Flex>
       </SimpleCard>
     </Box>
   );

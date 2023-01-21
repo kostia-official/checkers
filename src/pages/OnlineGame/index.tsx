@@ -75,7 +75,7 @@ export const OnlineGame: React.FC = () => {
 
   return (
     <>
-      <NewUserJoinModal noUser={isGetUserError} game={game} />
+      <NewUserJoinModal noUser={isGetUserError && !user} game={game} />
 
       {!game || !user || !gameHistory || !inviter ? (
         <CenteredLoader />

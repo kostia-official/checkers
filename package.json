@@ -50,7 +50,7 @@
     "@emotion/react": "^11.10.5",
     "@firebase/rules-unit-testing": "^2.0.5",
     "@mantine/core": "^5.10.0",
-    "@mantine/form": "^5.10.0",
+    "@mantine/form": "^5.10.1",
     "@mantine/hooks": "^5.10.0",
     "@mantine/modals": "^5.10.0",
     "@mantine/notifications": "^5.10.0",

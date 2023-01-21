@@ -11,6 +11,9 @@ export const en = {
       white: 'White',
       black: 'Black',
     },
+    validation: {
+      required: 'Required',
+    },
     mainMenu: {
       title: 'Select Game',
     },
