@@ -9,7 +9,7 @@ export const ControlsRow = styled.div`
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  gap: 8px;
+  gap: 16px;
   width: 100%;
 `;
 

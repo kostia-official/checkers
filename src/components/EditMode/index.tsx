@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Switch } from '@mantine/core';
 import { SwitchWrapper, ClearWrapper, CardStyled, ContentWrapper, ControlsWrapper, ControlsRow } from './styled';
 import { EditModeState } from './hooks/useEditMode';
-import { PieceColorToggle } from '../../../PieceColorToggle';
+import { PieceColorToggle } from '../PieceColorToggle';
 import { useTranslation } from 'react-i18next';
 
 export const EditMode: React.FC<EditModeState> = ({
@@ -41,17 +41,17 @@ export const EditMode: React.FC<EditModeState> = ({
                   </Button>
                 </ClearWrapper>
               </ControlsRow>
-            </ControlsWrapper>
 
-            <Button fullWidth onClick={() => disableEditMode()}>
-              {t('editMode.done')}
-            </Button>
+              <Button fullWidth onClick={() => disableEditMode()}>
+                {t('editMode.done')}
+              </Button>
+            </ControlsWrapper>
           </ContentWrapper>
         </CardStyled>
       )}
 
       {!isEditMode && (
-        <Button onClick={() => enableEditMode()} disabled={disabled}>
+        <Button fullWidth onClick={() => enableEditMode()} disabled={disabled}>
           {t('editMode.title')}
         </Button>
       )}

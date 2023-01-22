@@ -11,7 +11,7 @@ import { CheckerPiece } from './components/CheckersPiece';
 import { ICheckersStrategy } from '@strategies/draughts-strategy.interface';
 import { DEBUG } from '@common/constants';
 import { GameState, Color, Position } from '@common/types';
-import { EditModeState } from './components/EditMode/hooks/useEditMode';
+import { EditModeState } from '../EditMode/hooks/useEditMode';
 import { isEqualPosition, hasPosition } from '@common/utils';
 import { useGameAlerts } from '@src/hooks/useGameAlerts';
 

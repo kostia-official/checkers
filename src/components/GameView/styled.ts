@@ -64,14 +64,16 @@ export const CheckersSquare = styled.div<{ isValidJumpDestination: boolean; rowS
   }
 `;
 
+export const gameExtrasWidth = 300;
+
 export const GameExtrasWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
   padding: 8px;
 
   > * {
-    min-width: 220px;
+    min-width: ${gameExtrasWidth}px;
   }
 `;
 

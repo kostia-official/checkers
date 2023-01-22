@@ -8,7 +8,7 @@ import { GamePlayers, Position, GameState, GameAlert } from '@common/types';
 import { toggleColor } from '@common/utils';
 import { useGameJoin } from '@pages/OnlineGame/hooks/useGameJoin';
 import { mapGameTypeToStrategy } from '@common/mappers';
-import { useEditMode } from '@components/GameView/components/EditMode/hooks/useEditMode';
+import { useEditMode } from '@components/EditMode/hooks/useEditMode';
 import { useGameFinish } from '@pages/OnlineGame/hooks/useGameFinish';
 import { useGameRequestsReceiving } from '@pages/OnlineGame/hooks/useGameRequestsReceiving';
 import { useNewGame } from '@pages/OnlineGame/hooks/useNewGame';
@@ -173,6 +173,8 @@ export const OnlineGameWithData: React.FC<OnlineGameWithDataProps> = ({
     if (newGameState) updateGameState(newGameState);
   };
 
+  const isShowCopyLink = isInviter && !isSpectator && !isInviteeJoined && !isContinue;
+
   if (!lastGameState) return <CenteredLoader />;
 
   return (
@@ -194,6 +196,7 @@ export const OnlineGameWithData: React.FC<OnlineGameWithDataProps> = ({
             handleNewGame={handleNewGame}
             disableNewGame={!game.endedAt}
             disableEditMode={!!game.startedAt}
+            isSpectator={isSpectator}
           />
           <PlayersCard
             game={game}
@@ -202,7 +205,7 @@ export const OnlineGameWithData: React.FC<OnlineGameWithDataProps> = ({
             currentPlayerColor={currentPlayerColor}
             gamePlayers={gamePlayers}
           />
-          {isInviter && !isInviteeJoined && !isContinue && <CopyInviteLinkButton />}
+          {isShowCopyLink && <CopyInviteLinkButton />}
           {
             <GameResultsButtons
               game={game}
@@ -211,6 +214,7 @@ export const OnlineGameWithData: React.FC<OnlineGameWithDataProps> = ({
               setIsDraw={setIsDraw}
               isOwnMove={isOwnMove}
               gamePlayers={gamePlayers}
+              isSpectator={isSpectator}
             />
           }
         </>

@@ -14,6 +14,7 @@ export interface GameResultsButtonsProps {
   setWinner: (winnerId: string) => Promise<void>;
   setIsDraw: () => Promise<void>;
   isOwnMove: boolean;
+  isSpectator: boolean;
 }
 
 export const GameResultsButtons: React.FC<GameResultsButtonsProps> = ({
@@ -22,6 +23,7 @@ export const GameResultsButtons: React.FC<GameResultsButtonsProps> = ({
   setWinner,
   isOwnMove,
   gamePlayers,
+  isSpectator,
 }) => {
   const { t } = useTranslation();
   const { continueWithNewGame } = useNewGame();
@@ -44,7 +46,7 @@ export const GameResultsButtons: React.FC<GameResultsButtonsProps> = ({
     await createRequest('draw');
   }, [createRequest]);
 
-  if (!isGameStarted || isGameFinished || !opponentId) return null;
+  if (!isGameStarted || isGameFinished || !opponentId || isSpectator) return null;
 
   return (
     <Flex gap="xs">

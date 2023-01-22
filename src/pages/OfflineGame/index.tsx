@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { BoardState, Color, Position, GameState, GameStateHistory, LimitedJumpsCount, GameAlert } from '@common/types';
 import { ICheckersStrategy } from '@strategies/draughts-strategy.interface';
-import { useEditMode } from '@components/GameView/components/EditMode/hooks/useEditMode';
+import { useEditMode } from '@components/EditMode/hooks/useEditMode';
 import { GameView } from '@components/GameView';
 import { useTranslation } from 'react-i18next';
 import { GameMenu } from '@components/GameMenu';
