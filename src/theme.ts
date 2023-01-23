@@ -5,6 +5,7 @@ export const theme: MantineThemeOverride = {
   colorScheme: 'light',
   primaryColor: 'coolBlack',
   colors: {
+    ...DEFAULT_THEME.colors,
     coolBlack: [
       '#DEE2E6',
       '#CED4DA',
@@ -21,6 +22,7 @@ export const theme: MantineThemeOverride = {
   defaultRadius: 20,
   loader: 'dots',
   components: {
+    ...DEFAULT_THEME.components,
     Notification: {
       styles: {
         description: {

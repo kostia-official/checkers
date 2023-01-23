@@ -1,5 +1,5 @@
 import { FrisianDraughtsStrategy } from '@strategies/frisian-draughts-strategy';
-import { createGameState } from '@common/test-utils/gameState';
+import { createGameState } from '@common/testUtils/gameState';
 import { Position } from '@common/types';
 
 describe('isValidPieceCaptureByKing', () => {

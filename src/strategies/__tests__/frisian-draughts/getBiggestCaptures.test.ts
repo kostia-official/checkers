@@ -1,6 +1,6 @@
 import { Position } from '@common/types';
 import { FrisianDraughtsStrategy } from '@strategies/frisian-draughts-strategy';
-import { createGameState } from '@common/test-utils/gameState';
+import { createGameState } from '@common/testUtils/gameState';
 
 describe('getBiggestCaptures', () => {
   it('should return 0 as value and [] of captures when no captures available', () => {

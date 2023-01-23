@@ -7,7 +7,7 @@ import { QueryClientProvider } from 'react-query';
 import { queryClient } from '@src/queryClient';
 import { waitFor } from '@testing-library/react';
 import { noopAsync } from '@common/utils';
-import { timeout } from '@common/test-utils/timeout';
+import { timeout } from '@common/testUtils/timeout';
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -16,7 +16,12 @@ jest.mock('react-router-dom', () => ({
 
 const inviterUser: UserModel = { id: '1', name: 'User 1', createdAt: new Date(), language: 'en' };
 const inviteeUser: UserModel = { id: '2', name: 'User 2', createdAt: new Date(), language: 'en' };
-const spectatorUser: UserModel = { id: '3', name: 'Spectator', createdAt: new Date(), language: 'en' };
+const spectatorUser: UserModel = {
+  id: '3',
+  name: 'Spectator',
+  createdAt: new Date(),
+  language: 'en',
+};
 const game: GameModel = {
   id: '1',
   inviterId: inviterUser.id,
@@ -32,7 +37,9 @@ const inviter: GamePlayerModel = {
   joinedAt: new Date(),
 };
 
-const wrapper = ({ children }: any) => <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
+const wrapper = ({ children }: any) => (
+  <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+);
 
 let joinGameMock: jest.SpyInstance;
 
@@ -42,9 +49,12 @@ describe('useJoinUser', () => {
   });
 
   it('should join the game as a inviter', async () => {
-    const { result } = renderHook(() => useGameJoin({ user: inviterUser, game, gamePlayers: { inviter } }), {
-      wrapper,
-    });
+    const { result } = renderHook(
+      () => useGameJoin({ user: inviterUser, game, gamePlayers: { inviter } }),
+      {
+        wrapper,
+      }
+    );
 
     expect(result.current).toStrictEqual({
       isJoined: true,
@@ -58,7 +68,12 @@ describe('useJoinUser', () => {
   it('should join the game as an invitee when invitee place is empty', async () => {
     joinGameMock.mockImplementation(async () => await timeout(1000));
     const { result } = renderHook(
-      () => useGameJoin({ user: inviteeUser, game: { ...game, inviteeId: undefined }, gamePlayers: { inviter } }),
+      () =>
+        useGameJoin({
+          user: inviteeUser,
+          game: { ...game, inviteeId: undefined },
+          gamePlayers: { inviter },
+        }),
       { wrapper }
     );
 
@@ -84,7 +99,12 @@ describe('useJoinUser', () => {
 
   it('should join the game as an invitee when invitee was saved before', async () => {
     const { result } = renderHook(
-      () => useGameJoin({ user: inviteeUser, game: { ...game, inviteeId: inviteeUser.id }, gamePlayers: { inviter } }),
+      () =>
+        useGameJoin({
+          user: inviteeUser,
+          game: { ...game, inviteeId: inviteeUser.id },
+          gamePlayers: { inviter },
+        }),
       { wrapper }
     );
 
@@ -104,7 +124,11 @@ describe('useJoinUser', () => {
   it('should join the game as a spectator if the user is not the inviter or invitee and all places are full', async () => {
     const { result } = renderHook(
       () =>
-        useGameJoin({ user: spectatorUser, game: { ...game, inviteeId: inviteeUser.id }, gamePlayers: { inviter } }),
+        useGameJoin({
+          user: spectatorUser,
+          game: { ...game, inviteeId: inviteeUser.id },
+          gamePlayers: { inviter },
+        }),
       { wrapper }
     );
 

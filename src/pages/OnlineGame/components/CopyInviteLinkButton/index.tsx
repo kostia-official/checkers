@@ -1,14 +1,14 @@
 import React from 'react';
 import { Button, Tooltip, Text } from '@mantine/core';
-import { useClipboard, useMediaQuery } from '@mantine/hooks';
+import { useClipboard } from '@mantine/hooks';
 import { IconCopy, IconCheck } from '@tabler/icons';
 import { useTranslation } from 'react-i18next';
-import { theme } from '@src/theme';
+import { useIsMobile } from '@src/hooks/useIsMobile';
 
 export const CopyInviteLinkButton: React.FC = () => {
   const clipboard = useClipboard();
   const { t } = useTranslation();
-  const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints?.sm}px)`);
+  const isMobile = useIsMobile();
 
   return (
     <Tooltip
@@ -21,7 +21,13 @@ export const CopyInviteLinkButton: React.FC = () => {
       disabled={isMobile}
     >
       <Button
-        rightIcon={clipboard.copied ? <IconCheck size={20} stroke={1.5} /> : <IconCopy size={20} stroke={1.5} />}
+        rightIcon={
+          clipboard.copied ? (
+            <IconCheck size={20} stroke={1.5} />
+          ) : (
+            <IconCopy size={20} stroke={1.5} />
+          )
+        }
         styles={{
           root: { paddingRight: 14 },
           rightIcon: { marginLeft: 8 },

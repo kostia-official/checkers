@@ -1,6 +1,6 @@
 import { Position, Color } from '@common/types';
 import { FrisianDraughtsStrategy } from '@strategies/frisian-draughts-strategy';
-import { createGameState } from '@common/test-utils/gameState';
+import { createGameState } from '@common/testUtils/gameState';
 import { getPiece } from '@common/utils';
 
 describe('handlePieceClick', () => {

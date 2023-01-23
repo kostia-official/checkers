@@ -1,5 +1,5 @@
 import { Draughts64Strategy } from '../../draughts64-strategy';
-import { createGameState } from '@common/test-utils/gameState';
+import { createGameState } from '@common/testUtils/gameState';
 import { Position } from '@common/types';
 
 describe('isValidPieceCapture', () => {

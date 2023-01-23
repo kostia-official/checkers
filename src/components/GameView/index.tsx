@@ -15,6 +15,8 @@ import { EditModeState } from '../EditMode/hooks/useEditMode';
 import { isEqualPosition, hasPosition } from '@common/utils';
 import { useGameAlerts } from '@src/hooks/useGameAlerts';
 
+const squareMaxSizePx = 80;
+
 export interface CheckersGameProps {
   strategy: ICheckersStrategy;
   gameState: GameState;
@@ -71,9 +73,11 @@ export const GameView: React.FC<CheckersGameProps> = ({
   const shouldReverse = playerColor === 'black';
   const playerBoardState = shouldReverse ? [...boardState].reverse() : boardState;
 
+  const boardMaxSizePx = squareMaxSizePx * strategy.squares;
+
   return (
     <CheckersGameWrapper>
-      <CheckersBoard>
+      <CheckersBoard maxSizePx={boardMaxSizePx}>
         {playerBoardState.map((row, i) => {
           const rowLength = row.length;
           const playerI = shouldReverse ? rowLength - 1 - i : i;
@@ -100,7 +104,10 @@ export const GameView: React.FC<CheckersGameProps> = ({
                     rowSquaresCount={rowLength}
                     isValidJumpDestination={isValidJumpDestination([playerI, playerJ])}
                   >
-                    <CheckerPiece piece={square.piece} isSelected={getIsSelectedPiece([playerI, playerJ])} />
+                    <CheckerPiece
+                      piece={square.piece}
+                      isSelected={getIsSelectedPiece([playerI, playerJ])}
+                    />
 
                     {DEBUG && <SquareNotation>{squareNotation}</SquareNotation>}
                   </CheckersSquare>
@@ -111,7 +118,7 @@ export const GameView: React.FC<CheckersGameProps> = ({
         })}
       </CheckersBoard>
 
-      <GameExtrasWrapper>{gameExtrasContent}</GameExtrasWrapper>
+      <GameExtrasWrapper maxSizePx={boardMaxSizePx}>{gameExtrasContent}</GameExtrasWrapper>
     </CheckersGameWrapper>
   );
 };

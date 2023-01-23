@@ -13,10 +13,10 @@ export interface GameMenuProps {
   handleNewGame: () => void;
   gameStateHistory: GameStateHistory;
   winnerLabel: string | undefined;
-  disableNewGame?: boolean;
-  disableEditMode?: boolean;
   editModeState: EditModeState;
   isSpectator?: boolean;
+  isGameStarted?: boolean;
+  isGameEnded?: boolean;
 }
 
 export const GameMenu: React.FC<GameMenuProps> = ({
@@ -25,12 +25,13 @@ export const GameMenu: React.FC<GameMenuProps> = ({
   handleNewGame,
   onUndoMoveClick,
   undoMoveLoading,
-  disableNewGame,
-  disableEditMode,
+  isGameEnded,
   editModeState,
   isSpectator,
+  isGameStarted,
 }) => {
   const { t } = useTranslation();
+  const isGameActive = isGameStarted && !isGameEnded;
 
   return (
     <>
@@ -38,23 +39,26 @@ export const GameMenu: React.FC<GameMenuProps> = ({
         <Button fullWidth component={Link} to="/">
           {t('gameMenu.mainMenu')}
         </Button>
-        <Button onClick={handleNewGame} disabled={disableNewGame || isSpectator}>
-          {t('gameMenu.newGame')}
+        <Button
+          onClick={onUndoMoveClick}
+          disabled={gameStateHistory.length === 1 || isSpectator}
+          loading={undoMoveLoading}
+          loaderProps={{ size: 'xs' }}
+        >
+          {t('gameMenu.undoMove')}
         </Button>
       </ButtonsWrapper>
 
-      <ButtonsWrapper>
-        <EditMode {...editModeState} disabled={disableEditMode || isSpectator} />
-        {!editModeState.isEditMode && (
-          <Button
-            onClick={onUndoMoveClick}
-            disabled={gameStateHistory.length === 1 || isSpectator}
-            loading={undoMoveLoading}
-          >
-            {t('gameMenu.undoMove')}
-          </Button>
-        )}
-      </ButtonsWrapper>
+      {!isGameActive && (
+        <ButtonsWrapper>
+          {!editModeState.isEditMode && (
+            <Button onClick={handleNewGame} disabled={!isGameEnded || isSpectator}>
+              {t('gameMenu.newGame')}
+            </Button>
+          )}
+          <EditMode {...editModeState} disabled={isGameStarted || isSpectator} />
+        </ButtonsWrapper>
+      )}
 
       {/* TODO: Redesign */}
       {winnerLabel ? (

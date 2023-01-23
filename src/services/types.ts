@@ -1,8 +1,17 @@
 import { GameType, Color, Position, BoardState, LimitedJumpsCount } from '@common/types';
 
+export interface RoomModel {
+  id: string;
+  createdById: string;
+  createdAt: Date;
+}
+
+export type CreateRoomInput = Omit<RoomModel, 'id' | 'createdAt'>;
+
 export interface GameModel {
   id: string;
   gameType: GameType;
+  roomId: string;
   inviterId: string;
   inviteeId?: string;
   winnerId?: string;
@@ -13,7 +22,7 @@ export interface GameModel {
   endedAt?: Date;
 }
 
-export type CreateGameInput = Pick<GameModel, 'gameType' | 'inviterId' | 'inviteeId'>;
+export type CreateGameInput = Pick<GameModel, 'gameType' | 'inviterId' | 'inviteeId' | 'roomId'>;
 export type UpdateGameInput = Partial<Omit<GameModel, 'id'>>;
 
 export interface GamePlayerModel {
@@ -68,3 +77,17 @@ export interface RequestModel {
 
 export type CreateRequestInput = Omit<RequestModel, 'id' | 'createdAt'>;
 export type UpdateRequestInput = Partial<CreateRequestInput>;
+
+export type MessageType = 'user' | 'system';
+
+export interface MessageModel {
+  id: string;
+  gameId: string;
+  roomId: string;
+  senderId: string;
+  text: string;
+  type: MessageType;
+  createdAt: Date;
+}
+
+export type SendMessageInput = Omit<MessageModel, 'id' | 'createdAt' | 'senderId'>;

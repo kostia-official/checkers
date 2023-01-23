@@ -6,9 +6,10 @@ export const Wrapper = styled.div`
   top: 4px;
   z-index: 300;
 
-  @media (max-width: ${(p) => p.theme.breakpoints.xs}px) {
-    right: 4px;
+  @media (max-width: ${(p) => p.theme.breakpoints.lg}px) {
+    left: 4px;
     bottom: 4px;
     top: unset;
+    right: unset;
   }
 `;

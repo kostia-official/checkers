@@ -1,5 +1,5 @@
 import { Draughts100Strategy } from '@strategies/draughts100-strategy';
-import { createGameState } from '@common/test-utils/gameState';
+import { createGameState } from '@common/testUtils/gameState';
 import { Position } from '@common/types';
 
 describe('getMostAmountCanBeCapturedFromTo', () => {

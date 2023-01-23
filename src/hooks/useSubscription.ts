@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 
 export const useSubscription = (
   subscription: () => Unsubscribe | undefined,
-  { enable }: { enable: unknown } = { enable: false }
+  { enable }: { enable: unknown } = { enable: true }
 ) => {
   useEffect(() => {
     if (!enable) return;

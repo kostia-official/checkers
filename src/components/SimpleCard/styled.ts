@@ -4,4 +4,5 @@ import styled from 'styled-components';
 export const Title: typeof Text = styled(Text)`
   margin-top: -8px;
   margin-bottom: 8px;
+  flex: 0 0 auto;
 `;

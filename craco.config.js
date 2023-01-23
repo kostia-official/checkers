@@ -14,6 +14,9 @@ module.exports = {
       '@strategies': resolvePath('./src/strategies'),
     },
   },
+  babel: {
+    plugins: [['babel-plugin-styled-components', { fileName: false }]],
+  },
   jest: {
     configure: jestConfig,
   },

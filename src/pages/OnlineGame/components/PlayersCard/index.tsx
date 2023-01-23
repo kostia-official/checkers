@@ -1,8 +1,7 @@
 import React, { useMemo, useCallback } from 'react';
 import { GameModel, UserModel } from '@services/types';
 import { Box, Text, Flex } from '@mantine/core';
-import { useQuery, useMutation } from 'react-query';
-import { userService } from '@services/user.service';
+import { useMutation } from 'react-query';
 import { GamePlayerExtended, Color, GamePlayers } from '@common/types';
 import { PlayerInfo } from '@pages/OnlineGame/components/PlayersCard/components/Player';
 import { toggleColor } from '@common/utils';
@@ -10,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { SimpleCard } from '@components/SimpleCard';
 import { gameService, SubmitReadyArgs } from '@services/game.service';
 import { useResolvedGameInfo } from '@pages/OnlineGame/hooks/useResolvedGameInfo';
+import { useGameUsers } from '@pages/OnlineGame/hooks/useGameUsers';
 
 export interface PlayersCardProps {
   game: GameModel;
@@ -30,15 +30,10 @@ export const PlayersCard: React.FC<PlayersCardProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const { data: inviterUser } = useQuery(['user', game.inviterId], () => userService.get(game.inviterId!), {
-    enabled: !!game.inviterId,
-    initialData: game.inviterId === user.id ? user : undefined,
-  });
-  const { data: inviteeUser } = useQuery(['user', game.inviteeId], () => userService.get(game.inviteeId!), {
-    enabled: !!game.inviteeId,
-    initialData: game.inviteeId === user.id ? user : undefined,
-  });
-  const { mutateAsync: submitReadyGame } = useMutation((args: SubmitReadyArgs) => gameService.submitReadyGame(args));
+  const { inviterUser, inviteeUser } = useGameUsers({ game, user });
+  const { mutateAsync: submitReadyGame } = useMutation((args: SubmitReadyArgs) =>
+    gameService.submitReadyGame(args)
+  );
 
   const setIsReady = useCallback(
     (gamePlayerId: string) => {

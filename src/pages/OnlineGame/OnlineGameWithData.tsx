@@ -1,5 +1,11 @@
 import React, { useMemo, useState, useCallback } from 'react';
-import { GameModel, UserModel, GameHistoryModel, GamePlayerModel, RequestType } from '@services/types';
+import {
+  GameModel,
+  UserModel,
+  GameHistoryModel,
+  GamePlayerModel,
+  RequestType,
+} from '@services/types';
 import { useSearchParams } from 'react-router-dom';
 import { useMutation } from 'react-query';
 import { gameHistoryService } from '@services/gameHistory.service';
@@ -17,9 +23,10 @@ import { CenteredLoader } from '@components/CenteredLoader';
 import { GameView } from '@components/GameView';
 import { PlayersCard } from '@pages/OnlineGame/components/PlayersCard';
 import { CopyInviteLinkButton } from '@pages/OnlineGame/components/CopyInviteLinkButton';
-import { GameResultsButtons } from '@pages/OnlineGame/components/GameResultsButtons';
 import { GameMenu } from '@components/GameMenu';
 import { useUpdatePushToken } from '@pages/OnlineGame/hooks/useUpdatePushToken';
+import { GameResultsButtons } from '@src/pages/OnlineGame/components/GameResultsButtons';
+import { Chat } from './components/Chat';
 
 export interface OnlineGameWithDataProps {
   game: GameModel;
@@ -39,7 +46,9 @@ export const OnlineGameWithData: React.FC<OnlineGameWithDataProps> = ({
   let [searchParams] = useSearchParams();
   useUpdatePushToken({ user });
 
-  const { mutateAsync: removeGameHistory } = useMutation((id: string) => gameHistoryService.remove(id));
+  const { mutateAsync: removeGameHistory } = useMutation((id: string) =>
+    gameHistoryService.remove(id)
+  );
 
   const lastGameState = gameHistory[gameHistory.length - 1];
   const { boardState, currentPlayerColor, limitedJumpsCount } = lastGameState;
@@ -78,7 +87,14 @@ export const OnlineGameWithData: React.FC<OnlineGameWithDataProps> = ({
       limitedJumpsCount,
       gameAlerts,
     };
-  }, [boardState, currentPlayerColor, hasMadeCapture, limitedJumpsCount, selectedPiece, gameAlerts]);
+  }, [
+    boardState,
+    currentPlayerColor,
+    hasMadeCapture,
+    limitedJumpsCount,
+    selectedPiece,
+    gameAlerts,
+  ]);
 
   const updateGameState = async ({
     boardState,
@@ -194,8 +210,17 @@ export const OnlineGameWithData: React.FC<OnlineGameWithDataProps> = ({
             onUndoMoveClick={requestUndoMove}
             undoMoveLoading={isActiveUndoRequest}
             handleNewGame={handleNewGame}
-            disableNewGame={!game.endedAt}
-            disableEditMode={!!game.startedAt}
+            isGameStarted={!!game.startedAt}
+            isGameEnded={!!game.endedAt}
+            isSpectator={isSpectator}
+          />
+          <GameResultsButtons
+            game={game}
+            user={user}
+            setWinner={setWinner}
+            setIsDraw={setIsDraw}
+            isOwnMove={isOwnMove}
+            gamePlayers={gamePlayers}
             isSpectator={isSpectator}
           />
           <PlayersCard
@@ -206,17 +231,8 @@ export const OnlineGameWithData: React.FC<OnlineGameWithDataProps> = ({
             gamePlayers={gamePlayers}
           />
           {isShowCopyLink && <CopyInviteLinkButton />}
-          {
-            <GameResultsButtons
-              game={game}
-              user={user}
-              setWinner={setWinner}
-              setIsDraw={setIsDraw}
-              isOwnMove={isOwnMove}
-              gamePlayers={gamePlayers}
-              isSpectator={isSpectator}
-            />
-          }
+
+          {!isShowCopyLink && !isSpectator && <Chat game={game} user={user} />}
         </>
       }
     />

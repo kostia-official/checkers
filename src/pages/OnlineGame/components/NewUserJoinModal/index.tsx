@@ -8,6 +8,7 @@ import { queryClient } from '@src/queryClient';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useForm } from '@mantine/form';
+import { required } from '@common/form/validators';
 
 export interface NewUserJoinModalProps {
   noUser: boolean;
@@ -23,14 +24,14 @@ export const NewUserJoinModal: React.FC<NewUserJoinModalProps> = ({ noUser, game
     initialValues: {
       userName: '',
     },
-    validate: {
-      userName: (value) => (value ? null : t('validation.required')),
-    },
+    validate: { userName: required },
   });
 
   const [isShowModal, setIsShowModal] = useState(false);
 
-  const { mutateAsync: createUser, isLoading } = useMutation((input: CreateUserInput) => userService.create(input));
+  const { mutateAsync: createUser, isLoading } = useMutation((input: CreateUserInput) =>
+    userService.create(input)
+  );
 
   const onSubmit = async (values: typeof form.values) => {
     if (!game || !values.userName) return;

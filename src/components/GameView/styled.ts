@@ -4,7 +4,7 @@ import { colors } from '@common/colors';
 export const CheckersGameWrapper = styled.div`
   display: flex;
   gap: 16px;
-  align-items: flex-start;
+  align-items: stretch;
 
   @media (max-width: ${(p) => p.theme.breakpoints.xs}px) {
     flex-direction: column;
@@ -12,11 +12,13 @@ export const CheckersGameWrapper = styled.div`
   }
 `;
 
-export const CheckersBoard = styled.div`
+export const CheckersBoard = styled.div<{ maxSizePx: number }>`
   display: flex;
   flex-wrap: wrap;
   margin: 8px;
   max-width: min-content;
+  // Board shouldn't stretch by other content
+  max-height: ${(p) => p.maxSizePx}px;
 `;
 
 export const CheckersRow = styled.div`
@@ -37,7 +39,10 @@ const validJump = css`
   }
 `;
 
-export const CheckersSquare = styled.div<{ isValidJumpDestination: boolean; rowSquaresCount: number }>`
+export const CheckersSquare = styled.div<{
+  isValidJumpDestination: boolean;
+  rowSquaresCount: number;
+}>`
   position: relative;
   display: flex;
   align-items: center;
@@ -66,14 +71,19 @@ export const CheckersSquare = styled.div<{ isValidJumpDestination: boolean; rowS
 
 export const gameExtrasWidth = 300;
 
-export const GameExtrasWrapper = styled.div`
+export const GameExtrasWrapper = styled.div<{ maxSizePx: number }>`
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 8px;
+  margin: 8px;
+  min-width: ${gameExtrasWidth}px;
+  max-width: ${gameExtrasWidth}px;
 
-  > * {
-    min-width: ${gameExtrasWidth}px;
+  // Height should be bigger than a board
+  max-height: ${(p) => p.maxSizePx}px;
+
+  @media (max-width: ${(p) => p.theme.breakpoints.xs}px) {
+    max-height: 100%;
   }
 `;
 

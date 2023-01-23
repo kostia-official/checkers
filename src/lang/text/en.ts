@@ -25,7 +25,15 @@ export const en = {
     gameMenu: {
       mainMenu: 'Main Menu',
       newGame: 'New Game',
-      undoMove: 'Undo Move',
+      undoMove: 'Undo Move?',
+    },
+    onlineMenu: {
+      copyLink: {
+        buttonLabel: 'Copy invite link',
+        copyLinkTooltip: 'Link copied!',
+      },
+      drawButton: 'Draw?',
+      resignButton: 'Resign',
     },
     editMode: {
       title: 'Edit Mode',
@@ -47,13 +55,9 @@ export const en = {
       start: 'Start',
       spectatorLabel: 'You are a spectator',
     },
-    onlineMenu: {
-      copyLink: {
-        buttonLabel: 'Copy invite link',
-        copyLinkTooltip: 'Link copied!',
-      },
-      drawButton: 'Draw',
-      resignButton: 'Resign',
+    chat: {
+      title: 'Chat',
+      messagePlaceholder: 'Type your message',
     },
     requestsModals: {
       title: 'New request from your opponent',

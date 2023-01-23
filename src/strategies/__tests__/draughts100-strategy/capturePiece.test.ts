@@ -1,5 +1,5 @@
 import { Draughts100Strategy } from '@strategies/draughts100-strategy';
-import { createGameState } from '@common/test-utils/gameState';
+import { createGameState } from '@common/testUtils/gameState';
 import { Color, Position } from '@common/types';
 import { getSquare, getPiece } from '@common/utils';
 
@@ -62,7 +62,11 @@ describe('capturePiece', () => {
     const from: Position = [5, 2];
     const to: Position = [3, 4];
 
-    const { boardState: newBoardState, hasMadeCapture } = strategy.capturePiece(from, to, gameState);
+    const { boardState: newBoardState, hasMadeCapture } = strategy.capturePiece(
+      from,
+      to,
+      gameState
+    );
 
     expect(hasMadeCapture).toBe(false);
     expect(getSquare(newBoardState, to).piece?.color).toBe(Color.White);

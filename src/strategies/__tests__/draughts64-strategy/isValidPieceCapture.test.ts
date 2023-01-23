@@ -1,5 +1,5 @@
 import { Draughts64Strategy } from '../../draughts64-strategy';
-import { createGameState } from '@common/test-utils/gameState';
+import { createGameState } from '@common/testUtils/gameState';
 import { Color, GameState, Position } from '@common/types';
 
 describe('isValidPieceCapture', () => {
@@ -105,7 +105,10 @@ describe('isValidPieceCapture', () => {
       ];
       const from: Position = [2, 2];
       const to: Position = [0, 0];
-      const gameState: GameState = createGameState(board, { selectedPiece: from, currentPlayer: Color.Black });
+      const gameState: GameState = createGameState(board, {
+        selectedPiece: from,
+        currentPlayer: Color.Black,
+      });
 
       expect(strategy.isValidPieceCapture(from, to, gameState)).toBe(false);
     });
@@ -354,7 +357,10 @@ describe('isValidPieceCapture', () => {
       ];
       const from: Position = [3, 0];
       const to: Position = [0, 3];
-      const gameState: GameState = createGameState(board, { selectedPiece: from, currentPlayer: Color.Black });
+      const gameState: GameState = createGameState(board, {
+        selectedPiece: from,
+        currentPlayer: Color.Black,
+      });
 
       expect(strategy.isValidPieceCapture(from, to, gameState)).toBe(false);
     });

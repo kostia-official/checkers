@@ -27,7 +27,7 @@ export const ua: typeof en = {
     gameMenu: {
       mainMenu: 'Головне Меню',
       newGame: 'Нова Гра',
-      undoMove: 'Відмінити Хід',
+      undoMove: 'Відмінити?',
     },
     editMode: {
       title: 'Редагування',
@@ -49,12 +49,16 @@ export const ua: typeof en = {
       start: 'Почати',
       spectatorLabel: 'Ви приєднались як глядач',
     },
+    chat: {
+      title: 'Чат',
+      messagePlaceholder: 'Повідомлення',
+    },
     onlineMenu: {
       copyLink: {
-        buttonLabel: 'Запрошення',
+        buttonLabel: 'Скопіювати запрошення',
         copyLinkTooltip: 'Посилання скопійовано!',
       },
-      drawButton: 'Нічия',
+      drawButton: 'Нічия?',
       resignButton: 'Здатись',
     },
     requestsModals: {

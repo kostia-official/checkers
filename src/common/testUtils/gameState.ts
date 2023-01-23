@@ -1,6 +1,9 @@
 import { BoardState, Color, GameState } from '../types';
 
-export function createGameState(board: number[][], otherGameState: Partial<GameState> = {}): GameState {
+export function createGameState(
+  board: number[][],
+  otherGameState: Partial<GameState> = {}
+): GameState {
   let id = -1;
   const boardState: BoardState = [];
   for (let i = 0; i < board.length; i++) {
