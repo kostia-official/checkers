@@ -13,10 +13,13 @@ export const CheckersGameWrapper = styled.div`
 `;
 
 export const CheckersBoard = styled.div<{ maxSizePx: number }>`
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   margin: 8px;
   max-width: min-content;
+  border: 1px solid ${colors.black.dark};
+
   // Board shouldn't stretch by other content
   max-height: ${(p) => p.maxSizePx}px;
 `;
@@ -41,6 +44,7 @@ const validJump = css`
 
 export const CheckersSquare = styled.div<{
   isValidJumpDestination: boolean;
+  isOpponentJumpDestination: boolean;
   rowSquaresCount: number;
 }>`
   position: relative;
@@ -60,7 +64,7 @@ export const CheckersSquare = styled.div<{
     left: 0;
     right: 0;
     bottom: 0;
-    border: 1px solid ${colors.black.dark};
+    border: 1px solid ${(p) => (p.isOpponentJumpDestination ? colors.gold.main : colors.black.dark)};
   }
 
   &.white {

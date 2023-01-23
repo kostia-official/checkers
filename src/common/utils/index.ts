@@ -9,7 +9,7 @@ export const toggleColor = (color: Color) => {
   return color === Color.White ? Color.Black : Color.White;
 };
 
-export const isEqualPosition = (a: Position, b: Position) => {
+export const isEqualPosition = (a: Position, b: Position): boolean => {
   return a[0] === b[0] && a[1] === b[1];
 };
 

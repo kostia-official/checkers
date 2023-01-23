@@ -34,6 +34,8 @@ export interface GameState {
   selectedPiece: Position | undefined;
   limitedJumpsCount: LimitedJumpsCount;
   gameAlerts: GameAlert[];
+  jumpFrom?: Position;
+  jumpTo?: Position;
   hasMadeCapture: boolean;
 }
 

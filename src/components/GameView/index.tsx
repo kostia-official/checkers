@@ -36,7 +36,7 @@ export const GameView: React.FC<CheckersGameProps> = ({
   handlePieceClick,
   gameExtrasContent,
 }) => {
-  const { boardState, selectedPiece, gameAlerts } = gameState;
+  const { boardState, selectedPiece, gameAlerts, jumpTo, currentPlayer } = gameState;
 
   useGameAlerts({ gameAlerts });
 
@@ -47,13 +47,16 @@ export const GameView: React.FC<CheckersGameProps> = ({
     return Color.Black;
   };
 
-  const getIsSelectedPiece = (position: Position) => {
-    if (!selectedPiece) {
-      return false;
-    }
+  const getIsSelectedPiece = useCallback(
+    (position: Position) => {
+      if (!selectedPiece) {
+        return false;
+      }
 
-    return isEqualPosition(position, selectedPiece);
-  };
+      return isEqualPosition(position, selectedPiece);
+    },
+    [selectedPiece]
+  );
 
   const validJumpDestinations = useMemo((): Position[] => {
     if (!selectedPiece) {
@@ -72,6 +75,14 @@ export const GameView: React.FC<CheckersGameProps> = ({
 
   const shouldReverse = playerColor === 'black';
   const playerBoardState = shouldReverse ? [...boardState].reverse() : boardState;
+  const isOwnMove = playerColor === currentPlayer;
+
+  const getIsOpponentJumpDestination = useCallback(
+    (position: Position): boolean => {
+      return isOwnMove && !!jumpTo && isEqualPosition(position, jumpTo);
+    },
+    [isOwnMove, jumpTo]
+  );
 
   const boardMaxSizePx = squareMaxSizePx * strategy.squares;
 
@@ -103,6 +114,7 @@ export const GameView: React.FC<CheckersGameProps> = ({
                     }}
                     rowSquaresCount={rowLength}
                     isValidJumpDestination={isValidJumpDestination([playerI, playerJ])}
+                    isOpponentJumpDestination={getIsOpponentJumpDestination([playerI, playerJ])}
                   >
                     <CheckerPiece
                       piece={square.piece}

@@ -51,7 +51,7 @@ export const OnlineGameWithData: React.FC<OnlineGameWithDataProps> = ({
   );
 
   const lastGameState = gameHistory[gameHistory.length - 1];
-  const { boardState, currentPlayerColor, limitedJumpsCount } = lastGameState;
+  const { boardState, currentPlayerColor, limitedJumpsCount, jumpFrom, jumpTo } = lastGameState;
 
   const { isInviter, opponentId, isGameStarted } = useResolvedGameInfo({ game, user });
   const currentUserPlayer = isInviter ? inviter : invitee;
@@ -86,6 +86,8 @@ export const OnlineGameWithData: React.FC<OnlineGameWithDataProps> = ({
       hasMadeCapture,
       limitedJumpsCount,
       gameAlerts,
+      jumpFrom,
+      jumpTo,
     };
   }, [
     boardState,
@@ -94,6 +96,8 @@ export const OnlineGameWithData: React.FC<OnlineGameWithDataProps> = ({
     limitedJumpsCount,
     selectedPiece,
     gameAlerts,
+    jumpFrom,
+    jumpTo,
   ]);
 
   const updateGameState = async ({
@@ -103,6 +107,8 @@ export const OnlineGameWithData: React.FC<OnlineGameWithDataProps> = ({
     hasMadeCapture,
     limitedJumpsCount,
     gameAlerts,
+    jumpFrom,
+    jumpTo,
   }: GameState) => {
     setSelectedPiece(selectedPiece);
     setHasMadeCapture(hasMadeCapture);
@@ -114,6 +120,8 @@ export const OnlineGameWithData: React.FC<OnlineGameWithDataProps> = ({
       gameId: game.id,
       currentPlayerId: user.id,
       limitedJumpsCount,
+      ...(jumpFrom && { jumpFrom }),
+      ...(jumpTo && { jumpTo }),
     });
   };
 

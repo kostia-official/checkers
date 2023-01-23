@@ -1,7 +1,14 @@
 import { ICheckersStrategy } from './draughts-strategy.interface';
 import { BoardState, Color, GameState, Position, Square, LimitedJumpsCount } from '@common/types';
 import cloneDeep from 'lodash.clonedeep';
-import { toggleColor, getSquare, getSquares, isEqualPosition, getPiece, getPieces } from '@common/utils';
+import {
+  toggleColor,
+  getSquare,
+  getSquares,
+  isEqualPosition,
+  getPiece,
+  getPieces,
+} from '@common/utils';
 
 export abstract class BaseDraughtsStrategy implements ICheckersStrategy {
   abstract squares: number;
@@ -12,7 +19,11 @@ export abstract class BaseDraughtsStrategy implements ICheckersStrategy {
   abstract getSquareNotation(position: Position): string;
 
   abstract isValidPieceCaptureByKing(from: Position, to: Position, gameState: GameState): boolean;
-  abstract isValidPieceCaptureByRegular(from: Position, to: Position, gameState: GameState): boolean;
+  abstract isValidPieceCaptureByRegular(
+    from: Position,
+    to: Position,
+    gameState: GameState
+  ): boolean;
 
   makeInitialBoardState() {
     const initialBoardState: BoardState = [];
@@ -49,6 +60,8 @@ export abstract class BaseDraughtsStrategy implements ICheckersStrategy {
 
     toSquare.piece = { ...fromSquare.piece };
     fromSquare.piece = undefined;
+    newGameState.jumpFrom = from;
+    newGameState.jumpTo = to;
 
     return newGameState;
   }
@@ -193,7 +206,11 @@ export abstract class BaseDraughtsStrategy implements ICheckersStrategy {
     return this.changePieceSquare(from, to, newGameState).boardState;
   }
 
-  protected updateGameStateAfterCapture(from: Position, to: Position, gameState: GameState): GameState {
+  protected updateGameStateAfterCapture(
+    from: Position,
+    to: Position,
+    gameState: GameState
+  ): GameState {
     const newGameState = cloneDeep(gameState);
 
     const toPiece = getPiece(newGameState.boardState, to);
@@ -334,7 +351,11 @@ export abstract class BaseDraughtsStrategy implements ICheckersStrategy {
     return isDiagonal;
   }
 
-  iteratePieceJumps(piecePosition: Position, gameState: GameState, cb: (position: Position) => void): void {
+  iteratePieceJumps(
+    piecePosition: Position,
+    gameState: GameState,
+    cb: (position: Position) => void
+  ): void {
     this.iterateBoard(piecePosition, gameState, (position) => {
       if (this.isValidPath(piecePosition, position)) {
         cb(position);
@@ -345,7 +366,11 @@ export abstract class BaseDraughtsStrategy implements ICheckersStrategy {
   // TODO: Add early return from iteration
   // TODO: Add to interface
   // piecePosition helps to determine what squares iterate over and speed up iteration
-  iterateBoard(piecePosition: Position, gameState: GameState, cb: (position: Position) => void): void {
+  iterateBoard(
+    piecePosition: Position,
+    gameState: GameState,
+    cb: (position: Position) => void
+  ): void {
     const [i, j] = piecePosition;
 
     const isEvenSquares = (i + j) % 2 === 0;
@@ -432,7 +457,11 @@ export abstract class BaseDraughtsStrategy implements ICheckersStrategy {
     return toggleColor(currentPlayer);
   }
 
-  iterateBetweenFromTo([fromI, fromJ]: Position, [toI, toJ]: Position, cb: (position: Position) => boolean): void {
+  iterateBetweenFromTo(
+    [fromI, fromJ]: Position,
+    [toI, toJ]: Position,
+    cb: (position: Position) => boolean
+  ): void {
     const iStep = Math.sign(toI - fromI);
     const jStep = Math.sign(toJ - fromJ);
 
