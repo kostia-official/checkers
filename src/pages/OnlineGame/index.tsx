@@ -17,20 +17,25 @@ export const OnlineGame: React.FC = () => {
 
   const { data: game } = useQuery(['games', gameId], () => gameService.get(gameId!), {
     enabled: !!gameId,
+    refetchOnWindowFocus: 'always',
   });
-  const { data: user, isError: isGetUserError } = useQuery('currentUser', () => userService.getCurrent());
-  const { data: gameHistory } = useQuery(['gameHistory', gameId], () => gameHistoryService.getByGameId(gameId!), {
-    enabled: !!gameId,
-  });
+  const { data: user, isError: isGetUserError } = useQuery('currentUser', () =>
+    userService.getCurrent()
+  );
+  const { data: gameHistory } = useQuery(
+    ['gameHistory', gameId],
+    () => gameHistoryService.getByGameId(gameId!),
+    { enabled: !!gameId, refetchOnWindowFocus: 'always' }
+  );
   const { data: inviter } = useQuery(
     ['inviter', gameId],
     () => gamePlayerService.get({ userId: game?.inviterId!, gameId: game?.id! }),
-    { enabled: !!game?.inviterId }
+    { enabled: !!game?.inviterId, refetchOnWindowFocus: 'always' }
   );
   const { data: invitee } = useQuery(
     ['invitee', gameId],
     () => gamePlayerService.get({ userId: game?.inviteeId!, gameId: game?.id! }),
-    { enabled: !!game?.inviteeId }
+    { enabled: !!game?.inviteeId, refetchOnWindowFocus: 'always' }
   );
 
   useSubscription(
@@ -80,7 +85,13 @@ export const OnlineGame: React.FC = () => {
       {!game || !user || !gameHistory || !inviter ? (
         <CenteredLoader />
       ) : (
-        <OnlineGameWithData game={game} user={user} gameHistory={gameHistory} inviter={inviter} invitee={invitee} />
+        <OnlineGameWithData
+          game={game}
+          user={user}
+          gameHistory={gameHistory}
+          inviter={inviter}
+          invitee={invitee}
+        />
       )}
     </>
   );

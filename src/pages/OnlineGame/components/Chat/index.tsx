@@ -17,14 +17,7 @@ export const Chat: React.FC<ChatProps> = ({ game, user }) => {
   const { data: messages } = useQuery(
     ['messages', game.roomId],
     () => messageService.getRoomMessages(game.roomId),
-    {
-      // onSettled: () => {
-      //   // Scroll to bottom when data was updated and rendered
-      //   setTimeout(() => {
-      //     scrollToBottom();
-      //   }, 0);
-      // },
-    }
+    { refetchOnWindowFocus: 'always' }
   );
 
   useSubscription(() =>
