@@ -1,5 +1,13 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import { BoardState, Color, Position, GameState, GameStateHistory, LimitedJumpsCount, GameAlert } from '@common/types';
+import {
+  BoardState,
+  Color,
+  Position,
+  GameState,
+  GameStateHistory,
+  LimitedJumpsCount,
+  GameAlert,
+} from '@common/types';
 import { ICheckersStrategy } from '@strategies/draughts-strategy.interface';
 import { useEditMode } from '@components/EditMode/hooks/useEditMode';
 import { GameView } from '@components/GameView';
@@ -54,7 +62,14 @@ export const OfflineGame: React.FC<CheckersGameProps> = ({ strategy }) => {
   };
 
   const getGameState = useCallback((): GameState => {
-    return { currentPlayer, boardState, selectedPiece, hasMadeCapture, limitedJumpsCount, gameAlerts };
+    return {
+      currentPlayer,
+      boardState,
+      selectedPiece,
+      hasMadeCapture,
+      limitedJumpsCount,
+      gameAlerts,
+    };
   }, [boardState, currentPlayer, hasMadeCapture, selectedPiece, limitedJumpsCount, gameAlerts]);
 
   const handlePieceClick = (position: Position) => {

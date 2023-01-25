@@ -1,6 +1,13 @@
 import React from 'react';
 import { Button, Switch } from '@mantine/core';
-import { SwitchWrapper, ClearWrapper, CardStyled, ContentWrapper, ControlsWrapper, ControlsRow } from './styled';
+import {
+  SwitchWrapper,
+  ClearWrapper,
+  CardStyled,
+  ContentWrapper,
+  ControlsWrapper,
+  ControlsRow,
+} from './styled';
 import { EditModeState } from './hooks/useEditMode';
 import { PieceColorToggle } from '../PieceColorToggle';
 import { useTranslation } from 'react-i18next';

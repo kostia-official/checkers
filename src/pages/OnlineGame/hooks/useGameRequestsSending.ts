@@ -22,11 +22,15 @@ export const useGameRequestsSending = ({
   onNewAcceptedRequest: onNewAcceptedRequestCb,
 }: HookArgs) => {
   const { t } = useTranslation();
-  const { data: sentRequests } = useQuery(['sentRequests', gameId], () => requestService.getSentRequests(gameId));
+  const { data: sentRequests } = useQuery(['sentRequests', gameId], () =>
+    requestService.getSentRequests(gameId)
+  );
   const { mutateAsync: createRequestMutation } = useMutation((input: CreateRequestInput) =>
     requestService.create(input)
   );
-  const { mutateAsync: acknowledgeResponse } = useMutation((id: string) => requestService.acknowledgeResponse(id));
+  const { mutateAsync: acknowledgeResponse } = useMutation((id: string) =>
+    requestService.acknowledgeResponse(id)
+  );
 
   const getIsActiveRequest = useCallback(
     (requestType: RequestType) => {
@@ -57,7 +61,12 @@ export const useGameRequestsSending = ({
   const onNewDeclinedRequest = useCallback(
     async ({ id, type }: RequestModel) => {
       await acknowledgeResponse(id);
-      showNotification({ id, message: getDeclineMessage(type), autoClose: 3000, color: mantineColors.decline });
+      showNotification({
+        id,
+        message: getDeclineMessage(type),
+        autoClose: 3000,
+        color: mantineColors.decline,
+      });
     },
     [acknowledgeResponse, getDeclineMessage]
   );

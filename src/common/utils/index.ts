@@ -51,3 +51,16 @@ export function getSnapshotData<T>(querySnapshot: QuerySnapshot<T>) {
 
   return result;
 }
+
+export const simplifyBoardState = (boardState: BoardState, currentPlayerColor: Color) => {
+  const simplified = boardState.map((row) =>
+    row.map(({ piece }) => {
+      if (!piece) return 0;
+      const { color, isKing } = piece;
+      const simplePiece = color === Color.Black ? 'b' : 'w';
+      return isKing ? simplePiece.toUpperCase() : simplePiece;
+    })
+  );
+
+  return `${currentPlayerColor[0]}: ${JSON.stringify(simplified).replaceAll('"', `'`)}`;
+};

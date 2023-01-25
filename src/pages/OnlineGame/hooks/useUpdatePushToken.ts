@@ -9,7 +9,9 @@ export interface HookArgs {
 }
 
 export const useUpdatePushToken = ({ user }: HookArgs) => {
-  const { mutateAsync: updateUser } = useMutation((input: UpdateUserInput) => userService.update(input));
+  const { mutateAsync: updateUser } = useMutation((input: UpdateUserInput) =>
+    userService.update(input)
+  );
 
   const updatePushToken = useCallback(async () => {
     const pushToken = await firebaseClient.getPushToken();

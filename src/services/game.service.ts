@@ -80,7 +80,11 @@ export class GameService {
     return gameSnap.data() as GameModel;
   }
 
-  async createNewGame({ inviterColor, inviteeColor, ...data }: CreateNewGameData): Promise<GameModel> {
+  async createNewGame({
+    inviterColor,
+    inviteeColor,
+    ...data
+  }: CreateNewGameData): Promise<GameModel> {
     const game = await this.create(data);
 
     const strategy = new mapGameTypeToStrategy[game.gameType]();
@@ -131,9 +135,12 @@ export class GameService {
   }
 
   onUpdate(id: string, cb: (game: GameModel) => void) {
-    return onSnapshot(doc(this.db, this.collection, id).withConverter(this.gameConverter), (doc) => {
-      cb(doc.data() as GameModel);
-    });
+    return onSnapshot(
+      doc(this.db, this.collection, id).withConverter(this.gameConverter),
+      (doc) => {
+        cb(doc.data() as GameModel);
+      }
+    );
   }
 
   async getGamePlayers(id: string) {
@@ -177,7 +184,11 @@ export class GameService {
   }
 
   async unfinishGame(id: string): Promise<void> {
-    await this.update(id, { winnerId: deleteField(), endedAt: deleteField(), isDraw: deleteField() });
+    await this.update(id, {
+      winnerId: deleteField(),
+      endedAt: deleteField(),
+      isDraw: deleteField(),
+    });
   }
 }
 

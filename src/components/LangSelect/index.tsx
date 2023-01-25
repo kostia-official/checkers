@@ -20,7 +20,9 @@ export const LangSelect: React.FC = () => {
   const resolvedLang: Lang = (i18n.resolvedLanguage as Lang) || 'en';
 
   const { data: user } = useQuery('currentUser', () => userService.getCurrent());
-  const { mutateAsync: updateUser } = useMutation((input: UpdateUserInput) => userService.update(input));
+  const { mutateAsync: updateUser } = useMutation((input: UpdateUserInput) =>
+    userService.update(input)
+  );
 
   useEffect(() => {
     if (user && !user.language) {

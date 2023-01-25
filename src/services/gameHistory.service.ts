@@ -41,7 +41,9 @@ export class GameHistoryService {
   };
 
   async add(input: AddGameHistoryInput): Promise<GameHistoryModel> {
-    const historyRef = collection(this.db, this.collection).withConverter(this.gameHistoryConverter);
+    const historyRef = collection(this.db, this.collection).withConverter(
+      this.gameHistoryConverter
+    );
     const id = doc(historyRef).id;
     const docRef = await addDoc(historyRef, {
       ...input,

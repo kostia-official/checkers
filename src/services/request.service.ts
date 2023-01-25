@@ -48,7 +48,10 @@ export class RequestService {
   };
 
   async create(input: CreateRequestInput): Promise<RequestModel> {
-    const requestRef = await addDoc(collection(this.db, this.collection), { ...input, createdAt: new Date() });
+    const requestRef = await addDoc(collection(this.db, this.collection), {
+      ...input,
+      createdAt: new Date(),
+    });
     const requestSnap = await getDoc(requestRef.withConverter(this.requestConverter));
     return requestSnap.data() as RequestModel;
   }
@@ -57,7 +60,12 @@ export class RequestService {
     const userId = await userService.getCurrentUserId();
 
     const docsRef = collection(this.db, this.collection).withConverter(this.requestConverter);
-    return query(docsRef, where('gameId', '==', gameId), where('receiverId', '==', userId), orderBy('createdAt'));
+    return query(
+      docsRef,
+      where('gameId', '==', gameId),
+      where('receiverId', '==', userId),
+      orderBy('createdAt')
+    );
   }
 
   async getReceivedRequests(gameId: string): Promise<RequestModel[]> {
@@ -67,7 +75,10 @@ export class RequestService {
     return getSnapshotData(querySnapshot);
   }
 
-  async onReceivedRequestsUpdated(gameId: string, cb: (data: RequestModel[]) => void): Promise<Unsubscribe> {
+  async onReceivedRequestsUpdated(
+    gameId: string,
+    cb: (data: RequestModel[]) => void
+  ): Promise<Unsubscribe> {
     const q = await this.getReceivedRequestsQuery(gameId);
 
     return onSnapshot(q, (querySnapshot) => {
@@ -79,7 +90,12 @@ export class RequestService {
     const userId = await userService.getCurrentUserId();
 
     const docsRef = collection(this.db, this.collection).withConverter(this.requestConverter);
-    return query(docsRef, where('gameId', '==', gameId), where('senderId', '==', userId), orderBy('createdAt'));
+    return query(
+      docsRef,
+      where('gameId', '==', gameId),
+      where('senderId', '==', userId),
+      orderBy('createdAt')
+    );
   }
 
   async getSentRequests(gameId: string): Promise<RequestModel[]> {

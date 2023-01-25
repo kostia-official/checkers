@@ -6,7 +6,8 @@ export const config = {
     storageBucket: 'checkers-test-1fee3.appspot.com',
     messagingSenderId: '342770090467',
     appId: '1:342770090467:web:494b17061989bad91020d6',
-    vapidKey: 'BATGaXjPdwbunQTcDbi50n-MaiyfmiXH5OKrX-jER4RivsaYpYdEvpRjJqC4gD7bbAUbsR38tSXF7L8YnH_btBg',
+    vapidKey:
+      'BATGaXjPdwbunQTcDbi50n-MaiyfmiXH5OKrX-jER4RivsaYpYdEvpRjJqC4gD7bbAUbsR38tSXF7L8YnH_btBg',
   },
   ably: {
     apiKey: '',

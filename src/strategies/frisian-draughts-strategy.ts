@@ -51,14 +51,17 @@ export class FrisianDraughtsStrategy extends Draughts100Strategy {
 
     if (wasMove && piece) {
       // Limited king moves count resets after move of other piece
-      newGameState.limitedJumpsCount = this.mapLimitedJumpsCount(newGameState.limitedJumpsCount, (key, count) => {
-        // For other pieces with the same color reset count
-        if (!key.includes(String(piece.id)) && key.includes(piece.color)) {
-          return 0;
-        }
+      newGameState.limitedJumpsCount = this.mapLimitedJumpsCount(
+        newGameState.limitedJumpsCount,
+        (key, count) => {
+          // For other pieces with the same color reset count
+          if (!key.includes(String(piece.id)) && key.includes(piece.color)) {
+            return 0;
+          }
 
-        return count;
-      });
+          return count;
+        }
+      );
     }
 
     return newGameState;
@@ -71,14 +74,17 @@ export class FrisianDraughtsStrategy extends Draughts100Strategy {
 
     if (wasCapture && piece) {
       // Limited king moves count resets after capture
-      newGameState.limitedJumpsCount = this.mapLimitedJumpsCount(newGameState.limitedJumpsCount, (key, count) => {
-        // Reset count for all pieces with the same color
-        if (key.includes(piece.color)) {
-          return 0;
-        }
+      newGameState.limitedJumpsCount = this.mapLimitedJumpsCount(
+        newGameState.limitedJumpsCount,
+        (key, count) => {
+          // Reset count for all pieces with the same color
+          if (key.includes(piece.color)) {
+            return 0;
+          }
 
-        return count;
-      });
+          return count;
+        }
+      );
     }
 
     return newGameState;
@@ -117,7 +123,8 @@ export class FrisianDraughtsStrategy extends Draughts100Strategy {
     // King moves limit rules
 
     // King can't move more than 3 times
-    const kingMovesCount = gameState.limitedJumpsCount?.[`${gameState.currentPlayer}/${piece.id}`] ?? 0;
+    const kingMovesCount =
+      gameState.limitedJumpsCount?.[`${gameState.currentPlayer}/${piece.id}`] ?? 0;
     const reachedMovesLimit = kingMovesCount >= this.kingMovesLimit;
     if (!reachedMovesLimit) return newGameState;
 
@@ -132,7 +139,11 @@ export class FrisianDraughtsStrategy extends Draughts100Strategy {
     return this.addAlert(t('gameAlerts.kingMaxMoves'), gameState);
   }
 
-  isValidPieceCaptureByRegular([fromI, fromJ]: Position, [toI, toJ]: Position, gameState: GameState): boolean {
+  isValidPieceCaptureByRegular(
+    [fromI, fromJ]: Position,
+    [toI, toJ]: Position,
+    gameState: GameState
+  ): boolean {
     const { boardState, currentPlayer } = gameState;
 
     // TODO: Refactor with getPiece

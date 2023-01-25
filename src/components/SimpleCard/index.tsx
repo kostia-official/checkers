@@ -10,7 +10,12 @@ export interface SimpleCardProps {
   className?: string;
 }
 
-export const SimpleCard: React.FC<SimpleCardProps> = ({ children, title, titleAlign = 'center', className }) => {
+export const SimpleCard: React.FC<SimpleCardProps> = ({
+  children,
+  title,
+  titleAlign = 'center',
+  className,
+}) => {
   return (
     <Card withBorder className={className}>
       <Title size="md" align={titleAlign} weight="500">

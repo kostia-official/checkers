@@ -4,7 +4,10 @@ import { Button, Text } from '@mantine/core';
 import { WhitePieceIcon, BlackPieceIcon } from '@components/PieceIcon';
 import { useTranslation } from 'react-i18next';
 import { mantineColors } from '@common/colors';
-import { PlayerRow, LeftPlayerInfo } from '@pages/OnlineGame/components/PlayersCard/components/Player/styled';
+import {
+  PlayerRow,
+  LeftPlayerInfo,
+} from '@pages/OnlineGame/components/PlayersCard/components/Player/styled';
 
 export interface PlayerInfoProps {
   color: Color;
@@ -36,7 +39,12 @@ export const PlayerInfo: React.FC<PlayerInfoProps> = ({
   const ownPlayerReadinessContent = player?.isReady ? (
     readyText
   ) : (
-    <Button color={mantineColors.accept} onClick={() => player && setIsReady(player.id)} compact size="sm">
+    <Button
+      color={mantineColors.accept}
+      onClick={() => player && setIsReady(player.id)}
+      compact
+      size="sm"
+    >
       {t('players.start')}
     </Button>
   );

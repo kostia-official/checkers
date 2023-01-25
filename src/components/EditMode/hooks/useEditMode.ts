@@ -25,7 +25,9 @@ export const useEditMode = ({ updateGameState, gameState, disabled }: HookArgs) 
   const clearBoard = () => {
     const updatedGameState = {
       ...gameState,
-      boardState: gameState.boardState.map((row) => row.map((square) => ({ ...square, piece: undefined }))),
+      boardState: gameState.boardState.map((row) =>
+        row.map((square) => ({ ...square, piece: undefined }))
+      ),
     };
     updateGameState(updatedGameState);
   };

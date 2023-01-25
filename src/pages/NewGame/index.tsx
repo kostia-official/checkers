@@ -12,8 +12,12 @@ import { useTranslation } from 'react-i18next';
 import { useNewGame } from '@pages/OnlineGame/hooks/useNewGame';
 
 export const NewGame: React.FC = () => {
-  const { data: user, isLoading: isUserLoading } = useQuery('currentUser', () => userService.getCurrent());
-  const { mutateAsync: createUser } = useMutation((input: CreateUserInput) => userService.create(input));
+  const { data: user, isLoading: isUserLoading } = useQuery('currentUser', () =>
+    userService.getCurrent()
+  );
+  const { mutateAsync: createUser } = useMutation((input: CreateUserInput) =>
+    userService.create(input)
+  );
   const [userName, setUserName] = useState<string | undefined>();
   const [playerColor, setPlayerColor] = useState<Color>(Color.White);
   const [loading, setLoading] = useState(false);
@@ -75,7 +79,11 @@ export const NewGame: React.FC = () => {
         )}
 
         <PieceColorToggle value={playerColor} onChange={setPlayerColor} />
-        <Switch label={t('newGame.offline')} checked={isOffline} onChange={(e) => setIsOffline(e.target.checked)} />
+        <Switch
+          label={t('newGame.offline')}
+          checked={isOffline}
+          onChange={(e) => setIsOffline(e.target.checked)}
+        />
 
         <Button onClick={startGame} loading={loading}>
           {t('newGame.startGame')}

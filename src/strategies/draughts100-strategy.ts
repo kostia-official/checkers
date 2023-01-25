@@ -24,13 +24,19 @@ export class Draughts100Strategy extends Draughts64Strategy {
     const newGameState = super.handlePieceClick(position, gameState);
     if (!newGameState) return;
 
-    const { captureValue: pieceCaptureValue, captures } = this.getBiggestCaptures(position, gameState);
+    const { captureValue: pieceCaptureValue, captures } = this.getBiggestCaptures(
+      position,
+      gameState
+    );
     if (!captures.length) return { ...gameState, selectedPiece: newGameState.selectedPiece };
 
     const otherPiecesWithValidCaptures = this.getOtherPiecesWithValidCaptures(position, gameState);
 
     for (const otherPiecePosition of otherPiecesWithValidCaptures) {
-      const { captureValue: otherPieceCaptureValue } = this.getBiggestCaptures(otherPiecePosition, gameState);
+      const { captureValue: otherPieceCaptureValue } = this.getBiggestCaptures(
+        otherPiecePosition,
+        gameState
+      );
 
       if (
         !this.isBiggerCapturePriority(
@@ -72,7 +78,10 @@ export class Draughts100Strategy extends Draughts64Strategy {
     return validMoves || biggestCaptures;
   }
 
-  getBiggestCaptures(from: Position, gameState: GameState): { captures: Position[]; captureValue: number } {
+  getBiggestCaptures(
+    from: Position,
+    gameState: GameState
+  ): { captures: Position[]; captureValue: number } {
     const validCaptures = super.getValidCaptures(from, gameState);
     let highestValue = 0;
     const capturesOfValue: Record<number, Position[]> = {};
@@ -121,7 +130,11 @@ export class Draughts100Strategy extends Draughts64Strategy {
     return biggestValue;
   }
 
-  protected updateGameStateAfterCapture(from: Position, to: Position, gameState: GameState): GameState {
+  protected updateGameStateAfterCapture(
+    from: Position,
+    to: Position,
+    gameState: GameState
+  ): GameState {
     const newGameState = cloneDeep(gameState);
 
     const toPiece = getPiece(newGameState.boardState, to);

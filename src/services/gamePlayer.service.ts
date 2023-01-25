@@ -43,7 +43,10 @@ export class GamePlayerService {
   };
 
   async create(input: CreateGamePlayerInput): Promise<GamePlayerModel> {
-    const requestRef = await addDoc(collection(this.db, this.collection), { ...input, joinedAt: new Date() });
+    const requestRef = await addDoc(collection(this.db, this.collection), {
+      ...input,
+      joinedAt: new Date(),
+    });
     const requestSnap = await getDoc(requestRef.withConverter(this.gamePlayerConverter));
     return requestSnap.data() as GamePlayerModel;
   }

@@ -10,7 +10,11 @@ import { assertSucceeds } from '@firebase/rules-unit-testing';
 
 describe('Game', () => {
   it('should create a game and return it', async () => {
-    const input: CreateGameInput = { gameType: 'draughts64', inviterId: '123', inviterColor: Color.White };
+    const input: CreateGameInput = {
+      gameType: 'draughts64',
+      inviterId: '123',
+      inviterColor: Color.White,
+    };
     const game = await assertSucceeds(gameService.create(input));
 
     expect(game).toEqual({

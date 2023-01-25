@@ -17,7 +17,9 @@ export interface HookArgs {
 export const useGameFinish = ({ game, strategy, isEditMode, gameState, gamePlayers }: HookArgs) => {
   const { t } = useTranslation();
 
-  const { mutateAsync: finishGame } = useMutation((args: FinishGameArgs) => gameService.finishGame(args));
+  const { mutateAsync: finishGame } = useMutation((args: FinishGameArgs) =>
+    gameService.finishGame(args)
+  );
   const { mutateAsync: unfinishGame } = useMutation((id: string) => gameService.unfinishGame(id));
 
   const setWinner = useCallback(
@@ -65,7 +67,17 @@ export const useGameFinish = ({ game, strategy, isEditMode, gameState, gamePlaye
         await setWinner(winnerId);
       }
     })();
-  }, [gameState, isEditMode, inviterColor, inviterId, inviteeId, strategy, clearWinner, setWinner, startedAt]);
+  }, [
+    gameState,
+    isEditMode,
+    inviterColor,
+    inviterId,
+    inviteeId,
+    strategy,
+    clearWinner,
+    setWinner,
+    startedAt,
+  ]);
 
   const winnerLabel = useMemo(() => {
     if (!winnerColor) return;

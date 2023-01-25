@@ -1,6 +1,11 @@
 import { FirebaseOptions, FirebaseApp, initializeApp } from 'firebase/app';
 import { Firestore, getFirestore } from 'firebase/firestore';
-import { Messaging, getMessaging, getToken, isSupported as getIsSupported } from 'firebase/messaging';
+import {
+  Messaging,
+  getMessaging,
+  getToken,
+  isSupported as getIsSupported,
+} from 'firebase/messaging';
 import { config as devConfig, config } from '../../config/dev';
 import { config as testConfig } from '../../config/test';
 import { Auth, getAuth } from 'firebase/auth';
@@ -22,7 +27,9 @@ export class FirebaseClient {
 
   async getPushToken(): Promise<string | null> {
     try {
-      const serviceWorkerRegistration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+      const serviceWorkerRegistration = await navigator.serviceWorker.register(
+        '/firebase-messaging-sw.js'
+      );
 
       const isSupported = await getIsSupported();
       if (!this.messaging || !isSupported) return null;
@@ -38,4 +45,7 @@ export class FirebaseClient {
   }
 }
 
-export const firebaseClient = new FirebaseClient(isTest ? testConfig.firebase : devConfig.firebase, 'checkers');
+export const firebaseClient = new FirebaseClient(
+  isTest ? testConfig.firebase : devConfig.firebase,
+  'checkers'
+);

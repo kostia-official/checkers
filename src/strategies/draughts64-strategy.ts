@@ -50,7 +50,11 @@ export class Draughts64Strategy extends BaseDraughtsStrategy {
     return true;
   }
 
-  isValidPieceCaptureByRegular([fromI, fromJ]: Position, [toI, toJ]: Position, gameState: GameState): boolean {
+  isValidPieceCaptureByRegular(
+    [fromI, fromJ]: Position,
+    [toI, toJ]: Position,
+    gameState: GameState
+  ): boolean {
     const { boardState, currentPlayer } = gameState;
 
     const capturedPieceRow = (fromI + toI) / 2;
@@ -97,7 +101,11 @@ export class Draughts64Strategy extends BaseDraughtsStrategy {
     return true;
   }
 
-  isValidMoveByRegular([fromI, fromJ]: Position, [toI, toJ]: Position, gameState: GameState): boolean {
+  isValidMoveByRegular(
+    [fromI, fromJ]: Position,
+    [toI, toJ]: Position,
+    gameState: GameState
+  ): boolean {
     // Check if the move is diagonal and the distance is 1
     if (Math.abs(toI - fromI) !== 1 || Math.abs(toJ - fromJ) !== 1) {
       return false;
