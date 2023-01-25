@@ -50,3 +50,18 @@ export const SendButton: typeof Button = styled(Button)`
   border-radius: 50%;
   padding: 0;
 `;
+
+export const EmptyStateWrapper = styled.div`
+  margin-top: -24px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const EmptyStateCard = styled.div`
+  padding: 16px;
+  margin: 0 16px;
+  border-radius: 16px;
+  background-color: ${(p) => p.theme.colors.gray[1]};
+`;

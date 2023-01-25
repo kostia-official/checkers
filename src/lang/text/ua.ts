@@ -52,6 +52,7 @@ export const ua: typeof en = {
     chat: {
       title: 'Чат',
       messagePlaceholder: 'Повідомлення',
+      messagesEmptyState: 'Почніть розмову, надіславши повідомлення',
     },
     onlineMenu: {
       copyLink: {

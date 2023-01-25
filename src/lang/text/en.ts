@@ -58,6 +58,7 @@ export const en = {
     chat: {
       title: 'Chat',
       messagePlaceholder: 'Type your message',
+      messagesEmptyState: 'No messages here yet...',
     },
     requestsModals: {
       title: 'New request from your opponent',

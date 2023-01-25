@@ -3,7 +3,7 @@ import { GameModel, SendMessageInput, UserModel, MessageModel } from '@services/
 import { useTranslation } from 'react-i18next';
 import { useForm } from '@mantine/form';
 import { required } from '@common/form/validators';
-import { Flex, Loader } from '@mantine/core';
+import { Flex, Loader, Text } from '@mantine/core';
 import {
   SendIcon,
   SendButton,
@@ -13,6 +13,8 @@ import {
   InputWrapper,
   ChatContent,
   LoaderWrapper,
+  EmptyStateWrapper,
+  EmptyStateCard,
 } from '@pages/OnlineGame/components/Chat/components/ChatCard/styled';
 import { useMutation } from 'react-query';
 import { messageService } from '@services/message.service';
@@ -77,20 +79,38 @@ export const ChatCard: React.FC<ChatCardProps> = ({ game, user, messages }) => {
   const messagesContent = useMemo(() => {
     return (
       <Flex direction="column" gap="xs">
-        {messages?.map((message) => (
-          <Message key={message.id} message={message} isOwnUser={message.senderId === user.id} />
-        ))}
+        {messages?.length ? (
+          messages?.map((message) => (
+            <Message key={message.id} message={message} isOwnUser={message.senderId === user.id} />
+          ))
+        ) : (
+          // <EmptyStateWrapper>
+          <Text align="center" size="sm" color="gray.6">
+            {t('chat.messagesEmptyState')}
+          </Text>
+          // </EmptyStateWrapper>
+        )}
       </Flex>
     );
-  }, [messages, user.id]);
+  }, [messages, t, user.id]);
 
   return (
     <StyledCard title={t('chat.title')}>
       <ChatContent>
         {isMessagesDataReady ? (
-          <MessagesScrollArea viewportRef={messagesContainerRef} type="hover" scrollbarSize={8}>
-            {messagesContent}
-          </MessagesScrollArea>
+          messages?.length ? (
+            <MessagesScrollArea viewportRef={messagesContainerRef} type="hover" scrollbarSize={8}>
+              {messagesContent}
+            </MessagesScrollArea>
+          ) : (
+            <EmptyStateWrapper>
+              <EmptyStateCard>
+                <Text align="center" size="sm" color="gray.7">
+                  {t('chat.messagesEmptyState')}
+                </Text>
+              </EmptyStateCard>
+            </EmptyStateWrapper>
+          )
         ) : (
           <LoaderWrapper>
             <Loader variant="dots" />
