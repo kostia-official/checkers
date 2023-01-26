@@ -22,6 +22,7 @@ messaging.onBackgroundMessage((payload) => {
     body: payload.data.body,
     data: {
       gameId: payload.data.gameId,
+      query: payload.data.query,
     },
   });
 });
@@ -29,7 +30,11 @@ messaging.onBackgroundMessage((payload) => {
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
 
-  if (!event.notification.data.gameId) return;
+  const data = event.notification.data;
+  if (!data || !data.gameId) return;
+
+  const query = data.query ? `?${data.query}` : '';
+  const gameUrl = `/game/${data.gameId}${query}`;
 
   event.waitUntil(
     clients
@@ -38,12 +43,11 @@ self.addEventListener('notificationclick', (event) => {
         type: 'window',
       })
       .then(async function (clientList) {
-        const gameUrl = `/game/${event.notification.data.gameId}`;
-
         if (clientList && clientList.length > 0) {
           for (const client of clientList) {
             if ('focus' in client) {
               await client.focus();
+              await client.postMessage({ url: gameUrl });
             }
           }
         } else {

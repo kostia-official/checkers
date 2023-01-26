@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useEffect } from 'react';
 import { firebaseClient } from '@common/firebase';
 import { userService } from '@services/user.service';
 import { UserModel, UpdateUserInput } from '@services/types';
@@ -13,14 +13,14 @@ export const useUpdatePushToken = ({ user }: HookArgs) => {
     userService.update(input)
   );
 
-  const updatePushToken = useCallback(async () => {
-    const pushToken = await firebaseClient.getPushToken();
-    if (!pushToken) return;
+  useEffect(() => {
+    (async () => {
+      const pushToken = await firebaseClient.getPushToken();
+      if (!pushToken) return;
 
-    if (user && user.pushToken !== pushToken) {
-      await updateUser({ pushToken });
-    }
+      if (user && user.pushToken !== pushToken) {
+        await updateUser({ pushToken });
+      }
+    })();
   }, [updateUser, user]);
-
-  return { updatePushToken };
 };

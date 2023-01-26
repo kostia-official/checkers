@@ -10,9 +10,10 @@ export interface ChatMobileProps {
   game: GameModel;
   user: UserModel;
   messages?: MessageModel[];
+  openChatAt?: number;
 }
 
-export const ChatMobile: React.FC<ChatMobileProps> = ({ game, user, messages }) => {
+export const ChatMobile: React.FC<ChatMobileProps> = ({ game, user, messages, openChatAt }) => {
   const [lastMessageReadAt, setLastMessageReadAt] = useState<Date>(new Date());
   const [isShowNewMessage, setIsShowNewMessage] = useState(false);
   const [isOpenedChat, setIsOpenedChat] = useState(false);
@@ -56,6 +57,13 @@ export const ChatMobile: React.FC<ChatMobileProps> = ({ game, user, messages }) 
     readMessages();
     setIsOpenedChat((prev) => !prev);
   }, [readMessages]);
+
+  useEffect(() => {
+    // Can be opened from parent component
+    if (openChatAt) {
+      setIsOpenedChat(true);
+    }
+  }, [openChatAt]);
 
   return (
     <Popover width="100%" withArrow shadow="md" opened={isOpenedChat} onChange={setIsOpenedChat}>
