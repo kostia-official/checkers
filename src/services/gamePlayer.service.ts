@@ -7,7 +7,7 @@ import {
   Firestore,
   DocumentData,
   Timestamp,
-} from '@firebase/firestore';
+} from 'firebase/firestore';
 import { GamePlayerModel, CreateGamePlayerInput, UpdateGamePlayerInput } from './types';
 import { firebaseClient } from '../common/firebase';
 import { getDocs, onSnapshot, query, where, doc, updateDoc } from 'firebase/firestore';

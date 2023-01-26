@@ -7,10 +7,14 @@ import {
   Firestore,
   DocumentData,
   Timestamp,
-} from '@firebase/firestore';
+  query,
+  where,
+  getDocs,
+  orderBy,
+  onSnapshot,
+} from 'firebase/firestore';
 import { MessageModel, SendMessageInput } from './types';
 import { firebaseClient } from '@common/firebase';
-import { query, where, getDocs, orderBy, onSnapshot } from 'firebase/firestore';
 import { getSnapshotData } from '@common/utils';
 import { userService } from '@services/user.service';
 

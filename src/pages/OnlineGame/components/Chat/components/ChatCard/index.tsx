@@ -19,6 +19,7 @@ import {
 import { useMutation } from 'react-query';
 import { messageService } from '@services/message.service';
 import { Message } from '@pages/OnlineGame/components/Chat/components/ChatCard/components/Message';
+import { useResolvedGameInfo } from '@pages/OnlineGame/hooks/useResolvedGameInfo';
 
 export interface ChatCardProps {
   game: GameModel;
@@ -58,6 +59,8 @@ export const ChatCard: React.FC<ChatCardProps> = ({ game, user, messages }) => {
     },
   });
 
+  const { opponentId } = useResolvedGameInfo({ game, user });
+
   const onSubmit = useCallback(
     async (values: typeof form.values) => {
       form.reset();
@@ -68,10 +71,11 @@ export const ChatCard: React.FC<ChatCardProps> = ({ game, user, messages }) => {
         gameId: game.id,
         roomId: game.roomId,
         text: values.message,
+        receiverId: opponentId!,
         type: 'user',
       });
     },
-    [form, game.id, game.roomId, sendMessage]
+    [form, game.id, game.roomId, opponentId, sendMessage]
   );
 
   const isMessagesDataReady = messages;
@@ -79,20 +83,12 @@ export const ChatCard: React.FC<ChatCardProps> = ({ game, user, messages }) => {
   const messagesContent = useMemo(() => {
     return (
       <Flex direction="column" gap="xs">
-        {messages?.length ? (
-          messages?.map((message) => (
-            <Message key={message.id} message={message} isOwnUser={message.senderId === user.id} />
-          ))
-        ) : (
-          // <EmptyStateWrapper>
-          <Text align="center" size="sm" color="gray.6">
-            {t('chat.messagesEmptyState')}
-          </Text>
-          // </EmptyStateWrapper>
-        )}
+        {messages?.map((message) => (
+          <Message key={message.id} message={message} isOwnUser={message.senderId === user.id} />
+        ))}
       </Flex>
     );
-  }, [messages, t, user.id]);
+  }, [messages, user.id]);
 
   return (
     <StyledCard title={t('chat.title')}>

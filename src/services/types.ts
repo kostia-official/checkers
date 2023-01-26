@@ -1,4 +1,5 @@
 import { GameType, Color, Position, BoardState, LimitedJumpsCount } from '@common/types';
+import { Lang } from '@src/lang/types';
 
 export interface RoomModel {
   id: string;
@@ -53,7 +54,7 @@ export type AddGameHistoryInput = Omit<GameHistoryModel, 'id' | 'createdAt'>;
 export interface UserModel {
   id: string;
   name: string;
-  language: string;
+  language: Lang;
   pushToken?: string;
   createdAt: Date;
 }
@@ -85,6 +86,7 @@ export interface MessageModel {
   gameId: string;
   roomId: string;
   senderId: string;
+  receiverId: string;
   text: string;
   type: MessageType;
   createdAt: Date;

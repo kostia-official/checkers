@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useForm } from '@mantine/form';
 import { required } from '@common/form/validators';
+import { Lang } from '@src/lang/types';
 
 export interface NewUserJoinModalProps {
   noUser: boolean;
@@ -36,7 +37,10 @@ export const NewUserJoinModal: React.FC<NewUserJoinModalProps> = ({ noUser, game
   const onSubmit = async (values: typeof form.values) => {
     if (!game || !values.userName) return;
 
-    const user = await createUser({ name: values.userName, language: i18n.resolvedLanguage });
+    const user = await createUser({
+      name: values.userName,
+      language: i18n.resolvedLanguage as Lang,
+    });
 
     queryClient.setQueryData('currentUser', user);
     setIsShowModal(false);

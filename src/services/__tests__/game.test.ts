@@ -4,16 +4,16 @@
 
 import { CreateGameInput, UpdateGameInput } from '../types';
 import { gameService } from '../game.service';
-import { Color } from '@common/types';
+import { GameType } from '@common/types';
 import 'firebase/firestore';
 import { assertSucceeds } from '@firebase/rules-unit-testing';
 
 describe('Game', () => {
   it('should create a game and return it', async () => {
     const input: CreateGameInput = {
-      gameType: 'draughts64',
+      gameType: GameType.Draughts64,
       inviterId: '123',
-      inviterColor: Color.White,
+      roomId: '123',
     };
     const game = await assertSucceeds(gameService.create(input));
 
@@ -26,9 +26,9 @@ describe('Game', () => {
 
   it('should update a game and return it', async () => {
     const createdGame = await gameService.create({
-      gameType: 'draughts64',
+      gameType: GameType.Draughts64,
       inviterId: '123',
-      inviterColor: Color.White,
+      roomId: '123',
     });
 
     const input = {

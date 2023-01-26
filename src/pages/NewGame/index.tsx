@@ -10,6 +10,7 @@ import { CenteredLoader } from '@components/CenteredLoader';
 import { PieceColorToggle } from '@components/PieceColorToggle';
 import { useTranslation } from 'react-i18next';
 import { useNewGame } from '@pages/OnlineGame/hooks/useNewGame';
+import { Lang } from '@src/lang/types';
 
 export const NewGame: React.FC = () => {
   const { data: user, isLoading: isUserLoading } = useQuery('currentUser', () =>
@@ -38,7 +39,10 @@ export const NewGame: React.FC = () => {
       let userId = user?.id;
 
       if (!user && userName) {
-        const createdUser = await createUser({ name: userName, language: i18n.resolvedLanguage });
+        const createdUser = await createUser({
+          name: userName,
+          language: i18n.resolvedLanguage as Lang,
+        });
         userId = createdUser.id;
       }
       if (!userId) return;

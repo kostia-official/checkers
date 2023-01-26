@@ -7,7 +7,7 @@ import {
   Firestore,
   DocumentData,
   Timestamp,
-} from '@firebase/firestore';
+} from 'firebase/firestore';
 import { AddGameHistoryInput, GameHistoryModel } from './types';
 import { firebaseClient } from '@common/firebase';
 import { BoardState, LimitedJumpsCount } from '@common/types';

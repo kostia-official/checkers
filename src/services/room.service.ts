@@ -7,7 +7,7 @@ import {
   Firestore,
   DocumentData,
   Timestamp,
-} from '@firebase/firestore';
+} from 'firebase/firestore';
 import { RoomModel, CreateRoomInput } from './types';
 import { firebaseClient } from '@common/firebase';
 import { doc } from 'firebase/firestore';

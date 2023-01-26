@@ -9,7 +9,7 @@ import { userService } from '../user.service';
 
 describe('User service', () => {
   it('should create a user and return it', async () => {
-    const input: CreateUserInput = { name: 'Kostia' };
+    const input: CreateUserInput = { name: 'Kostia', language: 'en' };
     const user = await assertSucceeds(userService.create(input));
 
     expect(user).toEqual({
