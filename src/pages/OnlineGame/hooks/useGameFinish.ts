@@ -5,6 +5,7 @@ import { useMutation } from 'react-query';
 import { gameService, FinishGameArgs } from '@services/game.service';
 import { GameState, Color, GamePlayers } from '@common/types';
 import { useTranslation } from 'react-i18next';
+import { getPlayerTimeLeft } from '@common/utils/playerTime';
 
 export interface HookArgs {
   game: GameModel;
@@ -12,9 +13,17 @@ export interface HookArgs {
   strategy: ICheckersStrategy;
   gameState: GameState;
   isEditMode: boolean;
+  isOwnMove: boolean;
 }
 
-export const useGameFinish = ({ game, strategy, isEditMode, gameState, gamePlayers }: HookArgs) => {
+export const useGameFinish = ({
+  game,
+  strategy,
+  isEditMode,
+  gameState,
+  gamePlayers,
+  isOwnMove,
+}: HookArgs) => {
   const { t } = useTranslation();
 
   const { mutateAsync: finishGame } = useMutation((args: FinishGameArgs) =>
@@ -43,7 +52,8 @@ export const useGameFinish = ({ game, strategy, isEditMode, gameState, gamePlaye
     await unfinishGame(game.id);
   }, [game.id, unfinishGame]);
 
-  const { winnerId, inviteeId, inviterId, startedAt } = game;
+  const { winnerId, inviteeId, inviterId, startedAt, endedAt } = game;
+
   const inviterColor = gamePlayers.inviter.color;
   const inviteeColor = gamePlayers.invitee?.color;
 
@@ -67,16 +77,46 @@ export const useGameFinish = ({ game, strategy, isEditMode, gameState, gamePlaye
         await setWinner(winnerId);
       }
     })();
+  }, [gameState, inviteeId, inviterColor, inviterId, isEditMode, setWinner, startedAt, strategy]);
+
+  const isOpponentLostByTime = useCallback(() => {
+    const { currentUserPlayer, opponent } = gamePlayers;
+    if (!currentUserPlayer?.lastMovedAt || !opponent?.lastMovedAt) return false;
+
+    const { tickingTimeLeftMs, staticTimeLeftMs } = getPlayerTimeLeft({
+      timeSpentMs: opponent.timeSpentMs,
+      moveStartedAt: currentUserPlayer.lastMovedAt,
+      timeLimitSeconds: game.timeLimitSeconds,
+    });
+    const opponentTimeLeftMs = isOwnMove ? staticTimeLeftMs : tickingTimeLeftMs;
+
+    return opponentTimeLeftMs <= 0;
+  }, [game.timeLimitSeconds, gamePlayers, isOwnMove]);
+
+  useEffect(() => {
+    if (!startedAt) return;
+
+    const interval = setInterval(async () => {
+      if (!gamePlayers.currentUserPlayer) return;
+
+      if (isOpponentLostByTime()) {
+        await setWinner(gamePlayers.currentUserPlayer.userId);
+      }
+    }, 1000);
+
+    if (endedAt) {
+      clearInterval(interval);
+      return;
+    }
+
+    return () => clearInterval(interval);
   }, [
-    gameState,
-    isEditMode,
-    inviterColor,
-    inviterId,
-    inviteeId,
-    strategy,
-    clearWinner,
-    setWinner,
     startedAt,
+    endedAt,
+    isOwnMove,
+    gamePlayers.currentUserPlayer,
+    isOpponentLostByTime,
+    setWinner,
   ]);
 
   const winnerLabel = useMemo(() => {

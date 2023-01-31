@@ -1,7 +1,7 @@
 import React from 'react';
 import { useQuery } from 'react-query';
 import { gameService } from '@services/game.service';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { CenteredLoader } from '@components/CenteredLoader';
 import { GameModel } from '@services/types';
 import { userService } from '@services/user.service';
@@ -28,12 +28,12 @@ export const OnlineGame: React.FC = () => {
     { enabled: !!gameId, refetchOnWindowFocus: 'always' }
   );
   const { data: inviter } = useQuery(
-    ['inviter', gameId],
+    ['gamePlayer', gameId, game?.inviterId],
     () => gamePlayerService.get({ userId: game?.inviterId!, gameId: game?.id! }),
     { enabled: !!game?.inviterId, refetchOnWindowFocus: 'always' }
   );
   const { data: invitee } = useQuery(
-    ['invitee', gameId],
+    ['gamePlayer', gameId, game?.inviteeId],
     () => gamePlayerService.get({ userId: game?.inviteeId!, gameId: game?.id! }),
     { enabled: !!game?.inviteeId, refetchOnWindowFocus: 'always' }
   );
@@ -41,7 +41,7 @@ export const OnlineGame: React.FC = () => {
   useSubscription(
     () =>
       gamePlayerService.onUpdated(inviter?.id!, (data) => {
-        queryClient.setQueryData(['inviter', gameId], data);
+        queryClient.setQueryData(['gamePlayer', gameId, game?.inviterId], data);
       }),
     { enable: inviter?.id && gameId }
   );
@@ -49,7 +49,7 @@ export const OnlineGame: React.FC = () => {
   useSubscription(
     () =>
       gamePlayerService.onUpdated(invitee?.id!, (data) => {
-        queryClient.setQueryData(['invitee', gameId], data);
+        queryClient.setQueryData(['gamePlayer', gameId, game?.inviteeId], data);
       }),
     { enable: invitee?.id && gameId }
   );
@@ -78,11 +78,15 @@ export const OnlineGame: React.FC = () => {
     { enable: gameId }
   );
 
+  let [searchParams] = useSearchParams();
+  const isContinue = searchParams.get('continue') === '1';
+  const isWaitForInvitee = isContinue ? invitee : true;
+
   return (
     <>
       <NewUserJoinModal noUser={isGetUserError && !user} game={game} />
 
-      {!game || !user || !gameHistory || !inviter ? (
+      {!game || !user || !gameHistory || !inviter || !isWaitForInvitee ? (
         <CenteredLoader />
       ) : (
         <OnlineGameWithData

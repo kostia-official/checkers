@@ -27,6 +27,7 @@ import { GameMenu } from '@components/GameMenu';
 import { useUpdatePushToken } from '@pages/OnlineGame/hooks/useUpdatePushToken';
 import { GameResultsButtons } from '@src/pages/OnlineGame/components/GameResultsButtons';
 import { Chat } from './components/Chat';
+import { usePlayerTimeUpdate } from '@pages/OnlineGame/hooks/usePlayerTimeUpdate';
 
 export interface OnlineGameWithDataProps {
   game: GameModel;
@@ -36,6 +37,9 @@ export interface OnlineGameWithDataProps {
   invitee?: GamePlayerModel;
 }
 
+// TODO: Split logic to GameBeforeStart and GameStarted?
+// GameBeforeStart: logic for joining user and setting readiness
+// GameStarted: all players exists, have logic for game rules
 export const OnlineGameWithData: React.FC<OnlineGameWithDataProps> = ({
   game,
   user,
@@ -100,30 +104,33 @@ export const OnlineGameWithData: React.FC<OnlineGameWithDataProps> = ({
     jumpTo,
   ]);
 
-  const updateGameState = async ({
-    boardState,
-    currentPlayer,
-    selectedPiece,
-    hasMadeCapture,
-    limitedJumpsCount,
-    gameAlerts,
-    jumpFrom,
-    jumpTo,
-  }: GameState) => {
-    setSelectedPiece(selectedPiece);
-    setHasMadeCapture(hasMadeCapture);
-    setGameAlerts(gameAlerts);
-
-    await gameHistoryService.add({
-      currentPlayerColor: currentPlayer,
+  const updateGameState = useCallback(
+    async ({
       boardState,
-      gameId: game.id,
-      currentPlayerId: user.id,
+      currentPlayer,
+      selectedPiece,
+      hasMadeCapture,
       limitedJumpsCount,
-      ...(jumpFrom && { jumpFrom }),
-      ...(jumpTo && { jumpTo }),
-    });
-  };
+      gameAlerts,
+      jumpFrom,
+      jumpTo,
+    }: GameState) => {
+      setSelectedPiece(selectedPiece);
+      setHasMadeCapture(hasMadeCapture);
+      setGameAlerts(gameAlerts);
+
+      await gameHistoryService.add({
+        currentPlayerColor: currentPlayer,
+        boardState,
+        gameId: game.id,
+        currentPlayerId: user.id,
+        limitedJumpsCount,
+        ...(jumpFrom && { jumpFrom }),
+        ...(jumpTo && { jumpTo }),
+      });
+    },
+    [game.id, user.id]
+  );
 
   const editModeState = useEditMode({ gameState, updateGameState });
   const { clearWinner, winnerLabel, setWinner, setIsDraw } = useGameFinish({
@@ -132,6 +139,7 @@ export const OnlineGameWithData: React.FC<OnlineGameWithDataProps> = ({
     gamePlayers,
     strategy,
     isEditMode: editModeState.isEditMode,
+    isOwnMove,
   });
 
   useGameRequestsReceiving({ game });
@@ -190,12 +198,24 @@ export const OnlineGameWithData: React.FC<OnlineGameWithDataProps> = ({
     }
   };
 
-  const handleSquareClick = (position: Position) => {
-    if (!canMakeJump) return;
+  const { updatePlayerTime } = usePlayerTimeUpdate({
+    currentUserPlayer: gamePlayers.currentUserPlayer,
+    opponent: gamePlayers.opponent,
+    game,
+  });
 
-    const newGameState = strategy.handleSquareClick(position, gameState);
-    if (newGameState) updateGameState(newGameState);
-  };
+  const handleSquareClick = useCallback(
+    async (position: Position) => {
+      if (!canMakeJump) return;
+
+      const newGameState = strategy.handleSquareClick(position, gameState);
+      if (newGameState) {
+        updatePlayerTime();
+        updateGameState(newGameState);
+      }
+    },
+    [canMakeJump, gameState, strategy, updateGameState, updatePlayerTime]
+  );
 
   const isShowCopyLink = isInviter && !isSpectator && !isInviteeJoined && !isContinue;
 

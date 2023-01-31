@@ -9,7 +9,7 @@ import {
   Timestamp,
 } from 'firebase/firestore';
 import { GamePlayerModel, CreateGamePlayerInput, UpdateGamePlayerInput } from './types';
-import { firebaseClient } from '../common/firebase';
+import { firebaseClient } from '@common/firebase';
 import { getDocs, onSnapshot, query, where, doc, updateDoc } from 'firebase/firestore';
 import { WithFieldValue } from '@common/utilTypes';
 
@@ -27,17 +27,19 @@ export class GamePlayerService {
     this.db = db;
   }
 
-  private readonly gamePlayerConverter = {
+  private readonly converter = {
     toFirestore: (doc: DocumentData) => ({
       ...doc,
       joinedAt: Timestamp.fromDate(doc.joinedAt),
+      lastMovedAt: Timestamp.fromDate(doc.lastMovedAt),
     }),
     fromFirestore: (snapshot: QueryDocumentSnapshot<DocumentData>, options: SnapshotOptions) => {
       const data = snapshot.data(options) as any;
       return {
         ...data,
         id: snapshot.id,
-        joinedAt: data.joinedAt.toDate(),
+        joinedAt: data.joinedAt?.toDate(),
+        lastMovedAt: data.lastMovedAt?.toDate(),
       } as GamePlayerModel;
     },
   };
@@ -47,12 +49,12 @@ export class GamePlayerService {
       ...input,
       joinedAt: new Date(),
     });
-    const requestSnap = await getDoc(requestRef.withConverter(this.gamePlayerConverter));
+    const requestSnap = await getDoc(requestRef.withConverter(this.converter));
     return requestSnap.data() as GamePlayerModel;
   }
 
   onUpdated(id: string, cb: (data: GamePlayerModel | undefined) => void) {
-    const docRef = doc(this.db, this.collection, id).withConverter(this.gamePlayerConverter);
+    const docRef = doc(this.db, this.collection, id).withConverter(this.converter);
 
     return onSnapshot(docRef, (querySnapshot) => {
       cb(querySnapshot.data());
@@ -60,7 +62,7 @@ export class GamePlayerService {
   }
 
   async get({ gameId, userId }: GetGamePlayerArgs): Promise<GamePlayerModel | undefined> {
-    const docsRef = collection(this.db, this.collection).withConverter(this.gamePlayerConverter);
+    const docsRef = collection(this.db, this.collection).withConverter(this.converter);
     const q = query(docsRef, where('gameId', '==', gameId), where('userId', '==', userId));
     const querySnapshot = await getDocs(q);
 
@@ -71,12 +73,12 @@ export class GamePlayerService {
     const docRef = doc(this.db, this.collection, id);
     await updateDoc(docRef, input);
 
-    const docSnap = await getDoc(docRef.withConverter(this.gamePlayerConverter));
+    const docSnap = await getDoc(docRef.withConverter(this.converter));
     return docSnap.data() as GamePlayerModel;
   }
 
-  async setReady(id: string): Promise<GamePlayerModel> {
-    return this.update(id, { isReady: true });
+  async setReady(id: string, timeEndsAt?: Date): Promise<GamePlayerModel> {
+    return this.update(id, { isReady: true, ...(timeEndsAt && { timeEndsAt }) });
   }
 }
 

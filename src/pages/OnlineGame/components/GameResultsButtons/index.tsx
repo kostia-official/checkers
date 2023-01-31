@@ -28,7 +28,7 @@ export const GameResultsButtons: React.FC<GameResultsButtonsProps> = ({
   const { t } = useTranslation();
   const { continueWithNewGame } = useNewGame();
 
-  const { opponentId, isGameStarted, isGameFinished } = useResolvedGameInfo({ game, user });
+  const { opponentId, isGameStarted, isGameEnded } = useResolvedGameInfo({ game, user });
   const { createRequest, isActiveDrawRequest } = useGameRequestsSending({
     gameId: game.id,
     userId: user.id,
@@ -46,7 +46,7 @@ export const GameResultsButtons: React.FC<GameResultsButtonsProps> = ({
     await createRequest('draw');
   }, [createRequest]);
 
-  if (!isGameStarted || isGameFinished || !opponentId || isSpectator) return null;
+  if (!isGameStarted || isGameEnded || !opponentId || isSpectator) return null;
 
   return (
     <Flex gap="xs">

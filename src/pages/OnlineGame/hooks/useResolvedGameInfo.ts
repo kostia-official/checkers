@@ -11,7 +11,8 @@ export const useResolvedGameInfo = ({ game, user }: HookArgs) => {
   const isInviter = inviterId === user.id;
   const opponentId = isInviter ? inviteeId : inviterId;
   const isGameStarted = !!game.startedAt;
-  const isGameFinished = !!game.endedAt;
+  const isGameEnded = !!game.endedAt;
+  const isGameActive = isGameStarted && !isGameEnded;
 
-  return { isInviter, opponentId, isGameStarted, isGameFinished };
+  return { isInviter, opponentId, isGameStarted, isGameEnded, isGameActive };
 };

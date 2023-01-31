@@ -8,30 +8,37 @@ import {
   PlayerRow,
   LeftPlayerInfo,
 } from '@pages/OnlineGame/components/PlayersCard/components/Player/styled';
+import { PlayerTime } from '@pages/OnlineGame/components/PlayersCard/components/Player/components/PlayerTime';
+import { GameModel, UserModel } from '@services/types';
+import { useResolvedGameInfo } from '@pages/OnlineGame/hooks/useResolvedGameInfo';
 
 export interface PlayerInfoProps {
+  game: GameModel;
+  user: UserModel;
   color: Color;
   currentPlayerColor: Color;
   player?: GamePlayerExtended;
+  opponent?: GamePlayerExtended;
   isOwnPlayer: boolean;
   setIsReady: (gamePlayerId: string) => Promise<void>;
-  gameStarted: boolean;
-  opponentJoined: boolean;
 }
 
 export const PlayerInfo: React.FC<PlayerInfoProps> = ({
   player,
+  opponent,
   color,
   currentPlayerColor,
   isOwnPlayer,
   setIsReady,
-  gameStarted,
-  opponentJoined,
+  game,
+  user,
 }) => {
   const { t } = useTranslation();
+  const { isGameStarted, opponentId } = useResolvedGameInfo({ game, user });
 
   const PieceIcon = color === Color.White ? WhitePieceIcon : BlackPieceIcon;
-  const isOwnMove = gameStarted && color === currentPlayerColor;
+  const isOwnMove = isGameStarted && color === currentPlayerColor;
+  const isOpponentJoined = !!opponentId;
 
   const readyText = <Text>{t('players.ready')}</Text>;
   const waitingText = <Text color="grey">{t('players.waiting')}</Text>;
@@ -64,7 +71,17 @@ export const PlayerInfo: React.FC<PlayerInfoProps> = ({
         )}
       </LeftPlayerInfo>
 
-      {!gameStarted && opponentJoined && readinessContent}
+      {!isGameStarted && isOpponentJoined && readinessContent}
+      {isGameStarted && player && opponent?.lastMovedAt && (
+        <PlayerTime
+          timeSpentMs={player.timeSpentMs}
+          moveStartedAt={opponent.lastMovedAt}
+          timeLimitSeconds={game.timeLimitSeconds}
+          isOwnMove={isOwnMove}
+          isOwnPlayer={player.userId === user.id}
+          gameEndedAt={game.endedAt}
+        />
+      )}
     </PlayerRow>
   );
 };

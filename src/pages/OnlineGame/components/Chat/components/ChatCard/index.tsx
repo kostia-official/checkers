@@ -2,7 +2,7 @@ import React, { useCallback, useRef, useEffect, useMemo } from 'react';
 import { GameModel, SendMessageInput, UserModel, MessageModel } from '@services/types';
 import { useTranslation } from 'react-i18next';
 import { useForm } from '@mantine/form';
-import { required } from '@common/form/validators';
+import { requiredString } from '@common/form/validators';
 import { Flex, Loader, Text } from '@mantine/core';
 import {
   SendIcon,
@@ -55,7 +55,7 @@ export const ChatCard: React.FC<ChatCardProps> = ({ game, user, messages }) => {
       message: '',
     },
     validate: {
-      message: required,
+      message: requiredString,
     },
   });
 

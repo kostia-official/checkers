@@ -100,6 +100,7 @@ export class GameService {
         userId: data.inviterId,
         gameId: game.id,
         color: inviterColor,
+        timeSpentMs: 0,
         isReady: false,
       }),
       data.inviteeId &&
@@ -108,6 +109,7 @@ export class GameService {
           userId: data.inviteeId,
           gameId: game.id,
           color: inviteeColor,
+          timeSpentMs: 0,
           isReady: false,
         }),
     ]);
@@ -145,6 +147,7 @@ export class GameService {
 
   async getGamePlayers(id: string) {
     const game = await this.get(id);
+    if (!game) throw new Error(ServiceError.NotFound);
 
     const [inviter, invitee] = await Promise.all([
       game?.inviterId ? gamePlayerService.get({ gameId: id, userId: game?.inviterId }) : undefined,
@@ -159,21 +162,31 @@ export class GameService {
       await gamePlayerService.setReady(gamePlayerId);
 
       const { inviter, invitee } = await this.getGamePlayers(id);
-      const canStartGame = inviter?.isReady && invitee?.isReady;
+      const canStartGame = inviter && invitee && inviter.isReady && invitee.isReady;
 
       if (!canStartGame) return;
 
-      const gameRef = doc(this.db, this.collection, id);
+      const startedAt = new Date();
 
-      transaction.update(gameRef, { startedAt: new Date() });
+      await Promise.all([
+        gamePlayerService.update(inviter.id, { timeSpentMs: 0, lastMovedAt: startedAt }),
+        gamePlayerService.update(invitee.id, { timeSpentMs: 0, lastMovedAt: startedAt }),
+      ]);
+
+      const gameRef = doc(this.db, this.collection, id);
+      transaction.update(gameRef, { startedAt });
     });
   }
 
   async joinGame({ id, inviteeColor, inviteeId }: JoinGameArgs): Promise<void> {
+    const game = await this.get(id);
+    if (!game) throw new Error(ServiceError.NotFound);
+
     await gamePlayerService.create({
       gameId: id,
       color: inviteeColor,
       isReady: false,
+      timeSpentMs: 0,
       userId: inviteeId,
     });
     await this.update(id, { inviteeId });

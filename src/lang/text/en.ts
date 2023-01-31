@@ -21,6 +21,10 @@ export const en = {
       title: 'New Game Settings',
       startGame: 'Start Game',
       offline: 'Offline',
+      min: 'Min',
+      sec: 'Sec',
+      gameTime: 'Game time',
+      addTime: 'Add each move',
     },
     gameMenu: {
       mainMenu: 'Main Menu',

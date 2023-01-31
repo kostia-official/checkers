@@ -13,7 +13,7 @@ export const MenuTitle = styled.h1`
   margin-bottom: 1rem;
 `;
 
-export const MenuControlsWrapper = styled.div`
+export const MenuControlsWrapper = styled.div<{ itemWidthPx?: number }>`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -21,6 +21,6 @@ export const MenuControlsWrapper = styled.div`
   gap: 0.5rem;
 
   > * {
-    min-width: 200px;
+    width: ${(p) => p.itemWidthPx || 200}px;
   }
 `;

@@ -8,7 +8,6 @@ import { toggleColor } from '@common/utils';
 import { useTranslation } from 'react-i18next';
 import { SimpleCard } from '@components/SimpleCard';
 import { gameService, SubmitReadyArgs } from '@services/game.service';
-import { useResolvedGameInfo } from '@pages/OnlineGame/hooks/useResolvedGameInfo';
 import { useGameUsers } from '@pages/OnlineGame/hooks/useGameUsers';
 
 export interface PlayersCardProps {
@@ -63,12 +62,10 @@ export const PlayersCard: React.FC<PlayersCardProps> = ({
     return result as Players;
   }, [invitee, inviter, inviteeUser?.name, inviterUser?.name]);
 
-  const { isGameStarted, opponentId } = useResolvedGameInfo({ game, user });
-
   const commonPlayerProps = {
+    game,
+    user,
     setIsReady,
-    gameStarted: isGameStarted,
-    opponentJoined: !!opponentId,
     currentPlayerColor,
   };
 
@@ -78,14 +75,18 @@ export const PlayersCard: React.FC<PlayersCardProps> = ({
         <Flex direction="column" style={{ gap: '4px' }}>
           <PlayerInfo
             {...commonPlayerProps}
+            key={players.white?.id || 'white'}
             color={Color.White}
             player={players.white}
+            opponent={players.black}
             isOwnPlayer={user.id === players.white?.userId}
           />
           <PlayerInfo
             {...commonPlayerProps}
+            key={players.black?.id || 'black'}
             color={Color.Black}
             player={players.black}
+            opponent={players.white}
             isOwnPlayer={user.id === players.black?.userId}
           />
 

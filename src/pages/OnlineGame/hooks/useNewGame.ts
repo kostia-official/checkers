@@ -34,6 +34,8 @@ export const useNewGame = () => {
       gameType: game.gameType,
       inviteeColor: inviter.color,
       inviterColor: toggleColor(inviter.color),
+      timeLimitSeconds: game.timeLimitSeconds,
+      moveTimeIncSeconds: game.moveTimeIncSeconds,
     });
 
     await updateGame({ id: game.id, input: { nextGameId: newGame.id } });

@@ -48,7 +48,6 @@ export type Position = [number, number];
 
 export interface GamePlayerExtended extends GamePlayerModel {
   name: string;
-  isOnline: boolean;
 }
 
 export interface GamePlayers {

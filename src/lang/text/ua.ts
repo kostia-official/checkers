@@ -23,6 +23,10 @@ export const ua: typeof en = {
       title: 'Налаштування Гри',
       startGame: 'Почати Гру',
       offline: 'Сам з собою',
+      min: 'Хв',
+      sec: 'Сек',
+      gameTime: 'Ліміт часу',
+      addTime: 'Додавати в хід',
     },
     gameMenu: {
       mainMenu: 'Головне Меню',

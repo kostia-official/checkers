@@ -18,12 +18,17 @@ export interface GameModel {
   winnerId?: string;
   isDraw?: boolean;
   nextGameId?: string;
+  timeLimitSeconds: number;
+  moveTimeIncSeconds: number;
   createdAt: Date;
   startedAt?: Date;
   endedAt?: Date;
 }
 
-export type CreateGameInput = Pick<GameModel, 'gameType' | 'inviterId' | 'inviteeId' | 'roomId'>;
+export type CreateGameInput = Pick<
+  GameModel,
+  'gameType' | 'inviterId' | 'inviteeId' | 'roomId' | 'timeLimitSeconds' | 'moveTimeIncSeconds'
+>;
 export type UpdateGameInput = Partial<Omit<GameModel, 'id'>>;
 
 export interface GamePlayerModel {
@@ -33,6 +38,8 @@ export interface GamePlayerModel {
   color: Color;
   isReady: boolean;
   joinedAt: Date;
+  lastMovedAt?: Date;
+  timeSpentMs: number;
 }
 export type CreateGamePlayerInput = Omit<GamePlayerModel, 'id' | 'joinedAt'>;
 export type UpdateGamePlayerInput = Partial<Omit<GamePlayerModel, 'id'>>;

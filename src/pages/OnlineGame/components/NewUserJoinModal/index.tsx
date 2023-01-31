@@ -8,7 +8,7 @@ import { queryClient } from '@src/queryClient';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useForm } from '@mantine/form';
-import { required } from '@common/form/validators';
+import { requiredString } from '@common/form/validators';
 import { Lang } from '@src/lang/types';
 
 export interface NewUserJoinModalProps {
@@ -25,7 +25,7 @@ export const NewUserJoinModal: React.FC<NewUserJoinModalProps> = ({ noUser, game
     initialValues: {
       userName: '',
     },
-    validate: { userName: required },
+    validate: { userName: requiredString },
   });
 
   const [isShowModal, setIsShowModal] = useState(false);
