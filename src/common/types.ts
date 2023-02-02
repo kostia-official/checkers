@@ -31,11 +31,11 @@ export type LimitedJumpsCount = Record<string, number>;
 export interface GameState {
   boardState: BoardState;
   currentPlayer: Color;
-  selectedPiece: Position | undefined;
+  selectedPiece: Position | null;
   limitedJumpsCount: LimitedJumpsCount;
   gameAlerts: GameAlert[];
-  jumpFrom?: Position;
-  jumpTo?: Position;
+  jumpFrom: Position | null;
+  jumpTo: Position | null;
   hasMadeCapture: boolean;
 }
 

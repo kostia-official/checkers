@@ -10,7 +10,7 @@ import {
   Timestamp,
   updateDoc,
 } from 'firebase/firestore';
-import { Auth, signInAnonymously } from 'firebase/auth';
+import { Auth, signInAnonymously, signOut } from 'firebase/auth';
 import { UserModel, CreateUserInput, UpdateUserInput } from './types';
 import { firebaseClient, FirebaseClient } from '@common/firebase';
 import { ServiceError } from '@common/enums';
@@ -46,9 +46,13 @@ export class UserService {
     return id || (await this.signInAnonymously());
   }
 
-  async signInAnonymously(): Promise<string | undefined> {
+  async signInAnonymously(): Promise<string> {
     const credential = await signInAnonymously(this.auth);
     return credential.user.uid;
+  }
+
+  async signOut(): Promise<void> {
+    return signOut(this.auth);
   }
 
   async create(input: CreateUserInput): Promise<UserModel> {

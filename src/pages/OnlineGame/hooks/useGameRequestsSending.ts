@@ -11,7 +11,7 @@ import { mantineColors } from '@common/colors';
 export interface HookArgs {
   gameId: string;
   userId: string;
-  opponentId?: string;
+  opponentId: string | null;
   onNewAcceptedRequest?: (type: RequestType) => void;
 }
 
@@ -109,6 +109,9 @@ export const useGameRequestsSending = ({
         type: requestType,
         senderId: userId,
         receiverId: opponentId,
+        acceptedAt: null,
+        declinedAt: null,
+        responseAckAt: null,
       });
     },
     [createRequestMutation, gameId, opponentId, userId]

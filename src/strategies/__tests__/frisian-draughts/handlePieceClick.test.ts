@@ -45,7 +45,7 @@ describe('handlePieceClick', () => {
     };
 
     const newGameState = strategy.handlePieceClick(selectPosition, gameState);
-    expect(newGameState?.selectedPiece).toBeUndefined();
+    expect(newGameState?.selectedPiece).toBeNull();
   });
 
   it('should select a king when has reached limit of moves but the only piece', () => {

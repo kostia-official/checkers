@@ -14,7 +14,7 @@ export const useEditMode = ({ updateGameState, gameState, disabled }: HookArgs) 
 
   const enableEditMode = () => {
     setIsEditMode(true);
-    updateGameState({ ...gameState, selectedPiece: undefined });
+    updateGameState({ ...gameState, selectedPiece: null });
   };
 
   const disableEditMode = () => {

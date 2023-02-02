@@ -10,7 +10,7 @@ export interface PlayerTimeProps {
   timeLimitSeconds: number;
   isOwnMove: boolean;
   isOwnPlayer: boolean;
-  gameEndedAt: Date | undefined;
+  gameEndedAt: Date | null;
 }
 
 export const PlayerTime: React.FC<PlayerTimeProps> = ({

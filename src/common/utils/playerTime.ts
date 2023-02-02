@@ -2,7 +2,7 @@ export interface GetPlayerTimeLeftArgs {
   timeSpentMs: number;
   moveStartedAt: Date;
   timeLimitSeconds: number;
-  gameEndedAt?: Date;
+  gameEndedAt?: Date | null;
 }
 
 export const getPlayerTimeLeft = ({

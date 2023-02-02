@@ -78,7 +78,7 @@ export const OnlineGameWithData: React.FC<OnlineGameWithDataProps> = ({
     return new Strategy();
   }, [game.gameType]);
 
-  const [selectedPiece, setSelectedPiece] = useState<Position>();
+  const [selectedPiece, setSelectedPiece] = useState<Position | null>(null);
   const [hasMadeCapture, setHasMadeCapture] = useState(false);
   const [gameAlerts, setGameAlerts] = useState<GameAlert[]>([]);
 
@@ -125,8 +125,8 @@ export const OnlineGameWithData: React.FC<OnlineGameWithDataProps> = ({
         gameId: game.id,
         currentPlayerId: user.id,
         limitedJumpsCount,
-        ...(jumpFrom && { jumpFrom }),
-        ...(jumpTo && { jumpTo }),
+        jumpFrom,
+        jumpTo,
       });
     },
     [game.id, user.id]
@@ -153,7 +153,7 @@ export const OnlineGameWithData: React.FC<OnlineGameWithDataProps> = ({
     }
     await removeGameHistory(lastGameState.id);
 
-    setSelectedPiece(undefined);
+    setSelectedPiece(null);
   }, [clearWinner, game.winnerId, gameHistory, lastGameState.id, removeGameHistory]);
 
   const { continueWithNewGame } = useNewGame();

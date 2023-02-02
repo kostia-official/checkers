@@ -184,7 +184,7 @@ export abstract class BaseDraughtsStrategy implements ICheckersStrategy {
       newGameState.selectedPiece = to;
     } else {
       // If there are no more valid captures, clear the selected piece and reset the hasMadeCapture flag
-      newGameState.selectedPiece = undefined;
+      newGameState.selectedPiece = null;
       newGameState.hasMadeCapture = false;
     }
 

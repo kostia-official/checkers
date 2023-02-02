@@ -27,7 +27,7 @@ export const OfflineGame: React.FC<CheckersGameProps> = ({ strategy }) => {
     { boardState, currentPlayerColor: currentPlayer },
   ]);
   const [winner, setWinner] = useState<Color | undefined>();
-  const [selectedPiece, setSelectedPiece] = useState<Position>();
+  const [selectedPiece, setSelectedPiece] = useState<Position | null>(null);
   const [hasMadeCapture, setHasMadeCapture] = useState(false);
   const [limitedJumpsCount, setLimitedJumpsCount] = useState<LimitedJumpsCount>({});
   const [gameAlerts, setGameAlerts] = useState<GameAlert[]>([]);
@@ -56,7 +56,7 @@ export const OfflineGame: React.FC<CheckersGameProps> = ({ strategy }) => {
 
     setBoardState(prevGameHistory.boardState);
     setCurrentPlayer(prevGameHistory.currentPlayerColor);
-    setSelectedPiece(undefined);
+    setSelectedPiece(null);
     setWinner(undefined);
     setGameStateHistory(gameStateHistory.slice(0, gameStateHistory.length - 1));
   };
@@ -69,6 +69,8 @@ export const OfflineGame: React.FC<CheckersGameProps> = ({ strategy }) => {
       hasMadeCapture,
       limitedJumpsCount,
       gameAlerts,
+      jumpFrom: null,
+      jumpTo: null,
     };
   }, [boardState, currentPlayer, hasMadeCapture, selectedPiece, limitedJumpsCount, gameAlerts]);
 
@@ -95,7 +97,7 @@ export const OfflineGame: React.FC<CheckersGameProps> = ({ strategy }) => {
 
     setCurrentPlayer(Color.White);
     setWinner(undefined);
-    setSelectedPiece(undefined);
+    setSelectedPiece(null);
     setHasMadeCapture(false);
   };
 

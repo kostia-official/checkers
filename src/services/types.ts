@@ -14,15 +14,15 @@ export interface GameModel {
   gameType: GameType;
   roomId: string;
   inviterId: string;
-  inviteeId?: string;
-  winnerId?: string;
-  isDraw?: boolean;
-  nextGameId?: string;
+  inviteeId: string | null;
+  winnerId: string | null;
+  isDraw: boolean;
+  nextGameId: string | null;
   timeLimitSeconds: number;
   moveTimeIncSeconds: number;
   createdAt: Date;
-  startedAt?: Date;
-  endedAt?: Date;
+  startedAt: Date | null;
+  endedAt: Date | null;
 }
 
 export type CreateGameInput = Pick<
@@ -38,7 +38,7 @@ export interface GamePlayerModel {
   color: Color;
   isReady: boolean;
   joinedAt: Date;
-  lastMovedAt?: Date;
+  lastMovedAt: Date | null;
   timeSpentMs: number;
 }
 export type CreateGamePlayerInput = Omit<GamePlayerModel, 'id' | 'joinedAt'>;
@@ -47,12 +47,12 @@ export type UpdateGamePlayerInput = Partial<Omit<GamePlayerModel, 'id'>>;
 export interface GameHistoryModel {
   id: string;
   gameId: string;
-  jumpFrom?: Position;
-  jumpTo?: Position;
+  jumpFrom: Position | null;
+  jumpTo: Position | null;
   boardState: BoardState;
   limitedJumpsCount: LimitedJumpsCount;
   currentPlayerColor: Color;
-  currentPlayerId?: string;
+  currentPlayerId: string | null;
   createdAt: Date;
 }
 
@@ -62,7 +62,7 @@ export interface UserModel {
   id: string;
   name: string;
   language: Lang;
-  pushToken?: string;
+  pushToken: string | null;
   createdAt: Date;
 }
 
@@ -77,9 +77,9 @@ export interface RequestModel {
   senderId: string;
   receiverId: string;
   type: RequestType;
-  acceptedAt?: Date;
-  declinedAt?: Date;
-  responseAckAt?: Date;
+  acceptedAt: Date | null;
+  declinedAt: Date | null;
+  responseAckAt: Date | null;
   createdAt: Date;
 }
 

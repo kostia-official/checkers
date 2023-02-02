@@ -75,7 +75,9 @@ export const NewGame: React.FC = () => {
 
       await startNewGame({
         inviterId: userId,
+        inviteeId: null,
         inviterColor: playerColor,
+        inviteeColor: null,
         gameType,
         timeLimitSeconds: timeLimitMinutes * 60,
         moveTimeIncSeconds,

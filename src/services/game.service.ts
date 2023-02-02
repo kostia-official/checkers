@@ -41,7 +41,7 @@ export interface SubmitReadyArgs {
 
 export interface CreateNewGameData extends CreateGameInput {
   inviterColor: Color;
-  inviteeColor?: Color;
+  inviteeColor: Color | null;
 }
 
 export class GameService {
@@ -95,6 +95,9 @@ export class GameService {
         boardState: strategy.makeInitialBoardState(),
         currentPlayerColor: Color.White,
         limitedJumpsCount: {},
+        jumpFrom: null,
+        jumpTo: null,
+        currentPlayerId: null,
       }),
       gamePlayerService.create({
         userId: data.inviterId,
@@ -102,6 +105,7 @@ export class GameService {
         color: inviterColor,
         timeSpentMs: 0,
         isReady: false,
+        lastMovedAt: null,
       }),
       data.inviteeId &&
         inviteeColor &&
@@ -111,6 +115,7 @@ export class GameService {
           color: inviteeColor,
           timeSpentMs: 0,
           isReady: false,
+          lastMovedAt: null,
         }),
     ]);
 
@@ -188,6 +193,7 @@ export class GameService {
       isReady: false,
       timeSpentMs: 0,
       userId: inviteeId,
+      lastMovedAt: null,
     });
     await this.update(id, { inviteeId });
   }
