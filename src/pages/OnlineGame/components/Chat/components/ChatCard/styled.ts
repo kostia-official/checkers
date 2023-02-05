@@ -4,9 +4,10 @@ import { Button, TextInput, ScrollArea } from '@mantine/core';
 import { SimpleCard } from '@components/SimpleCard';
 
 export const StyledCard = styled(SimpleCard)`
-  height: 100%;
   display: flex;
   flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
 `;
 
 export const ChatContent = styled.div`

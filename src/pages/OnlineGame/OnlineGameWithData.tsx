@@ -28,6 +28,8 @@ import { useUpdatePushToken } from '@pages/OnlineGame/hooks/useUpdatePushToken';
 import { GameResultsButtons } from '@src/pages/OnlineGame/components/GameResultsButtons';
 import { Chat } from './components/Chat';
 import { usePlayerTimeUpdate } from '@pages/OnlineGame/hooks/usePlayerTimeUpdate';
+import { GameSettingsCard } from '@pages/OnlineGame/components/GameSettingsCard';
+import { Box } from '@mantine/core';
 
 export interface OnlineGameWithDataProps {
   game: GameModel;
@@ -251,6 +253,10 @@ export const OnlineGameWithData: React.FC<OnlineGameWithDataProps> = ({
             gamePlayers={gamePlayers}
             isSpectator={isSpectator}
           />
+
+          <Box mt="4px">
+            <GameSettingsCard game={game} currentPlayerColor={currentPlayerColor} />
+          </Box>
           <PlayersCard
             game={game}
             user={user}

@@ -1,14 +1,14 @@
 import React, { useMemo, useCallback } from 'react';
 import { GameModel, UserModel } from '@services/types';
-import { Box, Text, Flex } from '@mantine/core';
+import { Text, Flex } from '@mantine/core';
 import { useMutation } from 'react-query';
 import { GamePlayerExtended, Color, GamePlayers } from '@common/types';
 import { PlayerInfo } from '@pages/OnlineGame/components/PlayersCard/components/Player';
 import { toggleColor } from '@common/utils';
 import { useTranslation } from 'react-i18next';
-import { SimpleCard } from '@components/SimpleCard';
 import { gameService, SubmitReadyArgs } from '@services/game.service';
 import { useGameUsers } from '@pages/OnlineGame/hooks/useGameUsers';
+import { CardStyled } from '@pages/OnlineGame/components/PlayersCard/styled';
 
 export interface PlayersCardProps {
   game: GameModel;
@@ -70,29 +70,27 @@ export const PlayersCard: React.FC<PlayersCardProps> = ({
   };
 
   return (
-    <Box my="8px">
-      <SimpleCard title={t('players.title')}>
-        <Flex direction="column" style={{ gap: '4px' }}>
-          <PlayerInfo
-            {...commonPlayerProps}
-            key={players.white?.id || 'white'}
-            color={Color.White}
-            player={players.white}
-            opponent={players.black}
-            isOwnPlayer={user.id === players.white?.userId}
-          />
-          <PlayerInfo
-            {...commonPlayerProps}
-            key={players.black?.id || 'black'}
-            color={Color.Black}
-            player={players.black}
-            opponent={players.white}
-            isOwnPlayer={user.id === players.black?.userId}
-          />
+    <CardStyled title={t('players.title')}>
+      <Flex direction="column" style={{ gap: '4px' }}>
+        <PlayerInfo
+          {...commonPlayerProps}
+          key={players.white?.id || 'white'}
+          color={Color.White}
+          player={players.white}
+          opponent={players.black}
+          isOwnPlayer={user.id === players.white?.userId}
+        />
+        <PlayerInfo
+          {...commonPlayerProps}
+          key={players.black?.id || 'black'}
+          color={Color.Black}
+          player={players.black}
+          opponent={players.white}
+          isOwnPlayer={user.id === players.black?.userId}
+        />
 
-          {isSpectator && <Text>{t('players.spectatorLabel')}</Text>}
-        </Flex>
-      </SimpleCard>
-    </Box>
+        {isSpectator && <Text>{t('players.spectatorLabel')}</Text>}
+      </Flex>
+    </CardStyled>
   );
 };
